@@ -10,11 +10,21 @@
 int main(int argc, char const *argv[]) {
 
     // Run tests
-    Tester TestSuite;
+    Tester ts;
 
-    TestSuite.addTest("Root Node Exists", []() {
+    ts.addTest("Root Node Exists", []() {
         BinaryTree tree;
+        tree.prime();
         return tree.getRootNode();
+    });
+
+    ts.addTest("Add node", []() {
+        BinaryTree tree;
+        tree.prime();
+        BinaryTree::Node *root = tree.getRootNode();
+
+        root->addLeftChild();
+        return tree.getSize() == 2;
     });
 
     /*TestSuite.addTest("Add Left Child", []() {
@@ -142,7 +152,7 @@ int main(int argc, char const *argv[]) {
         return child == child1;
     });*/
 
-    TestSuite.runTestSuite(false);
+    ts.runTestSuite(false);
 
     return 0;
 }

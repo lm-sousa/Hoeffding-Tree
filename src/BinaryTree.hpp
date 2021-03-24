@@ -11,20 +11,9 @@ class BinaryTree {
 
   public:
     class Node {
-      private:
-        BinaryTree *tree;
-        bool isUsed = false;
-        void *data;
-        Node *_parent;
-        Node *_leftChild;
-        Node *_rightChild;
-
-        void _setUsedStatus(bool isInUse);
 
       public:
-        bool isInUse();
-        void setUsed();
-        void setUnused();
+        void setTree(BinaryTree *tree);
 
         void *getData();
         void setData(void *data);
@@ -35,35 +24,37 @@ class BinaryTree {
 
         bool hasLeftChild();
         Node *getLeftChild();
-        Node &addLeftChild();
-        void deleteLeftChild();
+        Node *addLeftChild();
 
         bool hasRightChild();
         Node *getRightChild();
-        Node &addRightChild();
-        void deleteRightChild();
+        Node *addRightChild();
 
-        void deleteNode();
+      private:
+        BinaryTree *_tree = NULL;
+        void *_data = NULL;
+        Node *_parent = NULL;
+        Node *_leftChild = NULL;
+        Node *_rightChild = NULL;
 
-        void _setTree(BinaryTree *tree);
         void _setParent(Node *parent);
         void _setLeftChild(Node *child);
         void _setRightChild(Node *child);
-        void _clearParent();
-        void _clearLeftChild();
-        void _clearRightChild();
-        Node &_addNode();
-        void _clearNode();
     };
 
-    BinaryTree();
-    static void DFS(Node *origin, void (BinaryTree::Node::*function)());
-    uint getCurrentSize();
+    // BinaryTree();
+    void prime();
     uint getCapacity();
+    uint getSize();
+    void increaseSize();
+    bool canAddNode();
     Node *getRootNode();
+
+    // static void DFS(Node *origin, void (BinaryTree::Node::*function)());
 
   private:
     const uint _capacity = MAX_TREE_SIZE;
+    uint _size = 1;
     Node _nodes[MAX_TREE_SIZE];
     Node *_getNextFreeNode();
 };
