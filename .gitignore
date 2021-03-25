@@ -1,3 +1,7 @@
+bt
+infer-out
+.build
+
 # Prerequisites
 *.d
 
