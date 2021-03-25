@@ -1,8 +1,8 @@
 #include "BinaryTree.hpp"
 
 BinaryTree::BinaryTree() {
-    for (int i = 0; i < getCapacity(); i++) {
-        _nodes[i].setTree(this);
+    for (Node &node : _nodes) {
+        node.setTree(this);
     }
 }
 
