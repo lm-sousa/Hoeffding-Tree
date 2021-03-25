@@ -1,7 +1,7 @@
 #include "BinaryTree.hpp"
 
 BinaryTree::BinaryTree() {
-    for (Node &node : _nodes) {
+    for (auto &node : _nodes) {
         node.setTree(this);
     }
 }
