@@ -17,6 +17,11 @@ int main(int argc, char const *argv[]) {
         return tree.getRootNode();
     });
 
+    ts.addTest("New tree has size 1", []() {
+        BinaryTree tree;
+        return tree.getSize() == 1;
+    });
+
     ts.addTest("Add node", []() {
         BinaryTree tree;
         BinaryTree::Node *root = tree.getRootNode();
@@ -25,130 +30,56 @@ int main(int argc, char const *argv[]) {
         return tree.getSize() == 2;
     });
 
-    /*TestSuite.addTest("Add Left Child", []() {
+    ts.addTest("Add Left Child", []() {
         BinaryTree tree;
         BinaryTree::Node *root = tree.getRootNode();
-        root->setLeftChild(tree.createNode());
+        root->addLeftChild();
 
         return root->getLeftChild();
     });
 
-    TestSuite.addTest("Add Right Child", []() {
+    ts.addTest("Add Right Child", []() {
         BinaryTree tree;
         BinaryTree::Node *root = tree.getRootNode();
-        root->setRightChild(tree.createNode());
+        root->addRightChild();
 
         return root->getRightChild();
     });
 
-    TestSuite.addTest("Remove Left Child", []() {
+    ts.addTest("Root with left child has size 2", []() {
         BinaryTree tree;
         BinaryTree::Node *root = tree.getRootNode();
-        BinaryTree::Node *child = tree.createNode();
-        root->setLeftChild(child);
-        child->deleteNode();
-        return !root->hasLeftChild();
+        root->addLeftChild();
+
+        return tree.getSize() == 2;
     });
 
-    TestSuite.addTest("Remove Right Child", []() {
+    ts.addTest("Root with right child has size 2", []() {
         BinaryTree tree;
         BinaryTree::Node *root = tree.getRootNode();
-        BinaryTree::Node *child = tree.createNode();
-        root->setRightChild(child);
-        child->deleteNode();
-        return !root->hasRightChild();
+        root->addRightChild();
+
+        return tree.getSize() == 2;
     });
 
-    TestSuite.addTest("New tree has size 1", []() {
-        BinaryTree tree;
-        return tree.currentSize() == 1;
-    });
-
-    TestSuite.addTest("Root with child has size 2", []() {
+    ts.addTest("Add 2 childs", []() {
         BinaryTree tree;
         BinaryTree::Node *root = tree.getRootNode();
-        root->setLeftChild(tree.createNode());
+        root->addLeftChild()->addLeftChild();
 
-        return tree.currentSize() == 2;
+        return tree.getSize() == 3;
     });
 
-    TestSuite.addTest("Root with removed child has size 1", []() {
+    ts.addTest("Add 2 childs, remove both", []() {
         BinaryTree tree;
         BinaryTree::Node *root = tree.getRootNode();
-        BinaryTree::Node *child = tree.createNode();
-        root->setLeftChild(child);
-        child->deleteNode();
+        root->addLeftChild()->addLeftChild();
 
-        return tree.currentSize() == 1;
+        if (root->hasLeftChild())
+            return root->getLeftChild()->hasLeftChild();
+
+        return false;
     });
-
-    TestSuite.addTest("Add 2 childs", []() {
-        BinaryTree tree;
-        BinaryTree::Node *root = tree.getRootNode();
-        BinaryTree::Node *child = tree.createNode();
-        BinaryTree::Node *child1 = tree.createNode();
-        root->setLeftChild(child);
-        child->setLeftChild(child1);
-
-        return tree.currentSize() == 3;
-    });
-
-    TestSuite.addTest("Add 2 childs, remove both", []() {
-        BinaryTree tree;
-        BinaryTree::Node *root = tree.getRootNode();
-        BinaryTree::Node *child = tree.createNode();
-        BinaryTree::Node *child1 = tree.createNode();
-        root->setLeftChild(child);
-        child->setLeftChild(child1);
-        child->deleteNode();
-
-        return tree.currentSize() == 1;
-    });
-
-    TestSuite.addTest("Add 2 childs remove 1", []() {
-        BinaryTree tree;
-        BinaryTree::Node *root = tree.getRootNode();
-        BinaryTree::Node *child = tree.createNode();
-        BinaryTree::Node *child1 = tree.createNode();
-        root->setLeftChild(child);
-        child->setLeftChild(child1);
-        child1->deleteNode();
-
-        return tree.currentSize() == 2;
-    });
-
-    TestSuite.addTest("Add 2 childs, use deleteLeftChild", []() {
-        BinaryTree tree;
-        BinaryTree::Node *root = tree.getRootNode();
-        root->setLeftChild(tree.createNode());
-        root->setRightChild(tree.createNode());
-        root->deleteLeftChild();
-
-        return tree.currentSize() == 2;
-    });
-
-    TestSuite.addTest("Add 2 childs, use deleteRightChild", []() {
-        BinaryTree tree;
-        BinaryTree::Node *root = tree.getRootNode();
-        root->setLeftChild(tree.createNode());
-        root->setRightChild(tree.createNode());
-        root->deleteRightChild();
-
-        return tree.currentSize() == 2;
-    });
-
-    TestSuite.addTest("readded child must stay in same position", []() {
-        BinaryTree tree;
-        BinaryTree::Node *root = tree.getRootNode();
-        BinaryTree::Node *child = tree.createNode();
-        root->setLeftChild(child);
-        root->setRightChild(tree.createNode());
-        root->deleteLeftChild();
-        BinaryTree::Node *child1 = tree.createNode();
-        root->setLeftChild(child1);
-
-        return child == child1;
-    });*/
 
     ts.runTestSuite(false);
 
