@@ -10,7 +10,8 @@ class HoeffdingTree : public BinaryTree {
     ReturnCode infer();
     ReturnCode train();
 
-  private:
+  protected:
+    const float _hoeffdingBound(uint r, uint sigma, uint n_samples);
 };
 
 #endif
