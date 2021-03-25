@@ -13,9 +13,11 @@ class Tester {
     class Test {
       public:
         Test(std::string name, std::function<bool()> tfn);
-        std::function<bool()> tfn;
+
         std::string name;
+        std::function<bool()> tfn;
         bool successfull = false;
+
         bool runTest(bool logSuccess);
     };
 
@@ -27,6 +29,7 @@ class Tester {
     std::vector<Test *> _tests;
     uint _testN = 0;
     uint _successCount = 0;
+
     void _displayResults();
 };
 
