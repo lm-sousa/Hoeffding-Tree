@@ -5,7 +5,9 @@
 #include <functional>
 #include <stdlib.h>
 
+#ifndef MAX_TREE_SIZE
 #define MAX_TREE_SIZE 100
+#endif
 
 class BinaryTree {
 
