@@ -14,13 +14,11 @@ int main(int argc, char const *argv[]) {
 
     ts.addTest("Root Node Exists", []() {
         BinaryTree tree;
-        tree.prime();
         return tree.getRootNode();
     });
 
     ts.addTest("Add node", []() {
         BinaryTree tree;
-        tree.prime();
         BinaryTree::Node *root = tree.getRootNode();
 
         root->addLeftChild();

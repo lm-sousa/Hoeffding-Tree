@@ -1,22 +1,14 @@
 #include "BinaryTree.hpp"
-#include <iostream>
-#include <ostream>
 
-/*BinaryTree::BinaryTree() {
-    for (auto node : _nodes) {
-        node.setTree(this);
-    }
-}*/
-
-void BinaryTree::prime() {
-    for (auto node : _nodes) {
-        node.setTree(this);
+BinaryTree::BinaryTree() {
+    for (int i = 0; i < getCapacity(); i++) {
+        _nodes[i].setTree(this);
     }
 }
 
-uint BinaryTree::getCapacity() { return _capacity; }
+BinaryTree::bt_size BinaryTree::getCapacity() { return _capacity; }
 
-uint BinaryTree::getSize() { return _size; }
+BinaryTree::bt_size BinaryTree::getSize() { return _size; }
 
 void BinaryTree::increaseSize() { _size++; }
 

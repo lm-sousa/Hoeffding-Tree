@@ -10,6 +10,8 @@
 class BinaryTree {
 
   public:
+    typedef uint8_t bt_size;
+
     class Node {
 
       public:
@@ -42,10 +44,9 @@ class BinaryTree {
         void _setRightChild(Node *child);
     };
 
-    // BinaryTree();
-    void prime();
-    uint getCapacity();
-    uint getSize();
+    BinaryTree();
+    bt_size getCapacity();
+    bt_size getSize();
     void increaseSize();
     bool canAddNode();
     Node *getRootNode();
@@ -53,9 +54,10 @@ class BinaryTree {
     // static void DFS(Node *origin, void (BinaryTree::Node::*function)());
 
   private:
-    const uint _capacity = MAX_TREE_SIZE;
-    uint _size = 1;
+    const bt_size _capacity = MAX_TREE_SIZE;
+    bt_size _size = 1;
     Node _nodes[MAX_TREE_SIZE];
+
     Node *_getNextFreeNode();
 };
 
