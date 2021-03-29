@@ -3,15 +3,30 @@
 
 #include "BinaryTree.hpp"
 
+#ifndef HT_DATA_ATTRIBUTES_N
+#define HT_DATA_ATTRIBUTES_N 1
+#endif
 class HoeffdingTree : public BinaryTree {
   public:
-    enum ReturnCode { SUCCESS = 0, ERROR };
+    class Data {
+      public:
+        typedef bool datatype;
+        void update(datatype data[]);
 
-    ReturnCode infer();
-    ReturnCode train();
+      protected:
+        uint _attributes_count[HT_DATA_ATTRIBUTES_N] = {0};
+        uint _sampleCount = 0;
+        static const uint _nAttributes = HT_DATA_ATTRIBUTES_N;
+
+        static float _hoeffdingBound(uint r, uint sigma, uint n_samples);
+        constexpr float _CMA(float CMA_n, uint n_1, float x_n_1);
+    };
+
+    void infer(Data::datatype data[]);
+    void train(Data::datatype data[]);
 
   protected:
-    static float _hoeffdingBound(uint r, uint sigma, uint n_samples);
+    float _errorMargin = 0;
 };
 
 #endif
