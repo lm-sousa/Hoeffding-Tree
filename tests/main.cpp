@@ -1,3 +1,4 @@
+#include <cstddef>
 #include <functional>
 #include <iostream>
 #include <ostream>
@@ -6,6 +7,8 @@
 
 #include "../src/BinaryTree.hpp"
 #include "../src/HoeffdingTree.hpp"
+#include "../src/Node.hpp"
+#include "../src/NodeData.hpp"
 #include "Tester.hpp"
 
 int main() {
@@ -15,67 +18,68 @@ int main() {
 
 #ifdef __BINARY_TREE_HPP__
     ts.addTest("Root Node Exists", []() {
-        BinaryTree tree;
+        BinaryTree<Node<>> tree;
         return tree.getRootNode();
     });
 
     ts.addTest("New tree has size 1", []() {
-        BinaryTree tree;
+        BinaryTree<Node<>> tree;
         return tree.getSize() == 1;
     });
 
     ts.addTest("Add node", []() {
-        BinaryTree tree;
-        BinaryTree::Node *root = tree.getRootNode();
+        BinaryTree<Node<>> tree;
+        Node<> *root = tree.getRootNode();
 
-        root->addLeftChild();
+        tree.addLeftChild(root);
         return tree.getSize() == 2;
     });
 
     ts.addTest("Add Left Child", []() {
-        BinaryTree tree;
-        BinaryTree::Node *root = tree.getRootNode();
-        root->addLeftChild();
+        BinaryTree<Node<>> tree;
+        Node<> *root = tree.getRootNode();
+        tree.addLeftChild(root);
 
         return root->getLeftChild();
     });
 
     ts.addTest("Add Right Child", []() {
-        BinaryTree tree;
-        BinaryTree::Node *root = tree.getRootNode();
-        root->addRightChild();
+        BinaryTree<Node<>> tree;
+        Node<> *root = tree.getRootNode();
+        tree.addRightChild(root);
 
         return root->getRightChild();
     });
 
     ts.addTest("Root with left child has size 2", []() {
-        BinaryTree tree;
-        BinaryTree::Node *root = tree.getRootNode();
-        root->addLeftChild();
+        BinaryTree<Node<>> tree;
+        Node<> *root = tree.getRootNode();
+        tree.addLeftChild(root);
 
         return tree.getSize() == 2;
     });
 
     ts.addTest("Root with right child has size 2", []() {
-        BinaryTree tree;
-        BinaryTree::Node *root = tree.getRootNode();
-        root->addRightChild();
+        BinaryTree<Node<>> tree;
+        Node<> *root = tree.getRootNode();
+        tree.addRightChild(root);
 
         return tree.getSize() == 2;
     });
 
     ts.addTest("Add 2 childs", []() {
-        BinaryTree tree;
-        BinaryTree::Node *root = tree.getRootNode();
-        root->addLeftChild()->addLeftChild();
+        BinaryTree<Node<>> tree;
+        Node<> *root = tree.getRootNode();
+
+        tree.addLeftChild(tree.addLeftChild(root));
 
         return tree.getSize() == 3;
     });
 
     ts.addTest("Add 2 childs, remove both", []() {
-        BinaryTree tree;
-        BinaryTree::Node *root = tree.getRootNode();
-        root->addLeftChild()->addLeftChild();
+        BinaryTree<Node<>> tree;
+        Node<> *root = tree.getRootNode();
+        tree.addLeftChild(tree.addLeftChild(root));
 
         if (root->hasLeftChild())
             return root->getLeftChild()->hasLeftChild();

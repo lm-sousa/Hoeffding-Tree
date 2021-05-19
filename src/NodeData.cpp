@@ -2,7 +2,7 @@
 
 #include <math.h>
 
-void Data::update(datatype data[]) {
+void NodeData::update(datatype data[]) {
     _sampleCount++;
     bool homogeneous = false;
 
@@ -19,14 +19,14 @@ void Data::update(datatype data[]) {
     }
 }
 
-constexpr uint Data::sgnAlpha(datatype z, float alpha) {
+constexpr uint NodeData::sgnAlpha(datatype z, float alpha) {
     return z < 0 ? alpha : 1 - alpha;
 }
 
-float Data::_hoeffdingBound(const uint r, const float sigma, uint n) {
+float NodeData::_hoeffdingBound(const uint r, const float sigma, uint n) {
     return (r * (sqrt(-log(sigma) / 2))) / sqrt(n);
 }
 
-constexpr float Data::_CMA(float CMA_n, uint n_1, float x_n_1) {
+constexpr float NodeData::_CMA(float CMA_n, uint n_1, float x_n_1) {
     return CMA_n + ((x_n_1 - CMA_n) / (n_1));
 }

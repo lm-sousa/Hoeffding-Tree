@@ -7,7 +7,7 @@
 #define HT_DATA_ATTRIBUTES_N 1
 #endif
 
-class Data {
+class NodeData {
   public:
     typedef float datatype;
     void update(datatype data[]);

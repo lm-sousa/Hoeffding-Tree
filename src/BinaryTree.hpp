@@ -1,66 +1,72 @@
 #ifndef __BINARY_TREE_HPP__
 #define __BINARY_TREE_HPP__
 
+#include <bits/stdint-uintn.h>
 #include <cstddef>
 #include <functional>
 #include <stdlib.h>
 
-#ifndef MAX_TREE_SIZE
-#define MAX_TREE_SIZE 100
-#endif
+#include "Node.hpp"
 
-class BinaryTree {
+template <class Node, uint8_t capacity = 100> class BinaryTree {
 
   public:
-    typedef uint8_t bt_size;
+    uint8_t getCapacity() { return _capacity; }
+    uint8_t getSize() { return _size; }
+    void increaseSize() { _size++; }
+    bool canAddNode() { return _size < _capacity; }
 
-    class Node {
+    Node *getRootNode() { return &_nodes[0]; }
 
-      public:
-        void setTree(BinaryTree *tree);
+    Node *addLeftChild(Node *node) {
 
-        void *getData();
-        void setData(void *data);
-        void clearData();
+        Node *newNode = _getNextFreeNode();
+        if (!newNode) {
+            return NULL;
+        }
 
-        bool hasParent();
-        Node *getParent();
+        node->setLeftChild(newNode);
+        this->increaseSize();
 
-        bool hasLeftChild();
-        Node *getLeftChild();
-        Node *addLeftChild();
+        return newNode;
+    }
 
-        bool hasRightChild();
-        Node *getRightChild();
-        Node *addRightChild();
+    Node *addRightChild(Node *node) {
+        Node *newNode = _getNextFreeNode();
+        if (!newNode) {
+            return NULL;
+        }
 
-      private:
-        BinaryTree *_tree = NULL;
-        void *_data = NULL;
-        Node *_parent = NULL;
-        Node *_leftChild = NULL;
-        Node *_rightChild = NULL;
+        node->setRightChild(newNode);
+        this->increaseSize();
 
-        void _setParent(Node *parent);
-        void _setLeftChild(Node *child);
-        void _setRightChild(Node *child);
-    };
+        return newNode;
+    }
 
-    BinaryTree();
-    bt_size getCapacity();
-    bt_size getSize();
-    void increaseSize();
-    bool canAddNode();
-    Node *getRootNode();
-
-    // static void DFS(Node *origin, void (BinaryTree::Node::*function)());
+    /*static void DFS(Node *origin, void (BinaryTree::Node::*function)()) {
+        BinaryTree::Node *_node = origin;
+        BinaryTree::Node *_parent = origin;
+        do {
+            while (_node->hasLeftChild()) {
+                _parent = _node;
+                _node = _node->getLeftChild();
+            }
+            while (_node->hasRightChild()) {
+                _parent = _node;
+                _node = _node->getRightChild();
+            }
+            (_node->*function)();
+            _node = _parent;
+            _parent = _node->getParent();
+        } while (_node != origin || _node->hasRightChild());
+    }*/
 
   private:
-    const bt_size _capacity = MAX_TREE_SIZE;
-    bt_size _size = 1;
-    Node _nodes[MAX_TREE_SIZE];
+    const uint8_t _capacity = capacity;
+    uint8_t _size = 1;
+    Node _nodes[capacity];
 
-    Node *_getNextFreeNode();
+    Node *_getNextFreeNode() { return &_nodes[getSize()]; }
 };
 
 #endif

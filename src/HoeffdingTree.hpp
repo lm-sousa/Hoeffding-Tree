@@ -2,13 +2,14 @@
 #define __HOEFFDING_TREE_HPP__
 
 #include "BinaryTree.hpp"
-#include "NodeData.hpp"
-class HoeffdingTree : public BinaryTree {
-  public:
-    typedef Data NodeData;
+#include <bits/stdint-uintn.h>
 
-    void infer(Data::datatype data[]);
-    void train(Data::datatype data[]);
+#include "Node.hpp"
+
+template <class Data> class HoeffdingTree : public BinaryTree<Node<Data>> {
+  public:
+    void infer(typename Data::datatype data[]);
+    void train(typename Data::datatype data[]);
 
   protected:
     const float _errorMargin = 0;
