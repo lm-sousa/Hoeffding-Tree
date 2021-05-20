@@ -8,7 +8,6 @@
 #include "../src/BinaryTree.hpp"
 #include "../src/HoeffdingTree.hpp"
 #include "../src/Node.hpp"
-#include "../src/NodeData.hpp"
 #include "Tester.hpp"
 
 int main() {
@@ -67,7 +66,7 @@ int main() {
         return tree.getSize() == 2;
     });
 
-    ts.addTest("Add 2 childs", []() {
+    ts.addTest("Add 2 childs, check counter", []() {
         BinaryTree<Node<>> tree;
         Node<> *root = tree.getRootNode();
 
@@ -76,7 +75,7 @@ int main() {
         return tree.getSize() == 3;
     });
 
-    ts.addTest("Add 2 childs, remove both", []() {
+    ts.addTest("Add 2 childs, check existance", []() {
         BinaryTree<Node<>> tree;
         Node<> *root = tree.getRootNode();
         tree.addLeftChild(tree.addLeftChild(root));
@@ -89,10 +88,10 @@ int main() {
 #endif
 #ifdef __HOEFFDING_TREE_HPP__
 
-    /*ts.addTest("Train Hoeffding Tree", []() {
-        HoeffdingTree tree;
-        return tree.train();
-    });*/
+    ts.addTest("Train Hoeffding Tree", []() {
+        HoeffdingTree<NodeData<>> tree(1, 0.1);
+        return true;
+    });
 
 #endif
 
