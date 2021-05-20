@@ -10,7 +10,7 @@
 template <class Data> class HoeffdingTree : public BinaryTree<Node<Data>> {
   public:
     /**
-     * @brief Creates a HoeffdingTree object
+     * @brief Construct a new Hoeffding Tree< Data> object
      *
      * @param r Range of variables
      * @param sigma acceptable error margin (0.0 to 1.0)
@@ -18,7 +18,6 @@ template <class Data> class HoeffdingTree : public BinaryTree<Node<Data>> {
     HoeffdingTree<Data>(uint r, float sigma)
         : _hoeffdingBoundConstant(r * (sqrt(-log(sigma) / 2))) {}
 
-    void infer(typename Data::datatype data[]);
     void train(typename Data::datatype data[]);
 
     /**
