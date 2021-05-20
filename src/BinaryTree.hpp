@@ -11,10 +11,10 @@
 template <class Node, uint8_t capacity = 100> class BinaryTree {
 
   public:
-    uint8_t getCapacity() { return _capacity; }
+    constexpr uint8_t getCapacity() { return capacity; }
     uint8_t getSize() { return _size; }
     void increaseSize() { _size++; }
-    bool canAddNode() { return _size < _capacity; }
+    bool canAddNode() { return _size < capacity; }
 
     Node *getRootNode() { return &_nodes[0]; }
 
@@ -70,7 +70,6 @@ template <class Node, uint8_t capacity = 100> class BinaryTree {
     }*/
 
   private:
-    const uint8_t _capacity = capacity;
     uint8_t _size = 1;
     Node _nodes[capacity];
 
