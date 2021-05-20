@@ -2,41 +2,31 @@
 #define __NODE_DATA_HPP__
 
 #include <stdlib.h>
+#include <sys/types.h>
 
-#ifndef HT_DATA_ATTRIBUTES_N
-#define HT_DATA_ATTRIBUTES_N 1
-#endif
-
-class NodeData {
+template <typename _datatype = float, uint N_Attributes = 1> class NodeData {
   public:
-    typedef float datatype;
-    void update(datatype data[]);
-    constexpr uint sgnAlpha(datatype z, float alpha);
+    typedef _datatype datatype;
+    void update(datatype data[]) {
+        _sampleCount++;
+        bool homogeneous = false;
+
+        for (uint i = 0; i < N_Attributes; i++) {
+            _attributes_count[i] += data[i];
+            if (_attributes_count[i] == _sampleCount) {
+                homogeneous = true;
+            }
+        }
+
+        if (!homogeneous) {
+            // calculate G for every attribute
+            // Calculate _hoeffdingBound()
+        }
+    }
 
   protected:
-    uint _attributes_count[HT_DATA_ATTRIBUTES_N] = {0};
+    uint _attributes_count[N_Attributes] = {0};
     uint _sampleCount = 0;
-    static const uint _nAttributes = HT_DATA_ATTRIBUTES_N;
-
-    /**
-     * @brief Calculates the Hoeffding Bound
-     *
-     * @param r Range of variable
-     * @param sigma acceptable error margin (0.0 to 1.0)
-     * @param n Number of samples in the leaf node
-     * @return float Hoeffding bound
-     */
-    static float _hoeffdingBound(const uint r, const float sigma, uint n);
-
-    /**
-     * @brief Cumulative Moving Average
-     *
-     * @param CMA_n Current CMA value
-     * @param n_1 New sample count
-     * @param x_n_1 New sample
-     * @return constexpr float New CMA value
-     */
-    constexpr float _CMA(float CMA_n, uint n_1, float x_n_1);
 };
 
 #endif
