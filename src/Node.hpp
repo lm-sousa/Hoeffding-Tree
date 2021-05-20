@@ -5,9 +5,11 @@
 
 #include "NodeData.hpp"
 
-template <class Data = NodeData> class Node {
+template <class Data = NodeData<>> class Node {
 
   public:
+    typedef Data _DataClass;
+
     void *getData() { return _data; }
     void setData(void *data) { _data = data; }
     void clearData() { setData(NULL); }
@@ -29,6 +31,26 @@ template <class Data = NodeData> class Node {
         child->_setParent(this);
     }
 
+    bool hasChildren() { return hasLeftChild() || hasRightChild(); }
+
+    /**
+     * @brief Infer the node
+     *
+     * @return Node*
+     */
+    Node *infer(typename Data::datatype x[]) {
+
+        if (!hasChildren()) {
+            return NULL;
+        }
+
+        if (_checkSplit(x)) {
+            return getLeftChild();
+        } else {
+            return getRightChild();
+        }
+    }
+
   private:
     Data _data;
     Node *_parent = NULL;
@@ -36,6 +58,19 @@ template <class Data = NodeData> class Node {
     Node *_rightChild = NULL;
 
     void _setParent(Node *parent) { _parent = parent; }
+
+    /**
+     * @brief Index of the Attribute where the split is calculated
+     *  '0' if no slit on this node.
+     *
+     */
+    uint _splitAttributeIndex = 0;
+
+    typename Data::datatype _splitValue = 0;
+
+    bool _checkSplit(typename Data::datatype x[]) {
+        return x[_splitAttributeIndex - 1] <= _splitValue;
+    }
 };
 
 #endif
