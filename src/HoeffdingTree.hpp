@@ -34,19 +34,19 @@ template <class Data> class HoeffdingTree : public BinaryTree<Node<Data>> {
     /**
      * @brief Calculates the Hoeffding Bound
      *
-     * @param r Range of variable
-     * @param sigma acceptable error margin (0.0 to 1.0)
      * @param n Number of samples in the leaf node
-     * @return float Hoeffding bound
+     * @return constexpr float Hoeffding bound
      */
-    float _hoeffdingBound(uint n) { return _hoeffdingBoundConstant / sqrt(n); }
+    constexpr float hoeffdingBound(uint n) {
+        return _hoeffdingBoundConstant / sqrt(n);
+    }
 
   protected:
     const float _hoeffdingBoundConstant = 0;
 
     const float _errorMargin = 0;
     uint splitAttribute = 0;
-    uint splitValue = 0; // <
+    uint splitValue = 0; // <=
 };
 
 #endif
