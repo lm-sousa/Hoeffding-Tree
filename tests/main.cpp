@@ -89,7 +89,7 @@ int main() {
 #ifdef __HOEFFDING_TREE_HPP__
 
     ts.addTest("Train Hoeffding Tree", []() {
-        HoeffdingTree<NodeData<>> tree(1, 0.1);
+        HoeffdingTree<NodeData<>> tree(1, 0.001);
         return true;
     });
 
