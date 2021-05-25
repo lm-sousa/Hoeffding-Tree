@@ -5,7 +5,7 @@
 #include <sys/types.h>
 
 template <typename _datatype = float, uint N_Attributes = 16,
-          uint N_Classes = 2, uint N_Quantiles = 8>
+          uint N_Classes = 2, uint N_Quantiles = 8, uint N_pt = 10>
 class NodeData {
   public:
     typedef _datatype datatype;
@@ -48,6 +48,14 @@ class NodeData {
                     _lambda * sgnAlpha(_Attributes[i][classif][k] - sample[i]);
             }
         }
+    }
+
+    constexpr datatype getSplitPointValue(uint attributeIndex, uint p) {
+        return ((_attributeRanges[attributeIndex][AttibuteRange::Max] -
+                 _attributeRanges[attributeIndex][AttibuteRange::Min]) /
+                (N_pt + 1)) *
+                   p +
+               _attributeRanges[attributeIndex][AttibuteRange::Min];
     }
 
   protected:
