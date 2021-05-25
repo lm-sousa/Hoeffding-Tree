@@ -18,7 +18,15 @@ template <class Data> class HoeffdingTree : public BinaryTree<Node<Data>> {
     HoeffdingTree(uint r, float sigma)
         : _hoeffdingBoundConstant(r * (sqrt(-log(sigma) / 2))) {}
 
-    void train(typename Data::datatype data[]);
+    void train(typename Data::datatype sample[], uint classif,
+               bool doSplitTrial) {
+
+        this->sortSample(sample)->getData().update(sample, classif);
+
+        if (doSplitTrial) {
+            // TODO Algo3: lines 13+
+        }
+    }
 
     /**
      * @brief Calculates the Hoeffding Bound
