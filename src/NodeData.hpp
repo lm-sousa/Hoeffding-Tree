@@ -10,6 +10,8 @@ class NodeData {
   public:
     typedef _datatype datatype;
 
+    enum AttibuteRange { Min = 0, Max = 1 };
+
     NodeData(float alpha = 0, float lambda = 0.01)
         : _alpha(alpha), _lambda(lambda) {}
 
@@ -20,6 +22,12 @@ class NodeData {
      * @return constexpr uint
      */
     constexpr uint sgnAlpha(datatype z) { return z < 0 ? -_alpha : 1 - _alpha; }
+
+    uint getSampleCountTotal() { return _sampleCountTotal; }
+
+    uint getSampleCountPerClass(uint classif) {
+        return _sampleCountPerClass[classif];
+    }
 
     void update(datatype sample[], uint classif) {
 
@@ -40,14 +48,6 @@ class NodeData {
                     _lambda * sgnAlpha(_Attributes[i][classif][k] - sample[i]);
             }
         }
-    }
-
-    enum AttibuteRange { Min = 0, Max = 1 };
-
-    uint getSampleCountTotal() { return _sampleCountTotal; }
-
-    uint getSampleCountPerClass(uint classif) {
-        return _sampleCountPerClass[classif];
     }
 
   protected:
