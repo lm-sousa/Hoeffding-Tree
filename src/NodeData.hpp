@@ -21,29 +21,34 @@ class NodeData {
      */
     constexpr uint sgnAlpha(datatype z) { return z < 0 ? -_alpha : 1 - _alpha; }
 
-    void update(datatype data[], uint classification) {
+    void update(datatype sample[], uint classif) {
 
         _sampleCountTotal++;
-        _sampleCountPerClass[classification]++;
+        _sampleCountPerClass[classif]++;
 
         for (uint i = 0; i < N_Attributes; i++) {
-            if (data[i] < _attributeRanges[i][AttibuteRange::Min]) {
-                _attributeRanges[i][AttibuteRange::Min] = data[i];
+            if (sample[i] < _attributeRanges[i][AttibuteRange::Min]) {
+                _attributeRanges[i][AttibuteRange::Min] = sample[i];
             }
 
-            if (data[i] > _attributeRanges[i][AttibuteRange::Max]) {
-                _attributeRanges[i][AttibuteRange::Max] = data[i];
+            if (sample[i] > _attributeRanges[i][AttibuteRange::Max]) {
+                _attributeRanges[i][AttibuteRange::Max] = sample[i];
             }
 
             for (uint k = 0; k < N_Quantiles; k++) {
-                _Attributes[i][classification][k] -=
-                    _lambda *
-                    sgnAlpha(_Attributes[i][classification][k] - data[i]);
+                _Attributes[i][classif][k] -=
+                    _lambda * sgnAlpha(_Attributes[i][classif][k] - sample[i]);
             }
         }
     }
 
     enum AttibuteRange { Min = 0, Max = 1 };
+
+    uint getSampleCountTotal() { return _sampleCountTotal; }
+
+    uint getSampleCountPerClass(uint classif) {
+        return _sampleCountPerClass[classif];
+    }
 
   protected:
     uint _sampleCountTotal = 0;
