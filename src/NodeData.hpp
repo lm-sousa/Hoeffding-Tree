@@ -1,8 +1,11 @@
 #ifndef __NODE_DATA_HPP__
 #define __NODE_DATA_HPP__
 
+#include <iostream>
+#include <ostream>
 #include <stdlib.h>
 #include <sys/types.h>
+#include <tuple>
 
 template <typename _datatype = float, uint N_Attributes = 16,
           uint N_Classes = 2, uint N_Quantiles = 8, uint N_pt = 10>
@@ -12,16 +15,8 @@ class NodeData {
 
     enum AttibuteRange { Min = 0, Max = 1 };
 
-    NodeData(float alpha = 0, float lambda = 0.01)
+    NodeData(float alpha = 0.1, float lambda = 0.01)
         : _alpha(alpha), _lambda(lambda) {}
-
-    /**
-     * @brief Asymmetric signum function
-     *
-     * @param z
-     * @return constexpr uint
-     */
-    constexpr uint sgnAlpha(datatype z) { return z < 0 ? -_alpha : 1 - _alpha; }
 
     uint getSampleCountTotal() { return _sampleCountTotal; }
 
@@ -31,31 +26,14 @@ class NodeData {
 
     void update(datatype sample[], uint classif) {
 
+        for (uint i = 0; i < N_Attributes; i++) {
+            _updateAttributeRange(i, sample[i]);
+
+            _updateQuantiles(i, classif, sample[i]);
+        }
+
         _sampleCountTotal++;
         _sampleCountPerClass[classif]++;
-
-        for (uint i = 0; i < N_Attributes; i++) {
-            if (sample[i] < _attributeRanges[i][AttibuteRange::Min]) {
-                _attributeRanges[i][AttibuteRange::Min] = sample[i];
-            }
-
-            if (sample[i] > _attributeRanges[i][AttibuteRange::Max]) {
-                _attributeRanges[i][AttibuteRange::Max] = sample[i];
-            }
-
-            for (uint k = 0; k < N_Quantiles; k++) {
-                _Attributes[i][classif][k] -=
-                    _lambda * sgnAlpha(_Attributes[i][classif][k] - sample[i]);
-            }
-        }
-    }
-
-    constexpr datatype getSplitPointValue(uint attributeIndex, uint p) {
-        return ((_attributeRanges[attributeIndex][AttibuteRange::Max] -
-                 _attributeRanges[attributeIndex][AttibuteRange::Min]) /
-                (N_pt + 1)) *
-                   p +
-               _attributeRanges[attributeIndex][AttibuteRange::Min];
     }
 
   protected:
@@ -65,6 +43,47 @@ class NodeData {
     datatype _attributeRanges[N_Attributes][2] = {0};
 
     const float _alpha, _lambda;
+
+    /**
+     * @brief Asymmetric signum function
+     *
+     * @param z
+     * @return constexpr datatype
+     */
+    constexpr datatype _sgnAlpha(datatype z) {
+        return z < 0 ? (-_alpha) : (1 - _alpha);
+    }
+
+    void _updateAttributeRange(uint attributeIndex, datatype value) {
+        if (_sampleCountTotal) {
+            if (value < _attributeRanges[attributeIndex][AttibuteRange::Min]) {
+                _attributeRanges[attributeIndex][AttibuteRange::Min] = value;
+            }
+
+            if (value > _attributeRanges[attributeIndex][AttibuteRange::Max]) {
+                _attributeRanges[attributeIndex][AttibuteRange::Max] = value;
+            }
+        } else {
+            _attributeRanges[attributeIndex][AttibuteRange::Min] = value;
+            _attributeRanges[attributeIndex][AttibuteRange::Max] = value;
+        }
+    }
+
+    void _updateQuantiles(uint attributeIndex, uint classif, datatype value) {
+        for (uint k = 0; k < N_Quantiles; k++) {
+            _Attributes[attributeIndex][classif][k] -=
+                _lambda *
+                _sgnAlpha(_Attributes[attributeIndex][classif][k] - value);
+        }
+    }
+
+    constexpr datatype _getSplitPointValue(uint attributeIndex, uint p) {
+        return ((_attributeRanges[attributeIndex][AttibuteRange::Max] -
+                 _attributeRanges[attributeIndex][AttibuteRange::Min]) /
+                (N_pt + 1)) *
+                   p +
+               _attributeRanges[attributeIndex][AttibuteRange::Min];
+    }
 };
 
 #endif
