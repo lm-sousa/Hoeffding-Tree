@@ -15,20 +15,7 @@ template <class Data = NodeData<>> class Node {
      *
      * @return void* Pointer to the Data object
      */
-    void *getData() { return _data; }
-
-    /**
-     * @brief Set the Data object
-     *
-     * @param data Pointer to the Data object
-     */
-    void setData(void *data) { _data = data; }
-
-    /**
-     * @brief Clear the Data object
-     *
-     */
-    void clearData() { setData(NULL); }
+    Data &getData() { return _data; }
 
     /**
      * @brief Check if Node has a parent
@@ -119,12 +106,6 @@ template <class Data = NodeData<>> class Node {
         } else {
             return getRightChild();
         }
-    }
-
-    void train(typename Data::datatype x[], bool doSplitTrial) {
-        _data.update(x);
-
-        // TODO Algo3: lines 13+
     }
 
   private:
