@@ -104,11 +104,11 @@ template <class Data = NodeData<>> class Node {
     bool hasChildren() { return hasLeftChild() || hasRightChild(); }
 
     /**
-     * @brief Infer the node
+     * @brief Sort the sample through the Node
      *
      * @return Node*
      */
-    Node *infer(typename Data::datatype x[]) {
+    Node *sortSample(typename Data::datatype x[]) {
 
         if (!hasChildren()) {
             return NULL;

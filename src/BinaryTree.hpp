@@ -43,9 +43,10 @@ template <class Node, uint8_t capacity = 100> class BinaryTree {
         return newNode;
     }
 
-    Node *infer(typename Node::_DataClass::datatype x[]) {
+    Node *sortSample(typename Node::_DataClass::datatype x[]) {
         Node *node = getRootNode();
-        for (Node *newNode = node; newNode != NULL; newNode = node->infer(x)) {
+        for (Node *newNode = node; newNode != NULL;
+             newNode = node->sortSample(x)) {
             node = newNode;
         }
         return node;
