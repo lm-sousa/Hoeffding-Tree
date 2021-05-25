@@ -36,6 +36,21 @@ class NodeData {
         _sampleCountPerClass[classif]++;
     }
 
+    void spliTrial() {
+        for (uint i = 0; i < N_Attributes; i++) {
+            for (uint p = 0; p < N_pt; p++) {
+                datatype pt = _getSplitPointValue(i, p);
+                for (uint j = 1; j < N_Classes; j++) {
+                    uint distL, distR;
+                    std::tie(distL, distR) =
+                        _getSampleCountDistribuition(i, j, pt);
+                }
+            }
+            // Compute G(ai) for all pt
+        }
+        // Check hoeffding bound stuff
+    }
+
   protected:
     uint _sampleCountTotal = 0;
     uint _sampleCountPerClass[N_Classes] = {0};
@@ -83,6 +98,20 @@ class NodeData {
                 (N_pt + 1)) *
                    p +
                _attributeRanges[attributeIndex][AttibuteRange::Min];
+    }
+
+    constexpr std::tuple<uint, uint>
+    _getSampleCountDistribuition(uint attributeIndex, uint classIndex,
+                                 datatype pt) {
+        uint distL = 0;
+        for (uint k = 0; k < N_Quantiles; k++) {
+            if (pt > _Attributes[attributeIndex][classIndex][k])
+                distL++;
+        }
+        distL = ((datatype)distL / N_pt) * _sampleCountPerClass[classIndex];
+        uint distR = _sampleCountPerClass[classIndex] - distL;
+
+        return {distL, distR};
     }
 };
 

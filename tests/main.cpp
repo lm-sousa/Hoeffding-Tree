@@ -90,13 +90,39 @@ int main() {
 
     ts.addTest("Hoeffding Tree - SampleCountTotal when training", []() {
         HoeffdingTree<NodeData<>> tree(1, 0.001);
-        float x[16] = {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-        uint y = 1;
         bool doSplitTrial = true;
+        const uint N_Samples = 1;
 
-        tree.train(x, y, doSplitTrial);
+        float x[N_Samples][16] = {
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        };
+
+        uint y[N_Samples] = {1};
+
+        for (uint i = 0; i < N_Samples; i++)
+            tree.train(x[i], y[i], doSplitTrial);
 
         return tree.getRootNode()->getData().getSampleCountTotal() == 1;
+    });
+
+    ts.addTest("Hoeffding Tree - sample count distribuitions", []() {
+        HoeffdingTree<NodeData<>> tree(1, 0.001);
+        bool doSplitTrial = true;
+        const uint N_Samples = 3;
+
+        float x[N_Samples][16] = {
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0.5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0.25, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
+
+        uint y[N_Samples] = {1, 1, 1};
+
+        for (uint i = 0; i < N_Samples; i++)
+            tree.train(x[i], y[i], doSplitTrial);
+
+        tree.getRootNode()->getData().spliTrial();
+
+        return true;
     });
 
 #endif
