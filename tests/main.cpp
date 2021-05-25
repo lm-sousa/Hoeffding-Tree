@@ -88,9 +88,15 @@ int main() {
 #endif
 #ifdef __HOEFFDING_TREE_HPP__
 
-    ts.addTest("Train Hoeffding Tree", []() {
+    ts.addTest("Hoeffding Tree - SampleCountTotal when training", []() {
         HoeffdingTree<NodeData<>> tree(1, 0.001);
-        return true;
+        float x[16] = {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+        uint y = 1;
+        bool doSplitTrial = true;
+
+        tree.train(x, y, doSplitTrial);
+
+        return tree.getRootNode()->getData().getSampleCountTotal() == 1;
     });
 
 #endif
