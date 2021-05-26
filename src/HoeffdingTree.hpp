@@ -15,7 +15,7 @@ template <class Data> class HoeffdingTree : public BinaryTree<Node<Data>> {
      * @param r Range of variables
      * @param sigma acceptable error margin (0.0 to 1.0)
      */
-    HoeffdingTree(uint r, float sigma)
+    HoeffdingTree(typename Data::datatype r, typename Data::datatype sigma)
         : _hoeffdingBoundConstant(r * (sqrt(-log(sigma) / 2))) {}
 
     void train(typename Data::datatype sample[], uint classif,
@@ -34,14 +34,14 @@ template <class Data> class HoeffdingTree : public BinaryTree<Node<Data>> {
      * @param n Number of samples in the leaf node
      * @return constexpr float Hoeffding bound
      */
-    constexpr float hoeffdingBound(uint n) {
+    constexpr typename Data::datatype hoeffdingBound(uint n) {
         return _hoeffdingBoundConstant / sqrt(n);
     }
 
   protected:
-    const float _hoeffdingBoundConstant = 0;
+    const typename Data::datatype _hoeffdingBoundConstant = 0;
 
-    const float _errorMargin = 0;
+    const typename Data::datatype _errorMargin = 0;
     uint splitAttribute = 0;
     uint splitValue = 0; // <=
 };
