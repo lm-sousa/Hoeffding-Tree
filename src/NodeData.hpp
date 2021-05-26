@@ -1,8 +1,6 @@
 #ifndef __NODE_DATA_HPP__
 #define __NODE_DATA_HPP__
 
-#include <iostream>
-#include <ostream>
 #include <stdlib.h>
 #include <sys/types.h>
 #include <tuple>
@@ -15,8 +13,7 @@ class NodeData {
 
     enum AttibuteRange { Min = 0, Max = 1 };
 
-    NodeData(float alpha = 0.1, float lambda = 0.01)
-        : _alpha(alpha), _lambda(lambda) {}
+    NodeData(datatype lambda = 0.01) : _lambda(lambda) {}
 
     uint getSampleCountTotal() { return _sampleCountTotal; }
 
@@ -57,7 +54,7 @@ class NodeData {
     datatype _Attributes[N_Attributes][N_Classes][N_Quantiles] = {0};
     datatype _attributeRanges[N_Attributes][2] = {0};
 
-    const float _alpha, _lambda;
+    const datatype _lambda;
 
     /**
      * @brief Asymmetric signum function
@@ -65,8 +62,12 @@ class NodeData {
      * @param z
      * @return constexpr datatype
      */
-    constexpr datatype _sgnAlpha(datatype z) {
-        return z < 0 ? (-_alpha) : (1 - _alpha);
+    constexpr datatype _sgnAlpha(datatype z, datatype alpha) {
+        return z < 0 ? (-alpha) : (1 - alpha);
+    }
+
+    constexpr datatype _getAlphaFromQuantileIndex(uint quantileIndex) {
+        return (datatype)(quantileIndex + 1) / (N_Quantiles + 1);
     }
 
     void _updateAttributeRange(uint attributeIndex, datatype value) {
@@ -88,7 +89,8 @@ class NodeData {
         for (uint k = 0; k < N_Quantiles; k++) {
             _Attributes[attributeIndex][classif][k] -=
                 _lambda *
-                _sgnAlpha(_Attributes[attributeIndex][classif][k] - value);
+                _sgnAlpha(_Attributes[attributeIndex][classif][k] - value,
+                          _getAlphaFromQuantileIndex(k));
         }
     }
 
