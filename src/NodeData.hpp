@@ -1,6 +1,7 @@
 #ifndef __NODE_DATA_HPP__
 #define __NODE_DATA_HPP__
 
+#include <cmath>
 #include <stdlib.h>
 #include <sys/types.h>
 #include <tuple>
@@ -110,7 +111,8 @@ class NodeData {
             if (pt > _Attributes[attributeIndex][classIndex][k])
                 distL++;
         }
-        distL = ((datatype)distL / N_pt) * _sampleCountPerClass[classIndex];
+        distL = std::round((datatype)distL / N_pt) *
+                _sampleCountPerClass[classIndex];
         uint distR = _sampleCountPerClass[classIndex] - distL;
 
         return {distL, distR};
