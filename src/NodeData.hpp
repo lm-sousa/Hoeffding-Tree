@@ -6,6 +6,8 @@
 #include <sys/types.h>
 #include <tuple>
 
+#include "TopBuffer.hpp"
+
 template <typename _datatype = float, uint N_Attributes = 16,
           uint N_Classes = 2, uint N_Quantiles = 8, uint N_pt = 10>
 class NodeData {
@@ -37,9 +39,11 @@ class NodeData {
     constexpr datatype getImpurity() { return _gini(NULL, NULL, None); }
 
     void spliTrial() {
+        TopBuffer<2, float> topG;
+
         for (uint i = 0; i < N_Attributes; i++) {
 
-            datatype dist[2][N_Classes], distSum[2], bestG[2];
+            datatype dist[2][N_Classes], distSum[2] = {0};
 
             for (uint p = 0; p < N_pt; p++) {
                 datatype pt = _getSplitPointValue(i, p);
@@ -53,11 +57,11 @@ class NodeData {
 
                     distSum[Left] += distL;
                 }
-                distSum[Right] += _sampleCountTotal - distSum[Left];
+                distSum[Right] = _sampleCountTotal - distSum[Left];
 
                 datatype G_pt = _G(dist, distSum);
+                topG.add(G_pt);
             }
-            // Compute G(ai) for all pt
         }
         // Check hoeffding bound stuff
     }
