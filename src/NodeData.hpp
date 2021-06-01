@@ -34,6 +34,8 @@ class NodeData {
         _sampleCountPerClass[classif]++;
     }
 
+    constexpr datatype getImpurity() { return _gini(NULL, NULL, None); }
+
     void spliTrial() {
         for (uint i = 0; i < N_Attributes; i++) {
 
@@ -131,20 +133,26 @@ class NodeData {
         return {distL, distR};
     }
 
+    constexpr datatype _classImpurity(uint j) {
+        return (datatype)_sampleCountPerClass[j] / _sampleCountTotal;
+    }
+
     constexpr datatype _prob(datatype (*dist)[2], datatype *distSum,
                              SplitSide X, uint j) {
-        if (X == None) {
-            return (datatype)_sampleCountPerClass[j] / _sampleCountTotal;
-        } else {
-            return dist[X][j] / distSum[X];
-        }
+        return dist[X][j] / distSum[X];
     }
 
     constexpr datatype _gini(datatype (*dist)[2], datatype *distSum,
                              SplitSide X) {
         datatype ret = 1;
         for (uint j = 0; j < N_Classes; j++) {
-            ret -= std::pow(_prob(dist, distSum, X, j), 2);
+            datatype p;
+            if (X == None) {
+                p = _classImpurity(j);
+            } else {
+                p = _prob(dist, distSum, X, j);
+            }
+            ret -= std::pow(p, 2);
         }
         return ret;
     }
