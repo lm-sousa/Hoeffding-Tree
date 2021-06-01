@@ -146,6 +146,11 @@ class NodeData {
         }
         return ret;
     }
+
+    constexpr datatype _weightedGini(datatype (*dist)[2], datatype *distSum,
+                                     SplitSide X) {
+        return (distSum[X] / _sampleCountTotal) * _gini(dist, distSum, X);
+    }
 };
 
 #endif
