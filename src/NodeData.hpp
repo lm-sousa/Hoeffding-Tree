@@ -137,6 +137,15 @@ class NodeData {
             return dist[X][j] / distSum[X];
         }
     }
+
+    constexpr datatype _gini(datatype (*dist)[2], datatype *distSum,
+                             SplitSide X) {
+        datatype ret = 1;
+        for (uint j = 0; j < N_Classes; j++) {
+            ret -= std::pow(_prob(dist, distSum, X, j), 2);
+        }
+        return ret;
+    }
 };
 
 #endif
