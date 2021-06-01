@@ -52,6 +52,8 @@ class NodeData {
                     distSum[Left] += distL;
                 }
                 distSum[Right] += _sampleCountTotal - distSum[Left];
+
+                datatype G_pt = _G(dist, distSum);
             }
             // Compute G(ai) for all pt
         }
@@ -150,6 +152,11 @@ class NodeData {
     constexpr datatype _weightedGini(datatype (*dist)[2], datatype *distSum,
                                      SplitSide X) {
         return (distSum[X] / _sampleCountTotal) * _gini(dist, distSum, X);
+    }
+
+    constexpr datatype _G(datatype (*dist)[2], datatype *distSum) {
+        return _gini(dist, distSum, None) - _weightedGini(dist, distSum, Left) -
+               _weightedGini(dist, distSum, Right);
     }
 };
 
