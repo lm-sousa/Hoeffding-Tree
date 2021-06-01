@@ -128,6 +128,15 @@ class NodeData {
 
         return {distL, distR};
     }
+
+    constexpr datatype _prob(datatype (*dist)[2], datatype *distSum,
+                             SplitSide X, uint j) {
+        if (X == None) {
+            return (datatype)_sampleCountPerClass[j] / _sampleCountTotal;
+        } else {
+            return dist[X][j] / distSum[X];
+        }
+    }
 };
 
 #endif
