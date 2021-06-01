@@ -36,13 +36,22 @@ class NodeData {
 
     void spliTrial() {
         for (uint i = 0; i < N_Attributes; i++) {
+
+            datatype dist[2][N_Classes], distSum[2], bestG[2];
+
             for (uint p = 0; p < N_pt; p++) {
                 datatype pt = _getSplitPointValue(i, p);
-                for (uint j = 1; j < N_Classes; j++) {
+                for (uint j = 0; j < N_Classes; j++) {
                     uint distL, distR;
                     std::tie(distL, distR) =
                         _getSampleCountDistribuition(i, j, pt);
+
+                    dist[Left][j] = distL;
+                    dist[Right][j] = distR;
+
+                    distSum[Left] += distL;
                 }
+                distSum[Right] += _sampleCountTotal - distSum[Left];
             }
             // Compute G(ai) for all pt
         }
@@ -56,6 +65,8 @@ class NodeData {
     datatype _attributeRanges[N_Attributes][2] = {0};
 
     const datatype _lambda;
+
+    enum SplitSide { Left = 0, Right, None };
 
     /**
      * @brief Asymmetric signum function
