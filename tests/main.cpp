@@ -89,7 +89,7 @@ int main() {
 #ifdef __HOEFFDING_TREE_HPP__
 
     ts.addTest("Hoeffding Tree - SampleCountTotal when training", []() {
-        HoeffdingTree<NodeData<>> tree(1, 0.001);
+        HoeffdingTree<NodeData<>> tree(1, 0.001, 0.05);
         bool doSplitTrial = true;
         const uint N_Samples = 1;
 
@@ -106,7 +106,7 @@ int main() {
     });
 
     ts.addTest("Hoeffding Tree - sample count distribuitions", []() {
-        HoeffdingTree<NodeData<>> tree(1, 0.001);
+        HoeffdingTree<NodeData<>> tree(1, 0.001, 0.05);
         bool doSplitTrial = true;
         const uint N_Samples = 3;
 
