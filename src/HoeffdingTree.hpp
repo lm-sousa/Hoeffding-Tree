@@ -3,28 +3,42 @@
 
 #include <bits/stdint-uintn.h>
 #include <math.h>
+#include <tuple>
 
 #include "BinaryTree.hpp"
 #include "Node.hpp"
 
 template <class Data> class HoeffdingTree : public BinaryTree<Node<Data>> {
   public:
+    typedef typename Data::datatype datatype;
     /**
      * @brief Construct a new Hoeffding Tree< Data> object
      *
      * @param r Range of variables
      * @param sigma acceptable error margin (0.0 to 1.0)
      */
-    HoeffdingTree(typename Data::datatype r, typename Data::datatype sigma)
-        : _hoeffdingBoundConstant(r * (sqrt(-log(sigma) / 2))) {}
+    HoeffdingTree(datatype r, datatype sigma, datatype tau)
+        : _hoeffdingBoundConstant(r * (sqrt(-log(sigma) / 2))), tau(tau) {}
 
-    void train(typename Data::datatype sample[], uint classif,
-               bool doSplitTrial) {
+    void train(datatype sample[], uint classif, bool doSplitTrial) {
 
-        this->sortSample(sample)->getData().update(sample, classif);
+        Node<Data> *node = this->sortSample(sample);
+        Data &nodeData = node->getData();
+
+        nodeData.update(sample, classif);
 
         if (doSplitTrial) {
-            // TODO Algo3: lines 13+
+            uint attributeIndex;
+            datatype splitValue;
+            datatype G;
+
+            std::tie(attributeIndex, splitValue, G) = nodeData.evaluateSplit();
+
+            datatype hBound = hoeffdingBound(nodeData.getSampleCountTotal());
+
+            if (G > hBound || tau > hBound) {
+                // TODO Algo3: split node
+            }
         }
     }
 
@@ -34,14 +48,15 @@ template <class Data> class HoeffdingTree : public BinaryTree<Node<Data>> {
      * @param n Number of samples in the leaf node
      * @return constexpr float Hoeffding bound
      */
-    constexpr typename Data::datatype hoeffdingBound(uint n) {
+    constexpr datatype hoeffdingBound(uint n) {
         return _hoeffdingBoundConstant / sqrt(n);
     }
 
   protected:
-    const typename Data::datatype _hoeffdingBoundConstant = 0;
+    const datatype _hoeffdingBoundConstant = 0;
+    const datatype tau;
 
-    const typename Data::datatype _errorMargin = 0;
+    const datatype _errorMargin = 0;
     uint splitAttribute = 0;
     uint splitValue = 0; // <=
 };
