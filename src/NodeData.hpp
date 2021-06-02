@@ -6,7 +6,7 @@
 #include <sys/types.h>
 #include <tuple>
 
-#include "TopBuffer.hpp"
+#include "TopSplitBuffer.hpp"
 
 template <typename _datatype = float, uint N_Attributes = 16,
           uint N_Classes = 2, uint N_Quantiles = 8, uint N_pt = 10>
@@ -15,12 +15,13 @@ class NodeData {
     typedef _datatype datatype;
 
     enum AttibuteRange { Min = 0, Max = 1 };
+    enum SplitType { Left = 0, Right = 1, None };
 
     NodeData(datatype lambda = 0.01) : _lambda(lambda) {}
 
-    uint getSampleCountTotal() { return _sampleCountTotal; }
+    constexpr uint getSampleCountTotal() { return _sampleCountTotal; }
 
-    uint getSampleCountPerClass(uint classif) {
+    constexpr uint getSampleCountPerClass(uint classif) {
         return _sampleCountPerClass[classif];
     }
 
@@ -38,8 +39,8 @@ class NodeData {
 
     constexpr datatype getImpurity() { return _gini(NULL, NULL, None); }
 
-    void spliTrial() {
-        TopBuffer<2, float> topG;
+    std::tuple<uint, datatype, datatype> evaluateSplit() {
+        TopSplitBuffer<2, datatype> topSplitCandidates;
 
         for (uint i = 0; i < N_Attributes; i++) {
 
@@ -57,13 +58,18 @@ class NodeData {
 
                     distSum[Left] += distL;
                 }
-                distSum[Right] = _sampleCountTotal - distSum[Left];
+                distSum[Right] = getSampleCountTotal() - distSum[Left];
 
                 datatype G_pt = _G(dist, distSum);
-                topG.add(G_pt);
+                topSplitCandidates.add(i, pt, G_pt);
             }
         }
-        // Check hoeffding bound stuff
+
+        std::tuple<uint, datatype, datatype> top =
+            topSplitCandidates.getCandidate(0);
+        std::get<2>(top) -= topSplitCandidates.getG(1);
+
+        return top;
     }
 
   protected:
@@ -73,8 +79,6 @@ class NodeData {
     datatype _attributeRanges[N_Attributes][2] = {0};
 
     const datatype _lambda;
-
-    enum SplitSide { Left = 0, Right, None };
 
     /**
      * @brief Asymmetric signum function
@@ -105,7 +109,8 @@ class NodeData {
         }
     }
 
-    void _updateQuantiles(uint attributeIndex, uint classif, datatype value) {
+    constexpr void _updateQuantiles(uint attributeIndex, uint classif,
+                                    datatype value) {
         for (uint k = 0; k < N_Quantiles; k++) {
             _Attributes[attributeIndex][classif][k] -=
                 _lambda *
@@ -142,12 +147,12 @@ class NodeData {
     }
 
     constexpr datatype _prob(datatype (*dist)[2], datatype *distSum,
-                             SplitSide X, uint j) {
+                             SplitType X, uint j) {
         return dist[X][j] / distSum[X];
     }
 
     constexpr datatype _gini(datatype (*dist)[2], datatype *distSum,
-                             SplitSide X) {
+                             SplitType X) {
         datatype ret = 1;
         for (uint j = 0; j < N_Classes; j++) {
             datatype p;
@@ -162,7 +167,7 @@ class NodeData {
     }
 
     constexpr datatype _weightedGini(datatype (*dist)[2], datatype *distSum,
-                                     SplitSide X) {
+                                     SplitType X) {
         return (distSum[X] / _sampleCountTotal) * _gini(dist, distSum, X);
     }
 
