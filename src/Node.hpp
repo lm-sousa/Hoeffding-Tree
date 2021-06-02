@@ -9,6 +9,7 @@ template <class Data = NodeData<>> class Node {
 
   public:
     typedef Data _DataClass;
+    typedef typename Data::datatype datatype;
 
     /**
      * @brief Get the Data object
@@ -95,7 +96,7 @@ template <class Data = NodeData<>> class Node {
      *
      * @return Node*
      */
-    Node *sortSample(typename Data::datatype x[]) {
+    Node *sortSample(datatype x[]) {
 
         if (!hasChildren()) {
             return NULL;
@@ -127,7 +128,7 @@ template <class Data = NodeData<>> class Node {
      * @brief Value where the split has occured.
      *
      */
-    typename Data::datatype _splitValue = 0;
+    datatype _splitValue = 0;
 
     /**
      * @brief Check data point against the defined split point
@@ -136,7 +137,7 @@ template <class Data = NodeData<>> class Node {
      * @return true Value is less than or equal to the split point
      * @return false Value is greater than the split point
      */
-    bool _checkSplit(typename Data::datatype x[]) {
+    bool _checkSplit(datatype x[]) {
         return x[_splitAttributeIndex - 1] <= _splitValue;
     }
 };
