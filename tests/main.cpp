@@ -120,7 +120,7 @@ int main() {
         for (uint i = 0; i < N_Samples; i++)
             tree.train(x[i], y[i], doSplitTrial);
 
-        tree.getRootNode()->getData().spliTrial();
+        // tree.getRootNode()->getData().evaluateSplit();
 
         return true;
     });
