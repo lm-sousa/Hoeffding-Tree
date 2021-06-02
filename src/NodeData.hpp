@@ -44,7 +44,7 @@ class NodeData {
 
         for (uint i = 0; i < N_Attributes; i++) {
 
-            datatype dist[2][N_Classes], distSum[2] = {0};
+            datatype dist[N_Classes][2], distSum[2] = {0};
 
             for (uint p = 0; p < N_pt; p++) {
                 datatype pt = _getSplitPointValue(i, p);
@@ -53,8 +53,8 @@ class NodeData {
                     std::tie(distL, distR) =
                         _getSampleCountDistribuition(i, j, pt);
 
-                    dist[Left][j] = distL;
-                    dist[Right][j] = distR;
+                    dist[j][Left] = distL;
+                    dist[j][Right] = distR;
 
                     distSum[Left] += distL;
                 }
@@ -148,7 +148,7 @@ class NodeData {
 
     constexpr datatype _prob(datatype (*dist)[2], datatype *distSum,
                              SplitType X, uint j) {
-        return dist[X][j] / distSum[X];
+        return dist[j][X] / distSum[X];
     }
 
     constexpr datatype _gini(datatype (*dist)[2], datatype *distSum,
