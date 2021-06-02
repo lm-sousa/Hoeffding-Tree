@@ -109,6 +109,11 @@ template <class Data = NodeData<>> class Node {
         }
     }
 
+    void setSplit(uint attributeIndex, datatype splitValue) {
+        _splitAttributeIndex = attributeIndex;
+        _splitValue = splitValue;
+    }
+
   private:
     Data _data;
     Node *_parent = NULL;
