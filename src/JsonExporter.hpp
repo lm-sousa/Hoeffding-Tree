@@ -55,6 +55,11 @@ class JsonExporter {
         return str + objCharEnd;
     }
 
+    template <class T> static std::string treeToJson(T tree) {
+        std::string str;
+        return str;
+    }
+
   protected:
     static const char arrayCharBegin = '[';
     static const char arrayCharEnd = ']';
