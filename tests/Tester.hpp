@@ -12,18 +12,21 @@ class Tester {
   public:
     class Test {
       public:
-        Test(std::string name, std::function<bool()> tfn);
+        Test(std::string name,
+             std::function<std::pair<bool, std::string>()> tfn);
 
         std::string name;
-        std::function<bool()> tfn;
+        std::function<std::pair<bool, std::string>()> tfn;
         bool successfull = false;
+        std::string executionLog;
 
-        bool runTest(bool logSuccess);
+        bool runTest(bool logSuccess, bool verbose);
     };
 
     ~Tester();
-    void addTest(std::string name, std::function<bool()> tfn);
-    void runTestSuite(bool logSuccess);
+    void addTest(std::string name,
+                 std::function<std::pair<bool, std::string>()> tfn);
+    void runTestSuite(bool logSuccess, bool verbose);
 
   private:
     std::vector<Test *> _tests;
