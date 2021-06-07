@@ -12,6 +12,23 @@ class JsonExporter {
   public:
     JsonExporter() {}
 
+    template <typename T> static std::string arrayToJson(T array[], uint size) {
+        std::string str;
+        str += arrayCharBegin + std::to_string(array[0]);
+        uint i = 1;
+
+        while (i < size) {
+            str += arrayCharDelimiter + std::to_string(array[i++]);
+        }
+
+        return str + arrayCharEnd;
+    }
+
+  protected:
+    static const char arrayCharBegin = '[';
+    static const char arrayCharEnd = ']';
+    static const char arrayCharDelimiter = ',';
+
     template <class T = Node<>> static void DFS(T *origin, void (*function)()) {
         T *_node = origin;
         T *_parent = origin;
