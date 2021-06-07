@@ -4,9 +4,12 @@
 #include <ostream>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string>
+#include <utility>
 
 #include "../src/BinaryTree.hpp"
 #include "../src/HoeffdingTree.hpp"
+#include "../src/JsonExporter.hpp"
 #include "../src/Node.hpp"
 #include "Tester.hpp"
 
@@ -18,20 +21,25 @@ int main() {
 #ifdef __BINARY_TREE_HPP__
     ts.addTest("Root Node Exists", []() {
         BinaryTree<Node<>> tree;
-        return tree.getRootNode();
+        return std::make_pair(tree.getRootNode(), "");
     });
 
     ts.addTest("New tree has size 1", []() {
         BinaryTree<Node<>> tree;
-        return tree.getSize() == 1;
+
+        std::string executionLog =
+            "Tree has size " + std::to_string(tree.getSize());
+        return std::make_pair(tree.getSize() == 1, executionLog);
     });
 
     ts.addTest("Add node", []() {
         BinaryTree<Node<>> tree;
         Node<> *root = tree.getRootNode();
-
         tree.addLeftChild(root);
-        return tree.getSize() == 2;
+
+        std::string executionLog =
+            "Tree has size " + std::to_string(tree.getSize());
+        return std::make_pair(tree.getSize() == 2, executionLog);
     });
 
     ts.addTest("Add Left Child", []() {
@@ -39,7 +47,11 @@ int main() {
         Node<> *root = tree.getRootNode();
         tree.addLeftChild(root);
 
-        return root->getLeftChild();
+        std::string executionLog = root->getLeftChild()
+                                       ? "Left child has been created."
+                                       : "Left child has not been created";
+
+        return std::make_pair(root->getLeftChild(), executionLog);
     });
 
     ts.addTest("Add Right Child", []() {
@@ -47,7 +59,11 @@ int main() {
         Node<> *root = tree.getRootNode();
         tree.addRightChild(root);
 
-        return root->getRightChild();
+        std::string executionLog = root->getRightChild()
+                                       ? "Right child has been created."
+                                       : "Right child has not been created";
+
+        return std::make_pair(root->getRightChild(), executionLog);
     });
 
     ts.addTest("Root with left child has size 2", []() {
@@ -55,7 +71,9 @@ int main() {
         Node<> *root = tree.getRootNode();
         tree.addLeftChild(root);
 
-        return tree.getSize() == 2;
+        std::string executionLog =
+            "Tree has size " + std::to_string(tree.getSize());
+        return std::make_pair(tree.getSize() == 2, executionLog);
     });
 
     ts.addTest("Root with right child has size 2", []() {
@@ -63,7 +81,9 @@ int main() {
         Node<> *root = tree.getRootNode();
         tree.addRightChild(root);
 
-        return tree.getSize() == 2;
+        std::string executionLog =
+            "Tree has size " + std::to_string(tree.getSize());
+        return std::make_pair(tree.getSize() == 2, executionLog);
     });
 
     ts.addTest("Add 2 childs, check counter", []() {
@@ -72,7 +92,9 @@ int main() {
 
         tree.addLeftChild(tree.addLeftChild(root));
 
-        return tree.getSize() == 3;
+        std::string executionLog =
+            "Tree has size " + std::to_string(tree.getSize());
+        return std::make_pair(tree.getSize() == 3, executionLog);
     });
 
     ts.addTest("Add 2 childs, check existance", []() {
@@ -80,10 +102,17 @@ int main() {
         Node<> *root = tree.getRootNode();
         tree.addLeftChild(tree.addLeftChild(root));
 
-        if (root->hasLeftChild())
-            return root->getLeftChild()->hasLeftChild();
+        bool ret = false;
+        std::string executionLog;
 
-        return false;
+        if (root->hasLeftChild()) {
+            executionLog = "Tree root has a left child.\n";
+            ret = root->getLeftChild()->hasLeftChild();
+            executionLog += ret ? "\tRoot's left child has left child"
+                                : "\tRoot's left child has no left child";
+        }
+
+        return std::make_pair(ret, executionLog);
     });
 #endif
 #ifdef __HOEFFDING_TREE_HPP__
@@ -102,7 +131,11 @@ int main() {
         for (uint i = 0; i < N_Samples; i++)
             tree.train(x[i], y[i], doSplitTrial);
 
-        return tree.getRootNode()->getData().getSampleCountTotal() == 1;
+        return std::make_pair(
+            tree.getRootNode()->getData().getSampleCountTotal() == 1,
+            "Node sample count: " +
+                std::to_string(
+                    tree.getRootNode()->getData().getSampleCountTotal()));
     });
 
     ts.addTest("Hoeffding Tree - sample count distribuitions", []() {
@@ -117,18 +150,18 @@ int main() {
         uint y[N_Samples] = {1, 0};
 
         for (uint i = 0; i < N_Samples; i++) {
-            std::cout << i << " : " << i % 2 << std::endl;
+            // std::cout << i << " : " << i % 2 << std::endl;
             tree.train(x[i % 2], y[i % 2], doSplitTrial);
         }
 
         // tree.getRootNode()->getData().evaluateSplit();
 
-        return true;
+        return std::make_pair(true, "Will always return true");
     });
 
 #endif
 
-    ts.runTestSuite(false);
+    ts.runTestSuite(false, true);
 
     return 0;
 }
