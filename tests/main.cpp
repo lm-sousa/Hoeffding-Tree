@@ -183,6 +183,20 @@ int main() {
                               str + (ret ? " == " : " != ") + "[1,2,3,4,5]");
     });
 
+    ts.addTest("JsonExporter - mapToJson()", []() {
+        std::map<std::string, int> map;
+
+        map.insert(std::pair<std::string, int>("hello", 1));
+        map.insert(std::pair<std::string, int>("world", 200));
+
+        std::string str = JsonExporter::mapToJson(map);
+
+        bool ret = str == "{\"hello\":1,\"world\":200}";
+
+        return std::make_pair(ret, str + (ret ? " == " : " != ") +
+                                       "{\"hello\":1,\"world\":200}");
+    });
+
 #endif
 
     ts.runTestSuite(false, true);
