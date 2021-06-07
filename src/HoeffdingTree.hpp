@@ -2,6 +2,7 @@
 #define __HOEFFDING_TREE_HPP__
 
 #include <bits/stdint-uintn.h>
+#include <iostream>
 #include <math.h>
 #include <tuple>
 
@@ -37,7 +38,11 @@ template <class Data> class HoeffdingTree : public BinaryTree<Node<Data>> {
             datatype hBound = hoeffdingBound(nodeData.getSampleCountTotal());
 
             if (G > hBound || tau > hBound) {
-                // TODO Algo3: split node
+                node->setSplit(attributeIndex, splitValue);
+                this->addLeftChild(node);
+                this->addRightChild(node);
+                std::cout << "split! --> " << attributeIndex << " : "
+                          << splitValue << std::endl;
             }
         }
     }

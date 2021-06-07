@@ -108,17 +108,18 @@ int main() {
     ts.addTest("Hoeffding Tree - sample count distribuitions", []() {
         HoeffdingTree<NodeData<>> tree(1, 0.001, 0.05);
         bool doSplitTrial = true;
-        const uint N_Samples = 3;
+        const uint N_Samples = 100;
 
         float x[N_Samples][16] = {
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0.5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0.25, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
+            {0.185, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
 
-        uint y[N_Samples] = {1, 1, 1};
+        uint y[N_Samples] = {1, 0};
 
-        for (uint i = 0; i < N_Samples; i++)
-            tree.train(x[i], y[i], doSplitTrial);
+        for (uint i = 0; i < N_Samples; i++) {
+            std::cout << i << " : " << i % 2 << std::endl;
+            tree.train(x[i % 2], y[i % 2], doSplitTrial);
+        }
 
         // tree.getRootNode()->getData().evaluateSplit();
 
