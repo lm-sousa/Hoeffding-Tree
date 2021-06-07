@@ -91,6 +91,8 @@ template <class Data = NodeData<>> class Node {
      */
     bool hasChildren() { return hasLeftChild() || hasRightChild(); }
 
+    bool isSplit() { return hasChildren(); }
+
     /**
      * @brief Sort the sample through the Node
      *
@@ -98,7 +100,7 @@ template <class Data = NodeData<>> class Node {
      */
     Node *sortSample(datatype x[]) {
 
-        if (!hasChildren()) {
+        if (!isSplit()) {
             return NULL;
         }
 
@@ -110,7 +112,7 @@ template <class Data = NodeData<>> class Node {
     }
 
     void setSplit(uint attributeIndex, datatype splitValue) {
-        _splitAttributeIndex = attributeIndex + 1;
+        _splitAttributeIndex = attributeIndex;
         _splitValue = splitValue;
     }
 
@@ -124,7 +126,6 @@ template <class Data = NodeData<>> class Node {
 
     /**
      * @brief Index of the Attribute where the split is calculated
-     *  '0' if no slit on this node.
      *
      */
     uint _splitAttributeIndex = 0;
@@ -143,7 +144,7 @@ template <class Data = NodeData<>> class Node {
      * @return false Value is greater than the split point
      */
     bool _checkSplit(datatype x[]) {
-        return x[_splitAttributeIndex - 1] <= _splitValue;
+        return x[_splitAttributeIndex] <= _splitValue;
     }
 };
 
