@@ -24,10 +24,28 @@ class JsonExporter {
         return str + arrayCharEnd;
     }
 
+    template <typename T> static std::string vectorToJson(std::vector<T> v) {
+        std::string str;
+        str += arrayCharBegin;
+
+        for (auto &elem : v) {
+            str += std::to_string(elem);
+            if (v.back() != elem) {
+                str += arrayCharDelimiter;
+            }
+        }
+
+        return str + arrayCharEnd;
+    }
+
   protected:
     static const char arrayCharBegin = '[';
     static const char arrayCharEnd = ']';
     static const char arrayCharDelimiter = ',';
+
+    static const char objCharBegin = '{';
+    static const char objCharEnd = '}';
+    static const char objCharDelimiter = ',';
 
     template <class T = Node<>> static void DFS(T *origin, void (*function)()) {
         T *_node = origin;
