@@ -52,24 +52,6 @@ template <class Node, uint8_t capacity = 100> class BinaryTree {
         return node;
     }
 
-    /*static void DFS(Node *origin, void (BinaryTree::Node::*function)()) {
-        BinaryTree::Node *_node = origin;
-        BinaryTree::Node *_parent = origin;
-        do {
-            while (_node->hasLeftChild()) {
-                _parent = _node;
-                _node = _node->getLeftChild();
-            }
-            while (_node->hasRightChild()) {
-                _parent = _node;
-                _node = _node->getRightChild();
-            }
-            (_node->*function)();
-            _node = _parent;
-            _parent = _node->getParent();
-        } while (_node != origin || _node->hasRightChild());
-    }*/
-
   private:
     uint8_t _size = 1;
     Node _nodes[capacity];
