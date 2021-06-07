@@ -38,6 +38,23 @@ class JsonExporter {
         return str + arrayCharEnd;
     }
 
+    template <typename T>
+    static std::string mapToJson(std::map<std::string, T> map) {
+        std::string str;
+        str += objCharBegin;
+        std::string lastKey = (--map.begin())->first;
+
+        for (auto const &pair : map) {
+            str += "\"" + pair.first + "\":" + std::to_string(pair.second);
+            if (lastKey.compare(pair.first)) {
+                continue;
+            }
+            str += objCharDelimiter;
+        }
+
+        return str + objCharEnd;
+    }
+
   protected:
     static const char arrayCharBegin = '[';
     static const char arrayCharEnd = ']';
