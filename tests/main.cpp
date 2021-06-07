@@ -160,6 +160,30 @@ int main() {
     });
 
 #endif
+#ifdef __JSON_EXPORTER_HPP__
+
+    ts.addTest("JsonExporter - arrayToJson()", []() {
+        const uint size = 5;
+        const int array[size] = {1, 2, 3, 4, 5};
+
+        std::string str = JsonExporter::arrayToJson(array, size);
+        bool ret = str == "[1,2,3,4,5]";
+
+        return std::make_pair(ret,
+                              str + (ret ? " == " : " != ") + "[1,2,3,4,5]");
+    });
+
+    ts.addTest("JsonExporter - vectorToJson()", []() {
+        const std::vector<int> array = {1, 2, 3, 4, 5};
+
+        std::string str = JsonExporter::vectorToJson(array);
+        bool ret = str == "[1,2,3,4,5]";
+
+        return std::make_pair(ret,
+                              str + (ret ? " == " : " != ") + "[1,2,3,4,5]");
+    });
+
+#endif
 
     ts.runTestSuite(false, true);
 
