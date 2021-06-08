@@ -3,6 +3,9 @@ import sklearn_json as skj
 from sklearn.datasets import load_iris
 from sklearn import tree
 import graphviz
+import numpy
+
+from dtreeviz.trees import *
 
 
 def main():
@@ -39,12 +42,19 @@ def main():
     graph = graphviz.Source(dot_data)
     graph.render("iris_json")
 
-    print(
-        "Feature names: " + str(iris.feature_names)
-    )
-    print(
-        "Class names: " + str(iris.target_names)
-    )
+    #print("Iris data: " + str(iris.target))
+
+    #clf.fit(iris.data, iris.target)
+
+    viz = dtreeviz(clf,
+                   iris.data,
+                   iris.target,
+                   target_name='variety',
+                   feature_names=iris.feature_names,
+                   class_names=list(iris.target_names)
+                   )
+
+    viz.view()
 
 
 if __name__ == "__main__":

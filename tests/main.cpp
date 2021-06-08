@@ -266,7 +266,7 @@ int main() {
                                        "{\"hello\":1,\"world\":200}");
     });
 
-    ts.addTest("Hoeffding Tree - Iris sklearn dataset", []() {
+    ts.addTest("JsonExporter - nodeClassCountsToJson()", []() {
         HoeffdingTree<NodeData<float, 4, 3>> tree(1, 0.01, 0.05);
         bool doSplitTrial = false;
         const uint N_Samples = 150;
@@ -285,6 +285,48 @@ int main() {
 
         return std::make_pair(ret,
                               str + (ret ? " == " : " != ") + "[[50,50,50]]");
+    });
+
+    ts.addTest("JsonExporter - nodeDataToJson() split node", []() {
+        HoeffdingTree<NodeData<float, 4, 3>> tree(1, 0.01, 0.05);
+        bool doSplitTrial = true;
+        const uint N_Samples = 150;
+
+        for (uint i = 0; i < N_Samples; i++) {
+            // std::cout << i << " : " << i % 2 << std::endl;
+            for (int j = 0; j < 4; j++)
+                irisDataset[i][j] /= 8;
+            tree.train(irisDataset[i], irisDataset[i][4], doSplitTrial);
+        }
+
+        std::string str =
+            JsonExporter::nodeDataToJson(*tree.getRootNode(), 1, 2);
+
+        bool ret = str == "[1,2,1,0.00598366,0.653061,7,7]";
+
+        return std::make_pair(ret, str + (ret ? " == " : " != ") +
+                                       "[1,2,1,0.00598366,0.653061,7,7]");
+    });
+
+    ts.addTest("JsonExporter - nodeDataToJson() non-split node", []() {
+        HoeffdingTree<NodeData<float, 4, 3>> tree(1, 0.01, 0.05);
+        bool doSplitTrial = false;
+        const uint N_Samples = 150;
+
+        for (uint i = 0; i < N_Samples; i++) {
+            // std::cout << i << " : " << i % 2 << std::endl;
+            for (int j = 0; j < 4; j++)
+                irisDataset[i][j] /= 8;
+            tree.train(irisDataset[i], irisDataset[i][4], doSplitTrial);
+        }
+
+        std::string str =
+            JsonExporter::nodeDataToJson(*tree.getRootNode(), 1, 2);
+
+        bool ret = str == "[-1,-1,-2,-2,0.666667,150,150]";
+
+        return std::make_pair(ret, str + (ret ? " == " : " != ") +
+                                       "[-1,-1,-2,-2,0.666667,150,150]");
     });
 
 #endif
