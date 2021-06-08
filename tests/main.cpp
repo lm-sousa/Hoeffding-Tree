@@ -281,10 +281,10 @@ int main() {
         std::string str =
             JsonExporter::nodeClassCountsToJson(tree.getRootNode(), 3);
 
-        bool ret = str == "[50,50,50]";
+        bool ret = str == "[[50,50,50]]";
 
         return std::make_pair(ret,
-                              str + (ret ? " == " : " != ") + "[50,50,50]");
+                              str + (ret ? " == " : " != ") + "[[50,50,50]]");
     });
 
 #endif

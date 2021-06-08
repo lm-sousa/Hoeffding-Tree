@@ -77,7 +77,8 @@ class JsonExporter {
             array[i] = node->getData().getSampleCountPerClass(i);
         }
 
-        return arrayToJson(array, nClasses);
+        const std::string intermediateArray[1] = {arrayToJson(array, nClasses)};
+        return arrayToJson(intermediateArray, 1);
     }
 
   protected:
