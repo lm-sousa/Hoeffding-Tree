@@ -67,6 +67,12 @@ float irisDataset[150][5] = {
 
 int main() {
 
+    // Normalize Iris dataset values
+    for (uint i = 0; i < 150; i++) {
+        for (int j = 0; j < 4; j++)
+            irisDataset[i][j] /= 8;
+    }
+
     // Run tests
     Tester ts;
 
@@ -217,9 +223,6 @@ int main() {
         const uint N_Samples = 150;
 
         for (uint i = 0; i < N_Samples; i++) {
-            // std::cout << i << " : " << i % 2 << std::endl;
-            for (int j = 0; j < 4; j++)
-                irisDataset[i][j] /= 8;
             tree.train(irisDataset[i], irisDataset[i][4], doSplitTrial);
         }
 
@@ -272,9 +275,6 @@ int main() {
         const uint N_Samples = 150;
 
         for (uint i = 0; i < N_Samples; i++) {
-            // std::cout << i << " : " << i % 2 << std::endl;
-            for (int j = 0; j < 4; j++)
-                irisDataset[i][j] /= 8;
             tree.train(irisDataset[i], irisDataset[i][4], doSplitTrial);
         }
 
@@ -293,19 +293,16 @@ int main() {
         const uint N_Samples = 150;
 
         for (uint i = 0; i < N_Samples; i++) {
-            // std::cout << i << " : " << i % 2 << std::endl;
-            for (int j = 0; j < 4; j++)
-                irisDataset[i][j] /= 8;
             tree.train(irisDataset[i], irisDataset[i][4], doSplitTrial);
         }
 
         std::string str =
             JsonExporter::nodeDataToJson(*tree.getRootNode(), 1, 2);
 
-        bool ret = str == "[1,2,1,0.00598366,0.653061,7,7]";
+        bool ret = str == "[1,2,3,0.025,0.66482,19,19]";
 
         return std::make_pair(ret, str + (ret ? " == " : " != ") +
-                                       "[1,2,1,0.00598366,0.653061,7,7]");
+                                       "[1,2,3,0.025,0.66482,19,19]");
     });
 
     ts.addTest("JsonExporter - nodeDataToJson() non-split node", []() {
@@ -314,9 +311,6 @@ int main() {
         const uint N_Samples = 150;
 
         for (uint i = 0; i < N_Samples; i++) {
-            // std::cout << i << " : " << i % 2 << std::endl;
-            for (int j = 0; j < 4; j++)
-                irisDataset[i][j] /= 8;
             tree.train(irisDataset[i], irisDataset[i][4], doSplitTrial);
         }
 
