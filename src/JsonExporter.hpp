@@ -60,6 +60,22 @@ class JsonExporter {
         return str;
     }
 
+    template <class T> static std::string nodeToJson(T node) {
+        std::string str;
+        return str;
+    }
+
+    template <class T>
+    static std::string nodeClassCountsToJson(T node, uint nClasses) {
+        uint array[nClasses];
+
+        for (uint i = 0; i < nClasses; i++) {
+            array[i] = node->getData().getSampleCountPerClass(i);
+        }
+
+        return arrayToJson(array, nClasses);
+    }
+
   protected:
     static const char arrayCharBegin = '[';
     static const char arrayCharEnd = ']';
