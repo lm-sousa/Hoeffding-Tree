@@ -13,15 +13,17 @@ class JsonExporter {
     JsonExporter() {}
 
     template <typename T> static std::string arrayToJson(T array[], uint size) {
-        std::string str;
-        str += arrayCharBegin + std::to_string(array[0]);
+        std::ostringstream ss;
+
+        ss << arrayCharBegin << array[0];
         uint i = 1;
 
         while (i < size) {
-            str += arrayCharDelimiter + std::to_string(array[i++]);
+            ss << arrayCharDelimiter << array[i++];
         }
 
-        return str + arrayCharEnd;
+        ss << arrayCharEnd;
+        return ss.str();
     }
 
     template <typename T> static std::string vectorToJson(std::vector<T> v) {
