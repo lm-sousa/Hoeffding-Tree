@@ -26,7 +26,7 @@ class Tester {
     ~Tester();
     void addTest(std::string name,
                  std::function<std::pair<bool, std::string>()> tfn);
-    void runTestSuite(bool logSuccess, bool verbose);
+    uint runTestSuite(bool logSuccess, bool verbose);
 
   private:
     std::vector<Test *> _tests;

@@ -325,7 +325,5 @@ int main() {
 
 #endif
 
-    ts.runTestSuite(false, true);
-
-    return 0;
+    return ts.runTestSuite(false, true);
 }

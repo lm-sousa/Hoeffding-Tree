@@ -39,7 +39,7 @@ void Tester::addTest(std::string name,
     _testN++;
 }
 
-void Tester::runTestSuite(bool logSuccess, bool verbose) {
+uint Tester::runTestSuite(bool logSuccess, bool verbose) {
     for (auto t = this->_tests.begin(); t != this->_tests.end(); t++) {
         Test &currentTest = **t;
         this->_successCount += currentTest.runTest(logSuccess, verbose);
@@ -53,4 +53,6 @@ void Tester::runTestSuite(bool logSuccess, bool verbose) {
               << " tests were sucessfull." << std::endl;
     std::cout << "############################################################"
               << std::endl;
+
+    return this->_testN - this->_successCount;
 }
