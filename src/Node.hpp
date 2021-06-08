@@ -116,6 +116,10 @@ template <class Data = NodeData<>> class Node {
         _splitValue = splitValue;
     }
 
+    uint getSplitAttributeIndex() { return _splitAttributeIndex; }
+
+    datatype getSplitValue() { return _splitValue; }
+
   private:
     Data _data;
     Node *_parent = NULL;
@@ -144,7 +148,7 @@ template <class Data = NodeData<>> class Node {
      * @return false Value is greater than the split point
      */
     bool _checkSplit(datatype x[]) {
-        return x[_splitAttributeIndex] <= _splitValue;
+        return x[getSplitAttributeIndex()] <= getSplitValue();
     }
 };
 
