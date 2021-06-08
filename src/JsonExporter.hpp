@@ -27,17 +27,18 @@ class JsonExporter {
     }
 
     template <typename T> static std::string vectorToJson(std::vector<T> v) {
-        std::string str;
-        str += arrayCharBegin;
+        std::ostringstream ss;
+        ss << arrayCharBegin;
 
         for (auto &elem : v) {
-            str += std::to_string(elem);
+            ss << elem;
             if (v.back() != elem) {
-                str += arrayCharDelimiter;
+                ss << arrayCharDelimiter;
             }
         }
 
-        return str + arrayCharEnd;
+        ss << arrayCharEnd;
+        return ss.str();
     }
 
     template <typename T>
