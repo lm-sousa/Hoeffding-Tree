@@ -43,19 +43,20 @@ class JsonExporter {
 
     template <typename T>
     static std::string mapToJson(std::map<std::string, T> map) {
-        std::string str;
-        str += objCharBegin;
+        std::ostringstream ss;
+        ss << objCharBegin;
         std::string lastKey = (--map.begin())->first;
 
         for (auto const &pair : map) {
-            str += "\"" + pair.first + "\":" + std::to_string(pair.second);
+            ss << "\"" << pair.first << "\":" << pair.second;
             if (lastKey.compare(pair.first)) {
                 continue;
             }
-            str += objCharDelimiter;
+            ss << objCharDelimiter;
         }
 
-        return str + objCharEnd;
+        ss << objCharEnd;
+        return ss.str();
     }
 
     template <class T> static std::string treeToJson(T tree) {
