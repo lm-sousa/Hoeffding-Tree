@@ -332,17 +332,12 @@ int main() {
             tree.train(irisDataset[i], irisDataset[i][4], doSplitTrial);
         }
 
-        auto fn = []<class T>(T node, uint nodeID) {
-            std::cout << nodeID << std::endl;
-            return true;
-        };
-
-        JsonExporter::DFS(tree.getRootNode(), fn);
+        std::cout << JsonExporter::treeToJson(tree) << std::endl;
 
         return std::make_pair(true, "Will always return true");
     });
 
 #endif
 
-    return ts.runTestSuite(false, true);
+    return ts.runTestSuite(true, false);
 }

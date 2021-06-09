@@ -11,6 +11,8 @@
 template <class Node, uint8_t capacity = 100> class BinaryTree {
 
   public:
+    typedef Node _NodeClass;
+
     constexpr uint8_t getCapacity() { return capacity; }
     uint8_t getSize() { return _size; }
     void increaseSize() { _size++; }

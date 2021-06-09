@@ -61,8 +61,20 @@ class JsonExporter {
     }
 
     template <class T> static std::string treeToJson(T tree) {
-        std::string str;
-        return str;
+
+        typedef typename T::_NodeClass NodeClass;
+
+        std::map<std::string, NodeClass *> nodeMap;
+
+        auto fn = [&nodeMap](NodeClass *node, uint nodeID) {
+            // auto pair = ;
+            nodeMap.insert(std::pair<std::string, NodeClass *>(
+                std::to_string(nodeID), node));
+        };
+
+        DFS(tree.getRootNode(), fn);
+
+        return mapToJson(nodeMap);
     }
 
     template <class T> static std::string nodeToJson(T node) {
