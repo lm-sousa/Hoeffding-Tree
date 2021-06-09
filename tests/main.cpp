@@ -332,7 +332,7 @@ int main() {
             tree.train(irisDataset[i], irisDataset[i][4], doSplitTrial);
         }
 
-        std::cout << JsonExporter::treeToJson(tree) << std::endl;
+        std::cout << JsonExporter::treeToJson(tree, 3) << std::endl;
 
         return std::make_pair(true, "Will always return true");
     });

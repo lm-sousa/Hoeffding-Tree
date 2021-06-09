@@ -9,6 +9,8 @@
 #include <type_traits>
 #include <vector>
 
+#include <iostream>
+
 class JsonExporter {
   public:
     JsonExporter() {}
@@ -60,26 +62,55 @@ class JsonExporter {
         return ss.str();
     }
 
-    template <class T> static std::string treeToJson(T tree) {
+    template <class T> static std::string treeToJson(T tree, uint nClasses) {
 
         typedef typename T::_NodeClass NodeClass;
 
-        std::map<std::string, NodeClass *> nodeMap;
+        std::map<uint, NodeClass *> nodeMap;
 
         auto fn = [&nodeMap](NodeClass *node, uint nodeID) {
-            // auto pair = ;
-            nodeMap.insert(std::pair<std::string, NodeClass *>(
-                std::to_string(nodeID), node));
+            nodeMap.insert(std::pair<uint, NodeClass *>(nodeID, node));
         };
 
         DFS(tree.getRootNode(), fn);
+        std::map<uint, std::pair<std::string, std::string>> nodeDataMap =
+            nodesToJson(nodeMap, nClasses);
 
-        return mapToJson(nodeMap);
+        return "";
     }
 
-    template <class T> static std::string nodeToJson(T node) {
-        std::string str;
-        return str;
+    template <class T>
+    static std::map<uint, std::pair<std::string, std::string>> &
+    nodesToJson(std::map<uint, T *> nodeMap, uint nClasses) {
+
+        std::map<uint, std::pair<std::string, std::string>> *nodeDataMap =
+            new std::map<uint, std::pair<std::string, std::string>>;
+
+        for (auto &pair : nodeMap) {
+            uint nodeID = pair.first;
+            T *node = pair.second;
+
+            uint leftChildID = 0, rightChildID = 0;
+
+            for (auto it = nodeMap.begin(); it != nodeMap.end(); ++it) {
+                uint innerNodeID = it->first;
+                T *innerNode = it->second;
+
+                if (node->getLeftChild() == innerNode) {
+                    leftChildID = innerNodeID;
+                } else if (node->getRightChild() == innerNode) {
+                    rightChildID = innerNodeID;
+                }
+            }
+
+            nodeDataMap->insert(
+                std::pair<uint, std::pair<std::string, std::string>>(
+                    nodeID, std::pair<std::string, std::string>(
+                                nodeDataToJson(node, leftChildID, rightChildID),
+                                nodeClassCountsToJson(node, nClasses))));
+        }
+
+        return *nodeDataMap;
     }
 
     template <class T>
