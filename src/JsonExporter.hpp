@@ -46,11 +46,11 @@ class JsonExporter {
     static std::string mapToJson(std::map<std::string, T> map) {
         std::ostringstream ss;
         ss << objCharBegin;
-        std::string lastKey = (--map.begin())->first;
+        std::string lastKey = (--map.end())->first;
 
-        for (auto const &pair : map) {
+        for (auto &pair : map) {
             ss << "\"" << pair.first << "\":" << pair.second;
-            if (lastKey.compare(pair.first)) {
+            if (!lastKey.compare(pair.first)) {
                 continue;
             }
             ss << objCharDelimiter;
