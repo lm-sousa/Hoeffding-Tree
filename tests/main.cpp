@@ -297,7 +297,7 @@ int main() {
         }
 
         std::string str =
-            JsonExporter::nodeDataToJson(*tree.getRootNode(), 1, 2);
+            JsonExporter::nodeDataToJson(tree.getRootNode(), 1, 2);
 
         bool ret = str == "[1,2,3,0.025,0.66482,19,19]";
 
@@ -315,7 +315,7 @@ int main() {
         }
 
         std::string str =
-            JsonExporter::nodeDataToJson(*tree.getRootNode(), 1, 2);
+            JsonExporter::nodeDataToJson(tree.getRootNode(), 1, 2);
 
         bool ret = str == "[-1,-1,-2,-2,0.666667,150,150]";
 

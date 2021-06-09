@@ -83,19 +83,19 @@ class JsonExporter {
     }
 
     template <class T>
-    static std::string nodeDataToJson(T node, uint leftChildID,
+    static std::string nodeDataToJson(T *node, uint leftChildID,
                                       uint rightChildID) {
 
         typedef typename T::datatype datatype;
 
         const datatype array[7] = {
-            node.hasLeftChild() ? datatype(leftChildID) : -1,
-            node.hasRightChild() ? datatype(rightChildID) : -1,
-            node.isSplit() ? datatype(node.getSplitAttributeIndex()) : -2,
-            node.isSplit() ? node.getSplitValue() : -2,
-            node.getData().getImpurity(),
-            datatype(node.getData().getSampleCountTotal()),
-            datatype(node.getData().getSampleCountTotal())};
+            node->hasLeftChild() ? datatype(leftChildID) : -1,
+            node->hasRightChild() ? datatype(rightChildID) : -1,
+            node->isSplit() ? datatype(node->getSplitAttributeIndex()) : -2,
+            node->isSplit() ? node->getSplitValue() : -2,
+            node->getData().getImpurity(),
+            datatype(node->getData().getSampleCountTotal()),
+            datatype(node->getData().getSampleCountTotal())};
 
         return arrayToJson(array, 7);
     }
