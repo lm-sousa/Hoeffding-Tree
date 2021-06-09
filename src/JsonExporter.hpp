@@ -76,6 +76,17 @@ class JsonExporter {
         std::map<uint, std::pair<std::string, std::string>> nodeDataMap =
             nodesToJson(nodeMap, nClasses);
 
+        std::vector<std::string> nodes;
+        std::vector<std::string> values;
+
+        for (auto &pair : nodeDataMap) {
+            nodes.push_back(pair.second.first);
+            values.push_back(pair.second.second);
+        }
+
+        std::cout << "Nodes: " << vectorToJson(nodes) << std::endl;
+        std::cout << "Values: " << vectorToJson(values) << std::endl;
+
         return "";
     }
 
