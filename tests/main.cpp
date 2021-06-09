@@ -332,7 +332,10 @@ int main() {
             tree.train(irisDataset[i], irisDataset[i][4], doSplitTrial);
         }
 
-        auto fn = []<class T>(T node) { return true; };
+        auto fn = []<class T>(T node, uint nodeID) {
+            std::cout << nodeID << std::endl;
+            return true;
+        };
 
         JsonExporter::DFS(tree.getRootNode(), fn);
 

@@ -9,8 +9,6 @@
 #include <type_traits>
 #include <vector>
 
-#include <iostream>
-
 class JsonExporter {
   public:
     JsonExporter() {}
@@ -119,9 +117,7 @@ class JsonExporter {
     template <class T, class fn_T>
     static void _DFS_handle(T *node, fn_T function, uint &nodeCounter) {
 
-        std::cout << nodeCounter++ << std::endl;
-
-        function(node);
+        function(node, nodeCounter++);
 
         if (node->hasLeftChild()) {
             _DFS_handle(node->getLeftChild(), function, nodeCounter);
