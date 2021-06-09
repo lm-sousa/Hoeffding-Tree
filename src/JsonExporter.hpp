@@ -9,6 +9,8 @@
 #include <type_traits>
 #include <vector>
 
+#include <iostream>
+
 class JsonExporter {
   public:
     JsonExporter() {}
@@ -100,6 +102,11 @@ class JsonExporter {
         return arrayToJson(array, 7);
     }
 
+    template <class T, class fn_T> static void DFS(T *node, fn_T function) {
+        uint c = 0;
+        _DFS_handle(node, function, c);
+    }
+
   protected:
     static const char arrayCharBegin = '[';
     static const char arrayCharEnd = ']';
@@ -109,22 +116,19 @@ class JsonExporter {
     static const char objCharEnd = '}';
     static const char objCharDelimiter = ',';
 
-    template <class T = Node<>> static void DFS(T *origin, void (*function)()) {
-        T *_node = origin;
-        T *_parent = origin;
-        do {
-            while (_node->hasLeftChild()) {
-                _parent = _node;
-                _node = _node->getLeftChild();
-            }
-            while (_node->hasRightChild()) {
-                _parent = _node;
-                _node = _node->getRightChild();
-            }
-            (*function)(_node);
-            _node = _parent;
-            _parent = _node->getParent();
-        } while (_node != origin || _node->hasRightChild());
+    template <class T, class fn_T>
+    static void _DFS_handle(T *node, fn_T function, uint &nodeCounter) {
+
+        std::cout << nodeCounter++ << std::endl;
+
+        function(node);
+
+        if (node->hasLeftChild()) {
+            _DFS_handle(node->getLeftChild(), function, nodeCounter);
+        }
+        if (node->hasRightChild()) {
+            _DFS_handle(node->getRightChild(), function, nodeCounter);
+        }
     }
 };
 

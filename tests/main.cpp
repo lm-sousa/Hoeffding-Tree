@@ -323,6 +323,22 @@ int main() {
                                        "[-1,-1,-2,-2,0.666667,150,150]");
     });
 
+    ts.addTest("JsonExporter - DFS()", []() {
+        HoeffdingTree<NodeData<float, 4, 3>> tree(1, 0.01, 0.05);
+        bool doSplitTrial = true;
+        const uint N_Samples = 150;
+
+        for (uint i = 0; i < N_Samples; i++) {
+            tree.train(irisDataset[i], irisDataset[i][4], doSplitTrial);
+        }
+
+        auto fn = []<class T>(T node) { return true; };
+
+        JsonExporter::DFS(tree.getRootNode(), fn);
+
+        return std::make_pair(true, "Will always return true");
+    });
+
 #endif
 
     return ts.runTestSuite(false, true);
