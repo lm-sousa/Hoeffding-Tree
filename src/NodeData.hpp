@@ -8,11 +8,15 @@
 
 #include "TopSplitBuffer.hpp"
 
-template <typename _datatype = float, uint N_Attributes = 16,
-          uint N_Classes = 2, uint N_Quantiles = 8, uint N_pt = 10>
+template <typename T_datatype = float, uint T_N_Attributes = 16,
+          uint T_N_Classes = 2, uint T_N_Quantiles = 8, uint T_N_pt = 10>
 class NodeData {
   public:
-    typedef _datatype datatype;
+    typedef T_datatype datatype;
+    static const uint N_Attributes = T_N_Attributes;
+    static const uint N_Classes = T_N_Classes;
+    static const uint N_Quantiles = T_N_Quantiles;
+    static const uint N_pt = T_N_pt;
 
     enum AttibuteRange { Min = 0, Max = 1 };
     enum SplitType { Left = 0, Right = 1, None };

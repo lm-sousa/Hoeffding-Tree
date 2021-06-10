@@ -11,7 +11,9 @@
 
 template <class Data> class HoeffdingTree : public BinaryTree<Node<Data>> {
   public:
+    typedef Data _DataClass;
     typedef typename Data::datatype datatype;
+
     /**
      * @brief Construct a new Hoeffding Tree< Data> object
      *
