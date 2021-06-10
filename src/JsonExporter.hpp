@@ -62,7 +62,7 @@ class JsonExporter {
         return ss.str();
     }
 
-    template <class T> static std::string treeToJson(T tree, uint nClasses) {
+    template <class T> static std::string treeToJson(T tree) {
 
         typedef typename T::_NodeClass NodeClass;
 
@@ -74,7 +74,7 @@ class JsonExporter {
 
         DFS(tree.getRootNode(), fn);
         std::map<uint, std::pair<std::string, std::string>> nodeDataMap =
-            nodesToJson(nodeMap, nClasses);
+            nodesToJson(nodeMap, T::_DataClass::N_Classes);
 
         std::vector<std::string> nodes;
         std::vector<std::string> values;
@@ -87,19 +87,48 @@ class JsonExporter {
         std::map<std::string, std::string> tree_;
 
         tree_.insert(std::pair<std::string, std::string>(
-            std::string("max_depth"), std::to_string(nodeMap.size())));
+            "max_depth", std::to_string(nodeMap.size())));
         tree_.insert(std::pair<std::string, std::string>(
-            std::string("node_count"), std::to_string(nodeMap.size())));
-        tree_.insert(std::pair<std::string, std::string>(std::string("nodes"),
-                                                         vectorToJson(nodes)));
-        tree_.insert(std::pair<std::string, std::string>(std::string("values"),
+            "node_count", std::to_string(nodeMap.size())));
+        tree_.insert(
+            std::pair<std::string, std::string>("nodes", vectorToJson(nodes)));
+        tree_.insert(std::pair<std::string, std::string>("values",
                                                          vectorToJson(values)));
         tree_.insert(std::pair<std::string, std::string>(
             std::string("nodes_dtype"), dtypes));
 
-        std::cout << "tree_: " << mapToJson(tree_) << std::endl;
+        std::string jsonTree_ = mapToJson(tree_);
 
-        return "";
+        std::map<std::string, std::string> json;
+
+        uint classRange[T::_DataClass::N_Classes];
+        for (uint i = 0; i < T::_DataClass::N_Classes; i++) {
+            classRange[i] = i;
+        }
+
+        uint featureImportances[T::_DataClass::N_Attributes] = {0};
+        /*for (uint i = 0; i < T::_DataClass::N_Attributes; i++) {
+            featureImportances[i] = 0;
+        }*/
+
+        json.insert(
+            std::pair<std::string, std::string>("meta", "\"decision-tree\""));
+        json.insert(std::pair<std::string, std::string>(
+            "feature_importances_",
+            arrayToJson(featureImportances, T::_DataClass::N_Attributes)));
+        json.insert(std::pair<std::string, std::string>(
+            "max_features_", std::to_string(T::_DataClass::N_Attributes)));
+        json.insert(std::pair<std::string, std::string>(
+            "n_classes_", std::to_string(T::_DataClass::N_Classes)));
+        json.insert(std::pair<std::string, std::string>(
+            "n_features_", std::to_string(T::_DataClass::N_Attributes)));
+        json.insert(std::pair<std::string, std::string>("n_outputs_", "1"));
+        json.insert(std::pair<std::string, std::string>("tree_", jsonTree_));
+        json.insert(std::pair<std::string, std::string>(
+            "classes_", arrayToJson(classRange, T::_DataClass::N_Classes)));
+        json.insert(std::pair<std::string, std::string>("params", params));
+
+        return mapToJson(json);
     }
 
     template <class T>
