@@ -299,10 +299,10 @@ int main() {
         std::string str =
             JsonExporter::nodeDataToJson(tree.getRootNode(), 1, 2);
 
-        bool ret = str == "[1,2,3,0.025,0.66482,19,19]";
+        bool ret = str == "[1,2,3,0.025000,0.664820,19,19.0]";
 
         return std::make_pair(ret, str + (ret ? " == " : " != ") +
-                                       "[1,2,3,0.025,0.66482,19,19]");
+                                       "[1,2,3,0.025000,0.664820,19,19.0]");
     });
 
     ts.addTest("JsonExporter - nodeDataToJson() non-split node", []() {
