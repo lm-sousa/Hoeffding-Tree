@@ -48,8 +48,8 @@ template <class Data> class HoeffdingTree : public BinaryTree<Node<Data>> {
 
             if (G > hBound || tau > hBound) {
                 this->splitNode(node, attributeIndex, splitValue);
-                std::cout << "split! --> " << attributeIndex << " : "
-                          << splitValue << std::endl;
+                /*std::cout << "split! --> " << attributeIndex << " : "
+                          << splitValue << std::endl;*/
             }
         }
     }
