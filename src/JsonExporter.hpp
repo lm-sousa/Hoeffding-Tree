@@ -167,10 +167,12 @@ class JsonExporter {
 
     template <class T>
     static std::string nodeClassCountsToJson(T node, uint nClasses) {
-        uint array[nClasses];
+        std::string array[nClasses];
 
         for (uint i = 0; i < nClasses; i++) {
-            array[i] = node->getData().getSampleCountPerClass(i);
+            array[i] =
+                std::to_string(node->getData().getSampleCountPerClass(i)) +
+                ".0";
         }
 
         const std::string intermediateArray[1] = {arrayToJson(array, nClasses)};
