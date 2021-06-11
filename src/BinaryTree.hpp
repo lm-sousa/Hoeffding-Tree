@@ -55,6 +55,12 @@ template <class Node, uint8_t capacity = 100> class BinaryTree {
         return node;
     }
 
+    void splitNode(Node *node, uint attributeIndex, datatype splitValue) {
+        node->setSplit(attributeIndex, splitValue);
+        this->addLeftChild(node);
+        this->addRightChild(node);
+    }
+
   private:
     uint8_t _size = 1;
     Node _nodes[capacity];
