@@ -147,6 +147,9 @@ class NodeData {
     }
 
     constexpr datatype _classImpurity(uint j) {
+        if (!_sampleCountTotal) {
+            return 0;
+        }
         return (datatype)_sampleCountPerClass[j] / _sampleCountTotal;
     }
 
