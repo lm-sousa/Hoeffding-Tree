@@ -340,13 +340,7 @@ int main() {
         JsonExporter::copyNode(treeCopy, tree.getRootNode(),
                                treeCopy.getRootNode());
 
-        for (uint i = 0; i < N_Samples; i++) {
-            for (T::_NodeClass *node = treeCopy.getRootNode(); node != NULL;
-                 node = node->sortSample(irisDataset[i])) {
-
-                node->getData().update(irisDataset[i], irisDataset[i][4]);
-            }
-        }
+        JsonExporter::inferDataset(treeCopy, irisDataset, N_Samples);
 
         std::string result = JsonExporter::treeToJson(treeCopy);
 

@@ -219,6 +219,21 @@ class JsonExporter {
         }
     }
 
+    template <class T>
+    static void
+    inferDataset(T &tree,
+                 typename T::_NodeClass::_DataClass::datatype
+                     dataset[][T::_NodeClass::_DataClass::N_Attributes + 1],
+                 uint datasetSize) {
+        for (uint i = 0; i < datasetSize; i++) {
+            for (typename T::_NodeClass *node = tree.getRootNode();
+                 node != NULL; node = node->sortSample(dataset[i])) {
+                std::cout << "hi" << std::endl;
+                node->getData().update(dataset[i], dataset[i][4]);
+            }
+        }
+    }
+
   protected:
     static const char arrayCharBegin = '[';
     static const char arrayCharEnd = ']';
