@@ -317,10 +317,10 @@ int main() {
         std::string str =
             JsonExporter::nodeDataToJson(tree.getRootNode(), 1, 2);
 
-        bool ret = str == "[-1,-1,-2,-2,0.666667,150,150]";
+        bool ret = str == "[-1,-1,-2,-2.0,0.666667,150,150.0]";
 
         return std::make_pair(ret, str + (ret ? " == " : " != ") +
-                                       "[-1,-1,-2,-2,0.666667,150,150]");
+                                       "[-1,-1,-2,-2.0,0.666667,150,150.0]");
     });
 
     ts.addTest("JsonExporter - DFS()", []() {
