@@ -47,9 +47,7 @@ template <class Data> class HoeffdingTree : public BinaryTree<Node<Data>> {
             datatype hBound = hoeffdingBound(nodeData.getSampleCountTotal());
 
             if (G > hBound || tau > hBound) {
-                node->setSplit(attributeIndex, splitValue);
-                this->addLeftChild(node);
-                this->addRightChild(node);
+                this->splitNode(node, attributeIndex, splitValue);
                 std::cout << "split! --> " << attributeIndex << " : "
                           << splitValue << std::endl;
             }
