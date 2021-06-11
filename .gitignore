@@ -1,9 +1,11 @@
 bt
 infer-out
 .build
-*.pdf
-visualisation/*.json
-visualisation/*.jsonc
+
+**/*.dot
+**/*.pdf
+**/*.json
+**/*.jsonc
 
 # Prerequisites
 *.d
