@@ -12,6 +12,7 @@ template <class Node, uint8_t capacity = 100> class BinaryTree {
 
   public:
     typedef Node _NodeClass;
+    typedef typename Node::_DataClass::datatype datatype;
 
     constexpr uint8_t getCapacity() { return capacity; }
     uint8_t getSize() { return _size; }
@@ -45,7 +46,7 @@ template <class Node, uint8_t capacity = 100> class BinaryTree {
         return newNode;
     }
 
-    Node *sortSample(typename Node::_DataClass::datatype x[]) {
+    Node *sortSample(datatype x[]) {
         Node *node = getRootNode();
         for (Node *newNode = node; newNode != NULL;
              newNode = node->sortSample(x)) {
