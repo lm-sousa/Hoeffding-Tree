@@ -202,6 +202,29 @@ class JsonExporter {
         _DFS_handle(node, function, c);
     }
 
+    template <class T>
+    static void copyNode(T newTree, typename T::_NodeClass *node,
+                         typename T::_NodeClass *newNode) {
+
+        /*
+        typedef typename T::_NodeClass Node;
+        typedef typename T::_NodeClass::_DataClass NodeData;
+        typedef typename T::_NodeClass::_DataClass::datatype datatype;
+        */
+
+        if (node->isSplit()) {
+            newTree.splitNode(newNode, node->getSplitAttributeIndex(),
+                              node->getSplitValue());
+        }
+
+        if (node->hasLeftChild()) {
+            copyNode(newTree, node->getLeftChild(), newNode->getLeftChild());
+        }
+        if (node->hasRightChild()) {
+            copyNode(newTree, node->getRightChild(), newNode->getRightChild());
+        }
+    }
+
   protected:
     static const char arrayCharBegin = '[';
     static const char arrayCharEnd = ']';
