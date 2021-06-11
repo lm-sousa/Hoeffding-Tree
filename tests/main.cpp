@@ -323,8 +323,10 @@ int main() {
                                        "[-1,-1,-2,-2.0,0.666667,150,150.0]");
     });
 
-    ts.addTest("JsonExporter - DFS()", []() {
-        HoeffdingTree<NodeData<float, 4, 3>> tree(1, 0.01, 0.05);
+    ts.addTest("JsonExporter - copyNode() and treeToJson()", []() {
+        typedef HoeffdingTree<NodeData<float, 4, 3>> T;
+
+        T tree(1, 0.001, 0.05);
         bool doSplitTrial = true;
         const uint N_Samples = 150;
 
@@ -332,9 +334,42 @@ int main() {
             tree.train(irisDataset[i], irisDataset[i][4], doSplitTrial);
         }
 
-        std::cout << JsonExporter::treeToJson(tree) << std::endl;
+        T treeCopy(tree.getR(), tree.getSigma(), tree.getTau());
 
-        return std::make_pair(true, "Will always return true");
+        JsonExporter::copyNode(treeCopy, tree.getRootNode(),
+                               treeCopy.getRootNode());
+
+        for (uint i = 0; i < N_Samples; i++) {
+            for (T::_NodeClass *node = treeCopy.getRootNode(); node != NULL;
+                 node = node->sortSample(irisDataset[i])) {
+
+                node->getData().update(irisDataset[i], irisDataset[i][4]);
+            }
+        }
+
+        std::string result = JsonExporter::treeToJson(tree);
+
+        bool ret = result.compare(
+            "{\"classes_\":[0,1,2],\"feature_importances_\":[0,0,0,0],\"max_"
+            "features_\":4,\"meta\":\"decision-tree\",\"n_classes_\":3,\"n_"
+            "features_\":4,\"n_outputs_\":1,\"params\":{\"ccp_alpha\": "
+            "0.0,\"class_weight\": null,\"criterion\": \"gini\",\"max_depth\": "
+            "null,\"max_features\": null,\"max_leaf_nodes\": "
+            "null,\"min_impurity_decrease\": 0.0,\"min_impurity_split\": "
+            "null,\"min_samples_leaf\": 1,\"min_samples_split\": "
+            "2,\"min_weight_fraction_leaf\": 0.0,\"random_state\": "
+            "null,\"splitter\": "
+            "\"best\"},\"tree_\":{\"max_depth\":7,\"node_count\":7,\"nodes\":[["
+            "1,2,3,0.409091,0.666667,150,150.0],[-1,-1,-2,-2.0,0.000000,48,48."
+            "0],[3,4,3,0.672727,0.519031,102,102.0],[-1,-1,-2,-2.0,0.000000,2,"
+            "2.0],[5,6,3,1.000000,0.500000,100,100.0],[-1,-1,-2,-2.0,0.000000,"
+            "7,7.0],[-1,-1,-2,-2.0,0.497167,93,93.0]],\"nodes_dtype\":[\"<i8\","
+            "\"<i8\",\"<i8\",\"<f8\",\"<f8\",\"<i8\",\"<f8\"],\"values\":[[[50."
+            "0,50.0,50.0]],[[48.0,0.0,0.0]],[[2.0,50.0,50.0]],[[2.0,0.0,0.0]],["
+            "[0.0,50.0,50.0]],[[0.0,7.0,0.0]],[[0.0,43.0,50.0]]]}}");
+
+        return std::make_pair(ret, ret ? "Sucessfull json string export"
+                                       : "Resulting json string did not match");
     });
 
 #endif
