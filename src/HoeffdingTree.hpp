@@ -21,7 +21,14 @@ template <class Data> class HoeffdingTree : public BinaryTree<Node<Data>> {
      * @param sigma acceptable error margin (0.0 to 1.0)
      */
     HoeffdingTree(datatype r, datatype sigma, datatype tau)
-        : _hoeffdingBoundConstant(r * (sqrt(-log(sigma) / 2))), tau(tau) {}
+        : _hoeffdingBoundConstant(r * (sqrt(-log(sigma) / 2))), r(r),
+          sigma(sigma), tau(tau) {}
+
+    datatype getR() { return r; }
+
+    datatype getSigma() { return sigma; }
+
+    datatype getTau() { return tau; }
 
     void train(datatype sample[], uint classif, bool doSplitTrial) {
 
@@ -61,6 +68,8 @@ template <class Data> class HoeffdingTree : public BinaryTree<Node<Data>> {
 
   protected:
     const datatype _hoeffdingBoundConstant = 0;
+    const datatype r;
+    const datatype sigma;
     const datatype tau;
 
     const datatype _errorMargin = 0;
