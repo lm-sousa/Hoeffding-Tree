@@ -19,7 +19,7 @@ def main():
 
     dot_data = tree.export_graphviz(clf, out_file=None)
     graph = graphviz.Source(dot_data)
-    graph.render("iris")
+    graph.render("iris.dot")
 
     dot_data = tree.export_graphviz(clf, out_file=None,
                                     feature_names=iris.feature_names,
@@ -27,7 +27,7 @@ def main():
                                     filled=True, rounded=True,
                                     special_characters=True)
     graph = graphviz.Source(dot_data)
-    graph.render("iris_2")
+    graph.render("iris_2.dot")
 
     skj.to_json(clf, "export.json")
     """
@@ -40,7 +40,7 @@ def main():
                                     filled=True, rounded=True,
                                     special_characters=True)
     graph = graphviz.Source(dot_data)
-    graph.render("iris_json")
+    graph.render("iris_json.dot")
 
     #print("Iris data: " + str(iris.target))
 
