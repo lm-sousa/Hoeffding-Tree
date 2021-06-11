@@ -32,7 +32,7 @@ def main():
     skj.to_json(clf, "export.json")
     """
 
-    clf = skj.from_json("trial.json")
+    clf = skj.from_json("visualisation/trial.json")
 
     dot_data = tree.export_graphviz(clf, out_file=None,
                                     feature_names=iris.feature_names,
