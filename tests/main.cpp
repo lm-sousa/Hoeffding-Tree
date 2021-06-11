@@ -1,4 +1,5 @@
 #include <cstddef>
+#include <fstream>
 #include <functional>
 #include <iostream>
 #include <ostream>
@@ -347,9 +348,10 @@ int main() {
             }
         }
 
-        std::string result = JsonExporter::treeToJson(tree);
+        std::string result = JsonExporter::treeToJson(treeCopy);
 
-        bool ret = result.compare(
+        bool ret =
+            result ==
             "{\"classes_\":[0,1,2],\"feature_importances_\":[0,0,0,0],\"max_"
             "features_\":4,\"meta\":\"decision-tree\",\"n_classes_\":3,\"n_"
             "features_\":4,\"n_outputs_\":1,\"params\":{\"ccp_alpha\": "
@@ -366,7 +368,13 @@ int main() {
             "7,7.0],[-1,-1,-2,-2.0,0.497167,93,93.0]],\"nodes_dtype\":[\"<i8\","
             "\"<i8\",\"<i8\",\"<f8\",\"<f8\",\"<i8\",\"<f8\"],\"values\":[[[50."
             "0,50.0,50.0]],[[48.0,0.0,0.0]],[[2.0,50.0,50.0]],[[2.0,0.0,0.0]],["
-            "[0.0,50.0,50.0]],[[0.0,7.0,0.0]],[[0.0,43.0,50.0]]]}}");
+            "[0.0,50.0,50.0]],[[0.0,7.0,0.0]],[[0.0,43.0,50.0]]]}}";
+
+        /*
+        std::ofstream file("trial.json");
+        file << result;
+        file.close();
+        */
 
         return std::make_pair(ret, ret ? "Sucessfull json string export"
                                        : "Resulting json string did not match");

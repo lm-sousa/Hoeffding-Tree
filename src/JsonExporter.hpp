@@ -62,7 +62,7 @@ class JsonExporter {
         return ss.str();
     }
 
-    template <class T> static std::string treeToJson(T tree) {
+    template <class T> static std::string treeToJson(T &tree) {
 
         typedef typename T::_NodeClass NodeClass;
 
@@ -203,7 +203,7 @@ class JsonExporter {
     }
 
     template <class T>
-    static void copyNode(T newTree, typename T::_NodeClass *node,
+    static void copyNode(T &newTree, typename T::_NodeClass *node,
                          typename T::_NodeClass *newNode) {
 
         if (node->isSplit()) {
