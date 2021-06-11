@@ -206,12 +206,6 @@ class JsonExporter {
     static void copyNode(T newTree, typename T::_NodeClass *node,
                          typename T::_NodeClass *newNode) {
 
-        /*
-        typedef typename T::_NodeClass Node;
-        typedef typename T::_NodeClass::_DataClass NodeData;
-        typedef typename T::_NodeClass::_DataClass::datatype datatype;
-        */
-
         if (node->isSplit()) {
             newTree.splitNode(newNode, node->getSplitAttributeIndex(),
                               node->getSplitValue());
