@@ -388,9 +388,9 @@ int main() {
         });
 
     ts.addTest("JsonExporter - copyNode() and treeToJson()", []() {
-        typedef HoeffdingTree<NodeData<float, 4, 3>> T;
+        typedef HoeffdingTree<NodeData<float, 4, 3>> Tree;
 
-        T tree(1, 0.001, 0.05);
+        Tree tree(1, 0.001, 0.05);
         bool doSplitTrial = true;
         const uint N_Samples = 150;
 
@@ -398,14 +398,23 @@ int main() {
             tree.train(irisDataset[i], irisDataset[i][4], doSplitTrial);
         }
 
-        T treeCopy(tree.getR(), tree.getSigma(), tree.getTau());
+        typedef Tree::_NodeClass::_DataClass::datatype datatype;
+
+        static const Tree::_DataClass::sampleScaler
+            scalers[Tree::_DataClass::N_Attributes] = {
+                [](datatype a) { return a * 8; },
+                [](datatype a) { return a * 8; },
+                [](datatype a) { return a * 8; },
+                [](datatype a) { return a * 8; }};
+
+        Tree treeCopy(tree.getR(), tree.getSigma(), tree.getTau());
 
         JsonExporter::copyNode(treeCopy, tree.getRootNode(),
                                treeCopy.getRootNode());
 
         JsonExporter::inferDataset(treeCopy, irisDataset, N_Samples);
 
-        std::string result = JsonExporter::treeToJson(treeCopy);
+        std::string result = JsonExporter::treeToJson(treeCopy, scalers);
 
         bool ret =
             result ==
