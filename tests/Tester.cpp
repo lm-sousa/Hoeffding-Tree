@@ -12,12 +12,12 @@ bool Tester::Test::runTest(bool logSuccess, bool verbose) {
     std::tie(this->successfull, this->executionLog) = (this->tfn)();
 
     if (!this->successfull) {
-        std::cout << setColour(ERROR) << "FAILED" << resetColour()
-                  << " --> Test '" << this->name << "'" << std::endl;
+        std::cout << setColour(ERROR) << "FAILED" << resetColour() << " --> '"
+                  << this->name << "'" << std::endl;
         std::cout << "\t" << this->executionLog << std::endl;
     } else if (logSuccess) {
-        std::cout << setColour(SUCCESS) << "Passed" << resetColour()
-                  << " --> Test '" << this->name << "'" << std::endl;
+        std::cout << setColour(SUCCESS) << "Passed" << resetColour() << " --> '"
+                  << this->name << "'" << std::endl;
         if (verbose) {
             std::cout << "\t" << this->executionLog << std::endl;
         }
@@ -56,8 +56,8 @@ uint Tester::runTestSuite(bool logSuccess, bool verbose) {
         std::cout << setColour(WARNING) << "\t" << errorCount << " error(s) "
                   << resetColour() << "detected." << std::endl;
     } else {
-        std::cout << setColour(SUCCESS) << "\tAll tests were sucessfull."
-                  << resetColour() << std::endl;
+        std::cout << setColour(SUCCESS) << "\tAll tests were sucessfull. ("
+                  << this->_testN << ")" << resetColour() << std::endl;
     }
 
     std::cout << "############################################################"
