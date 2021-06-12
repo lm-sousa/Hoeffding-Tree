@@ -288,41 +288,104 @@ int main() {
                                        "[[50.0,50.0,50.0]]");
     });
 
-    ts.addTest("JsonExporter - nodeDataToJson() split node", []() {
-        HoeffdingTree<NodeData<float, 4, 3>> tree(1, 0.01, 0.05);
-        bool doSplitTrial = true;
-        const uint N_Samples = 150;
+    ts.addTest(
+        "JsonExporter - nodeDataToJson() without scalers - split node", []() {
+            HoeffdingTree<NodeData<float, 4, 3>> tree(1, 0.01, 0.05);
+            bool doSplitTrial = true;
+            const uint N_Samples = 150;
 
-        for (uint i = 0; i < N_Samples; i++) {
-            tree.train(irisDataset[i], irisDataset[i][4], doSplitTrial);
-        }
+            for (uint i = 0; i < N_Samples; i++) {
+                tree.train(irisDataset[i], irisDataset[i][4], doSplitTrial);
+            }
 
-        std::string str =
-            JsonExporter::nodeDataToJson(tree.getRootNode(), 1, 2);
+            std::string str =
+                JsonExporter::nodeDataToJson(tree.getRootNode(), 1, 2);
 
-        bool ret = str == "[1,2,3,0.025000,0.664820,19,19.0]";
+            bool ret = str == "[1,2,3,0.025000,0.664820,19,19.0]";
 
-        return std::make_pair(ret, str + (ret ? " == " : " != ") +
-                                       "[1,2,3,0.025000,0.664820,19,19.0]");
-    });
+            return std::make_pair(ret, str + (ret ? " == " : " != ") +
+                                           "[1,2,3,0.025000,0.664820,19,19.0]");
+        });
 
-    ts.addTest("JsonExporter - nodeDataToJson() non-split node", []() {
-        HoeffdingTree<NodeData<float, 4, 3>> tree(1, 0.01, 0.05);
-        bool doSplitTrial = false;
-        const uint N_Samples = 150;
+    ts.addTest(
+        "JsonExporter - nodeDataToJson() with scalers - split node", []() {
+            typedef HoeffdingTree<NodeData<float, 4, 3>> Tree;
+            Tree tree(1, 0.01, 0.05);
+            bool doSplitTrial = true;
+            const uint N_Samples = 150;
 
-        for (uint i = 0; i < N_Samples; i++) {
-            tree.train(irisDataset[i], irisDataset[i][4], doSplitTrial);
-        }
+            for (uint i = 0; i < N_Samples; i++) {
+                tree.train(irisDataset[i], irisDataset[i][4], doSplitTrial);
+            }
 
-        std::string str =
-            JsonExporter::nodeDataToJson(tree.getRootNode(), 1, 2);
+            typedef Tree::_NodeClass::_DataClass::datatype datatype;
 
-        bool ret = str == "[-1,-1,-2,-2.0,0.666667,150,150.0]";
+            static const Tree::_DataClass::sampleScaler
+                scalers[Tree::_DataClass::N_Attributes] = {
+                    [](datatype a) { return a * 8; },
+                    [](datatype a) { return a * 8; },
+                    [](datatype a) { return a * 8; },
+                    [](datatype a) { return a * 8; }};
 
-        return std::make_pair(ret, str + (ret ? " == " : " != ") +
-                                       "[-1,-1,-2,-2.0,0.666667,150,150.0]");
-    });
+            std::string str =
+                JsonExporter::nodeDataToJson(tree.getRootNode(), 1, 2, scalers);
+
+            bool ret = str == "[1,2,3,0.200000,0.664820,19,19.0]";
+
+            return std::make_pair(ret, str + (ret ? " == " : " != ") +
+                                           "[1,2,3,0.025000,0.664820,19,19.0]");
+        });
+
+    ts.addTest(
+        "JsonExporter - nodeDataToJson() without scalers - non-split node",
+        []() {
+            HoeffdingTree<NodeData<float, 4, 3>> tree(1, 0.01, 0.05);
+            bool doSplitTrial = false;
+            const uint N_Samples = 150;
+
+            for (uint i = 0; i < N_Samples; i++) {
+                tree.train(irisDataset[i], irisDataset[i][4], doSplitTrial);
+            }
+
+            std::string str =
+                JsonExporter::nodeDataToJson(tree.getRootNode(), 1, 2);
+
+            bool ret = str == "[-1,-1,-2,-2.0,0.666667,150,150.0]";
+
+            return std::make_pair(ret,
+                                  str + (ret ? " == " : " != ") +
+                                      "[-1,-1,-2,-2.0,0.666667,150,150.0]");
+        });
+
+    ts.addTest(
+        "JsonExporter - nodeDataToJson() with scalers - non-split node", []() {
+            typedef HoeffdingTree<NodeData<float, 4, 3>> Tree;
+            Tree tree(1, 0.01, 0.05);
+            bool doSplitTrial = false;
+            const uint N_Samples = 150;
+
+            for (uint i = 0; i < N_Samples; i++) {
+                tree.train(irisDataset[i], irisDataset[i][4], doSplitTrial);
+            }
+
+            typedef Tree::_NodeClass::_DataClass::datatype datatype;
+
+            static const Tree::_DataClass::sampleScaler
+                scalers[Tree::_DataClass::N_Attributes] = {
+                    [](datatype a) { return a * 8; },
+                    [](datatype a) { return a * 8; },
+                    [](datatype a) { return a * 8; },
+                    [](datatype a) { return a * 8; }};
+
+            std::string str =
+                JsonExporter::nodeDataToJson(tree.getRootNode(), 1, 2, scalers);
+
+            bool ret = str == "[-1,-1,-2,-2.0,0.666667,150,150.0]";
+
+            return std::make_pair(ret,
+                                  str + (ret ? " == " : " != ") +
+                                      "[-1,-1,-2,-2.0,0.666667,150,150.0]");
+        });
 
     ts.addTest("JsonExporter - copyNode() and treeToJson()", []() {
         typedef HoeffdingTree<NodeData<float, 4, 3>> T;
