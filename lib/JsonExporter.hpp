@@ -228,7 +228,6 @@ class JsonExporter {
         for (uint i = 0; i < datasetSize; i++) {
             for (typename T::_NodeClass *node = tree.getRootNode();
                  node != NULL; node = node->sortSample(dataset[i])) {
-                std::cout << "hi" << std::endl;
                 node->getData().update(dataset[i], dataset[i][4]);
             }
         }
