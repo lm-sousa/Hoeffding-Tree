@@ -18,6 +18,8 @@ class NodeData {
     static const uint N_Quantiles = T_N_Quantiles;
     static const uint N_pt = T_N_pt;
 
+    typedef datatype (*sampleScaler)(datatype);
+
     enum AttibuteRange { Min = 0, Max = 1 };
     enum SplitType { Left = 0, Right = 1, None };
 
