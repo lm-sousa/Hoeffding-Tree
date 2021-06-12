@@ -1,12 +1,13 @@
-TARGET_EXEC ?= bt
+TARGET_EXEC_NAME ?= exec
 
 CC = g++
 CXX = g++
 
 BUILD_DIR ?= .build
-SRC_DIRS ?= src tests/*
+SRC_DIRS ?= ../lib ./
+TARGET_EXEC ?= $(BUILD_DIR)/$(TARGET_EXEC_NAME)
 
-SRCS := $(shell find $(SRC_DIRS) -maxdepth 1 -name *.cpp -or -name *.c ! -name test.c -or -name *.s)
+SRCS := $(shell find $(SRC_DIRS) -maxdepth 1 -name "*.cpp" -or -name "*.c" ! -name "test.c" -or -name "*.s")
 OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
 DEPS := $(OBJS:.o=.d)
 
