@@ -180,16 +180,22 @@ class JsonExporter {
     }
 
     template <class T>
-    static std::string nodeDataToJson(T *node, uint leftChildID,
-                                      uint rightChildID) {
+    static std::string
+    nodeDataToJson(T *node, uint leftChildID, uint rightChildID,
+                   const typename T::_DataClass::sampleScaler
+                       scalers[T::_DataClass::N_Attributes] = NULL) {
 
         const std::string array[7] = {
             node->hasLeftChild() ? std::to_string(leftChildID) : "-1",
             node->hasRightChild() ? std::to_string(rightChildID) : "-1",
             node->isSplit() ? std::to_string(node->getSplitAttributeIndex())
                             : "-2",
-            node->isSplit() ? std::to_string(node->getSplitValue() * 8)
-                            : "-2.0",
+            node->isSplit()
+                ? std::to_string(scalers != NULL
+                                     ? scalers[node->getSplitAttributeIndex()](
+                                           node->getSplitValue())
+                                     : node->getSplitValue())
+                : "-2.0",
             std::to_string(node->getData().getImpurity()),
             std::to_string(node->getData().getSampleCountTotal()),
             std::to_string(node->getData().getSampleCountTotal()) + ".0"};
