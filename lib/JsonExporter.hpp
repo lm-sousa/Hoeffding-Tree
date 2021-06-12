@@ -62,7 +62,10 @@ class JsonExporter {
         return ss.str();
     }
 
-    template <class T> static std::string treeToJson(T &tree) {
+    template <class T>
+    static std::string
+    treeToJson(T &tree, const typename T::_DataClass::sampleScaler
+                            scalers[T::_DataClass::N_Attributes] = NULL) {
 
         typedef typename T::_NodeClass NodeClass;
 
@@ -74,7 +77,7 @@ class JsonExporter {
 
         DFS(tree.getRootNode(), fn);
         std::map<uint, std::pair<std::string, std::string>> nodeDataMap =
-            nodesToJson(nodeMap, T::_DataClass::N_Classes);
+            nodesToJson(nodeMap, T::_DataClass::N_Classes, scalers);
 
         std::vector<std::string> nodes;
         std::vector<std::string> values;
@@ -133,7 +136,9 @@ class JsonExporter {
 
     template <class T>
     static std::map<uint, std::pair<std::string, std::string>> &
-    nodesToJson(std::map<uint, T *> nodeMap, uint nClasses) {
+    nodesToJson(std::map<uint, T *> nodeMap, uint nClasses,
+                const typename T::_DataClass::sampleScaler
+                    scalers[T::_DataClass::N_Attributes] = NULL) {
 
         std::map<uint, std::pair<std::string, std::string>> *nodeDataMap =
             new std::map<uint, std::pair<std::string, std::string>>;
@@ -158,7 +163,8 @@ class JsonExporter {
             nodeDataMap->insert(
                 std::pair<uint, std::pair<std::string, std::string>>(
                     nodeID, std::pair<std::string, std::string>(
-                                nodeDataToJson(node, leftChildID, rightChildID),
+                                nodeDataToJson(node, leftChildID, rightChildID,
+                                               scalers),
                                 nodeClassCountsToJson(node, nClasses))));
         }
 
