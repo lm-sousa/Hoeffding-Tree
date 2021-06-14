@@ -24,17 +24,17 @@ $(TARGET_EXEC): $(OBJS)
 
 # assembly
 $(BUILD_DIR)/%.s.o: %.s
-	$(MKDIR_P) $(dir $@)
+	$(MKDIR_P) $(dir $(subst ../,,$@))
 	$(AS) $(ASFLAGS) -c $< -o $@
 
 # c source
 $(BUILD_DIR)/%.c.o: %.c
-	$(MKDIR_P) $(dir $@)
+	$(MKDIR_P) $(dir $(subst ../,,$@))
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
 # c++ source
 $(BUILD_DIR)/%.cpp.o: %.cpp
-	$(MKDIR_P) $(dir $@)
+	$(MKDIR_P) $(dir $(subst ../,,$@))
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
 
