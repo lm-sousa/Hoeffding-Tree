@@ -106,11 +106,11 @@ int main() {
         Node<> *root = tree.getRootNode();
         tree.addLeftChild(root);
 
-        std::string executionLog = root->getLeftChild()
+        std::string executionLog = root->hasLeftChild()
                                        ? "Left child has been created."
                                        : "Left child has not been created";
 
-        return std::make_pair(root->getLeftChild(), executionLog);
+        return std::make_pair(root->hasLeftChild(), executionLog);
     });
 
     ts.addTest("Add Right Child", []() {
@@ -118,11 +118,11 @@ int main() {
         Node<> *root = tree.getRootNode();
         tree.addRightChild(root);
 
-        std::string executionLog = root->getRightChild()
+        std::string executionLog = root->hasRightChild()
                                        ? "Right child has been created."
                                        : "Right child has not been created";
 
-        return std::make_pair(root->getRightChild(), executionLog);
+        return std::make_pair(root->hasRightChild(), executionLog);
     });
 
     ts.addTest("Root with left child has size 2", []() {
@@ -166,7 +166,7 @@ int main() {
 
         if (root->hasLeftChild()) {
             executionLog = "Tree root has a left child.\n";
-            ret = root->getLeftChild()->hasLeftChild();
+            ret = root->getLeftChild().hasLeftChild();
             executionLog += ret ? "\tRoot's left child has left child"
                                 : "\tRoot's left child has no left child";
         }

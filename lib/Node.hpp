@@ -24,14 +24,14 @@ template <class Data = NodeData<>> class Node {
      * @return true
      * @return false
      */
-    bool hasParent() { return getParent(); }
+    bool hasParent() { return _parent != NULL; }
 
     /**
      * @brief Get the parent Node object
      *
      * @return Node* Pointer to the parent Node object
      */
-    Node *getParent() { return _parent; }
+    Node &getParent() { return *_parent; }
 
     /**
      * @brief Check if Node has a left child
@@ -39,23 +39,23 @@ template <class Data = NodeData<>> class Node {
      * @return true
      * @return false
      */
-    bool hasLeftChild() { return getLeftChild(); }
+    bool hasLeftChild() { return _leftChild != NULL; }
 
     /**
      * @brief Get the left child Node object
      *
      * @return Node* Pointer to the left child Node object
      */
-    Node *getLeftChild() { return _leftChild; }
+    Node &getLeftChild() { return *_leftChild; }
 
     /**
      * @brief Set the left child Node object
      *
      * @param child Pointer to the left child Node object
      */
-    void setLeftChild(Node *child) {
-        _leftChild = child;
-        child->_setParent(this);
+    void setLeftChild(Node &child) {
+        _leftChild = &child;
+        child._setParent(this);
     }
 
     /**
@@ -64,23 +64,23 @@ template <class Data = NodeData<>> class Node {
      * @return true
      * @return false
      */
-    bool hasRightChild() { return getRightChild(); }
+    bool hasRightChild() { return _rightChild != NULL; }
 
     /**
      * @brief Get the right child Node object
      *
      * @return Node* Pointer to the right child Node object
      */
-    Node *getRightChild() { return _rightChild; }
+    Node &getRightChild() { return *_rightChild; }
 
     /**
      * @brief Set the right child Node object
      *
      * @param child Pointer to the right child Node object
      */
-    void setRightChild(Node *child) {
-        _rightChild = child;
-        child->_setParent(this);
+    void setRightChild(Node &child) {
+        _rightChild = &child;
+        child._setParent(this);
     }
 
     /**
@@ -105,9 +105,9 @@ template <class Data = NodeData<>> class Node {
         }
 
         if (_checkSplit(x)) {
-            return getLeftChild();
+            return &getLeftChild();
         } else {
-            return getRightChild();
+            return &getRightChild();
         }
     }
 

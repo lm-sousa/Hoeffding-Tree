@@ -21,6 +21,9 @@ template <class Node, uint8_t capacity = 100> class BinaryTree {
 
     Node *getRootNode() { return &_nodes[0]; }
 
+    Node *addLeftChild(Node &node) { return addLeftChild(&node); }
+    Node *addRightChild(Node &node) { return addRightChild(&node); }
+
     Node *addLeftChild(Node *node) {
 
         Node *newNode = _getNextFreeNode();
@@ -28,7 +31,7 @@ template <class Node, uint8_t capacity = 100> class BinaryTree {
             return NULL;
         }
 
-        node->setLeftChild(newNode);
+        node->setLeftChild(*newNode);
         this->increaseSize();
 
         return newNode;
@@ -40,7 +43,7 @@ template <class Node, uint8_t capacity = 100> class BinaryTree {
             return NULL;
         }
 
-        node->setRightChild(newNode);
+        node->setRightChild(*newNode);
         this->increaseSize();
 
         return newNode;

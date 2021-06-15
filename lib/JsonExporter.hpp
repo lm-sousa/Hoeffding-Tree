@@ -153,9 +153,11 @@ class JsonExporter {
                 uint innerNodeID = it->first;
                 T *innerNode = it->second;
 
-                if (node->getLeftChild() == innerNode) {
+                if (node->hasLeftChild() &&
+                    &node->getLeftChild() == innerNode) {
                     leftChildID = innerNodeID;
-                } else if (node->getRightChild() == innerNode) {
+                } else if (node->hasRightChild() &&
+                           &node->getRightChild() == innerNode) {
                     rightChildID = innerNodeID;
                 }
             }
@@ -211,7 +213,7 @@ class JsonExporter {
 
     template <class T, class fn_T> static void DFS(T *node, fn_T function) {
         uint c = 0;
-        _DFS_handle(node, function, c);
+        _DFS_handle(*node, function, c);
     }
 
     template <class T>
@@ -224,10 +226,11 @@ class JsonExporter {
         }
 
         if (node->hasLeftChild()) {
-            copyNode(newTree, node->getLeftChild(), newNode->getLeftChild());
+            copyNode(newTree, &node->getLeftChild(), &newNode->getLeftChild());
         }
         if (node->hasRightChild()) {
-            copyNode(newTree, node->getRightChild(), newNode->getRightChild());
+            copyNode(newTree, &node->getRightChild(),
+                     &newNode->getRightChild());
         }
     }
 
@@ -258,15 +261,15 @@ class JsonExporter {
     static const std::string params;
 
     template <class T, class fn_T>
-    static void _DFS_handle(T *node, fn_T function, uint &nodeCounter) {
+    static void _DFS_handle(T &node, fn_T function, uint &nodeCounter) {
 
-        function(node, nodeCounter++);
+        function(&node, nodeCounter++);
 
-        if (node->hasLeftChild()) {
-            _DFS_handle(node->getLeftChild(), function, nodeCounter);
+        if (node.hasLeftChild()) {
+            _DFS_handle(node.getLeftChild(), function, nodeCounter);
         }
-        if (node->hasRightChild()) {
-            _DFS_handle(node->getRightChild(), function, nodeCounter);
+        if (node.hasRightChild()) {
+            _DFS_handle(node.getRightChild(), function, nodeCounter);
         }
     }
 };
