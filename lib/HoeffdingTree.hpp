@@ -12,7 +12,9 @@
 template <class Data> class HoeffdingTree : public BinaryTree<Node<Data>> {
   public:
     typedef Data _DataClass;
-    typedef typename Data::datatype datatype;
+    typedef typename BinaryTree<Node<Data>>::_NodeClass _NodeClass;
+    typedef typename _NodeClass::node_index_t node_index_t;
+    typedef typename _DataClass::datatype datatype;
 
     /**
      * @brief Construct a new Hoeffding Tree< Data> object
@@ -32,8 +34,9 @@ template <class Data> class HoeffdingTree : public BinaryTree<Node<Data>> {
 
     void train(datatype sample[], uint classif, bool doSplitTrial) {
 
-        Node<Data> *node = this->sortSample(sample);
-        Data &nodeData = node->getData();
+        node_index_t nodeIndex = this->sortSample(sample);
+        _NodeClass &node = this->getNode(nodeIndex);
+        Data &nodeData = node.getData();
 
         nodeData.update(sample, classif);
 
