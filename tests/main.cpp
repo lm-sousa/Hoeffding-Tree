@@ -224,7 +224,7 @@ int main() {
 #ifdef __HOEFFDING_TREE_HPP__
 
     ts.addTest("Hoeffding Tree - SampleCountTotal when training", []() {
-        typedef HoeffdingTree<NodeData<>> Tree;
+        typedef HoeffdingTree<> Tree;
 
         Tree tree(1, 0.001, 0.05);
         bool doSplitTrial = true;
@@ -247,7 +247,7 @@ int main() {
     });
 
     ts.addTest("Hoeffding Tree - sample count distribuitions", []() {
-        typedef HoeffdingTree<NodeData<>> Tree;
+        typedef HoeffdingTree<> Tree;
         Tree tree(1, 0.001, 0.05);
         bool doSplitTrial = true;
         const uint N_Samples = 100;
@@ -269,7 +269,7 @@ int main() {
     });
 
     ts.addTest("Hoeffding Tree - Iris sklearn dataset", []() {
-        HoeffdingTree<NodeData<float, 4, 3>> tree(1, 0.01, 0.05);
+        HoeffdingTree<Node<NodeData<float, 4, 3>>> tree(1, 0.01, 0.05);
         bool doSplitTrial = true;
         const uint N_Samples = 150;
 
@@ -321,7 +321,7 @@ int main() {
     });
 
     ts.addTest("JsonExporter - nodeClassCountsToJson()", []() {
-        HoeffdingTree<NodeData<float, 4, 3>> tree(1, 0.01, 0.05);
+        HoeffdingTree<Node<NodeData<float, 4, 3>>> tree(1, 0.01, 0.05);
         bool doSplitTrial = false;
         const uint N_Samples = 150;
 
@@ -340,7 +340,7 @@ int main() {
 
     ts.addTest(
         "JsonExporter - nodeDataToJson() without scalers - split node", []() {
-            HoeffdingTree<NodeData<float, 4, 3>> tree(1, 0.01, 0.05);
+            HoeffdingTree<Node<NodeData<float, 4, 3>>> tree(1, 0.01, 0.05);
             bool doSplitTrial = true;
             const uint N_Samples = 150;
 
@@ -359,7 +359,7 @@ int main() {
 
     ts.addTest(
         "JsonExporter - nodeDataToJson() with scalers - split node", []() {
-            typedef HoeffdingTree<NodeData<float, 4, 3>> Tree;
+            typedef HoeffdingTree<Node<NodeData<float, 4, 3>>> Tree;
             Tree tree(1, 0.01, 0.05);
             bool doSplitTrial = true;
             const uint N_Samples = 150;
@@ -389,7 +389,7 @@ int main() {
     ts.addTest(
         "JsonExporter - nodeDataToJson() without scalers - non-split node",
         []() {
-            HoeffdingTree<NodeData<float, 4, 3>> tree(1, 0.01, 0.05);
+            HoeffdingTree<Node<NodeData<float, 4, 3>>> tree(1, 0.01, 0.05);
             bool doSplitTrial = false;
             const uint N_Samples = 150;
 
@@ -409,7 +409,7 @@ int main() {
 
     ts.addTest(
         "JsonExporter - nodeDataToJson() with scalers - non-split node", []() {
-            typedef HoeffdingTree<NodeData<float, 4, 3>> Tree;
+            typedef HoeffdingTree<Node<NodeData<float, 4, 3>>> Tree;
             Tree tree(1, 0.01, 0.05);
             bool doSplitTrial = false;
             const uint N_Samples = 150;
@@ -438,7 +438,7 @@ int main() {
         });
 
     ts.addTest("JsonExporter - copyNode() and treeToJson()", []() {
-        typedef HoeffdingTree<NodeData<float, 4, 3>> Tree;
+        typedef HoeffdingTree<Node<NodeData<float, 4, 3>>> Tree;
 
         Tree tree(1, 0.001, 0.05);
         bool doSplitTrial = true;

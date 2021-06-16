@@ -9,12 +9,14 @@
 #include "BinaryTree.hpp"
 #include "Node.hpp"
 
-template <class Data> class HoeffdingTree : public BinaryTree<Node<Data>> {
+template <class Node = Node<>, uint8_t capacity = 100>
+class HoeffdingTree : public BinaryTree<Node, capacity> {
   public:
-    typedef Data _DataClass;
-    typedef typename BinaryTree<Node<Data>>::_NodeClass _NodeClass;
+    typedef Node _NodeClass;
     typedef typename _NodeClass::node_index_t node_index_t;
+    typedef typename _NodeClass::_DataClass _DataClass;
     typedef typename _DataClass::datatype datatype;
+    typedef _DataClass Data;
 
     /**
      * @brief Construct a new Hoeffding Tree< Data> object

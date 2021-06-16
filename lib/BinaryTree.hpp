@@ -6,8 +6,6 @@
 #include <functional>
 #include <stdlib.h>
 
-#include "Node.hpp"
-
 template <class Node, uint8_t capacity = 100> class BinaryTree {
 
   public:
