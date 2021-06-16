@@ -2,6 +2,7 @@
 #define __NODE_HPP__
 
 #include <stdlib.h>
+#include <utility>
 
 #include "NodeData.hpp"
 
@@ -120,6 +121,11 @@ template <class Data = NodeData<>, typename node_index_T = int8_t> class Node {
     uint getSplitAttributeIndex() { return _splitAttributeIndex; }
 
     datatype getSplitValue() { return _splitValue; }
+
+    std::pair<uint, datatype> infer() {
+        return std::make_pair(getData().getMostCommonClass(),
+                              getData().getConfidence());
+    }
 
   private:
     Data _data;

@@ -41,6 +41,18 @@ class NodeData {
 
         _sampleCountTotal++;
         _sampleCountPerClass[classif]++;
+
+        if (_sampleCountPerClass[classif] >
+            _sampleCountPerClass[_mostCommonClass]) {
+            _mostCommonClass = classif;
+        }
+    }
+
+    uint getMostCommonClass() { return _mostCommonClass; }
+
+    datatype getConfidence() {
+        return (datatype)_sampleCountPerClass[_mostCommonClass] /
+               _sampleCountTotal;
     }
 
     constexpr datatype getImpurity() { return _gini(NULL, NULL, None); }
@@ -79,6 +91,7 @@ class NodeData {
     }
 
   protected:
+    uint _mostCommonClass = 0;
     uint _sampleCountTotal = 0;
     uint _sampleCountPerClass[N_Classes] = {0};
     datatype _Attributes[N_Attributes][N_Classes][N_Quantiles] = {0};
