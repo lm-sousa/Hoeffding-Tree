@@ -79,7 +79,7 @@ int main() {
 
 #ifdef __BINARY_TREE_HPP__
 
-    ts.addTest("New tree has size 1", []() {
+    ts.addTest("Binary Tree - New tree has size 1", []() {
         typedef BinaryTree<Node<>> Tree;
         Tree tree;
 
@@ -88,7 +88,7 @@ int main() {
         return std::make_pair(tree.getSize() == 1, executionLog);
     });
 
-    ts.addTest("Add node", []() {
+    ts.addTest("Binary Tree - Add node", []() {
         typedef BinaryTree<Node<>> Tree;
         typedef Tree::_NodeClass _NodeClass;
         Tree tree;
@@ -101,7 +101,7 @@ int main() {
         return std::make_pair(tree.getSize() == 2, executionLog);
     });
 
-    ts.addTest("Add Left Child", []() {
+    ts.addTest("Binary Tree - Add Left Child", []() {
         typedef BinaryTree<Node<>> Tree;
         typedef Tree::_NodeClass _NodeClass;
         Tree tree;
@@ -116,7 +116,7 @@ int main() {
         return std::make_pair(root.hasLeftChild(), executionLog);
     });
 
-    ts.addTest("Add Left Child - Full tree", []() {
+    ts.addTest("Binary Tree - Add Left Child - Full tree", []() {
         typedef BinaryTree<Node<>, 1> Tree;
         typedef Tree::_NodeClass _NodeClass;
         Tree tree;
@@ -131,7 +131,7 @@ int main() {
         return std::make_pair(!root.hasLeftChild(), executionLog);
     });
 
-    ts.addTest("Add Right Child", []() {
+    ts.addTest("Binary Tree - Add Right Child", []() {
         typedef BinaryTree<Node<>> Tree;
         typedef Tree::_NodeClass _NodeClass;
         Tree tree;
@@ -146,7 +146,7 @@ int main() {
         return std::make_pair(root.hasRightChild(), executionLog);
     });
 
-    ts.addTest("Add Right Child - Full tree", []() {
+    ts.addTest("Binary Tree - Add Right Child - Full tree", []() {
         typedef BinaryTree<Node<>, 1> Tree;
         typedef Tree::_NodeClass _NodeClass;
         Tree tree;
@@ -161,7 +161,7 @@ int main() {
         return std::make_pair(!root.hasRightChild(), executionLog);
     });
 
-    ts.addTest("Root with left child has size 2", []() {
+    ts.addTest("Binary Tree - Root with left child has size 2", []() {
         typedef BinaryTree<Node<>> Tree;
         typedef Tree::_NodeClass _NodeClass;
         Tree tree;
@@ -174,7 +174,7 @@ int main() {
         return std::make_pair(tree.getSize() == 2, executionLog);
     });
 
-    ts.addTest("Root with right child has size 2", []() {
+    ts.addTest("Binary Tree - Root with right child has size 2", []() {
         typedef BinaryTree<Node<>> Tree;
         typedef Tree::_NodeClass _NodeClass;
         Tree tree;
@@ -187,7 +187,7 @@ int main() {
         return std::make_pair(tree.getSize() == 2, executionLog);
     });
 
-    ts.addTest("Add 2 childs, check counter", []() {
+    ts.addTest("Binary Tree - Add 2 childs, check counter", []() {
         typedef BinaryTree<Node<>> Tree;
         typedef Tree::_NodeClass _NodeClass;
         Tree tree;
@@ -200,7 +200,7 @@ int main() {
         return std::make_pair(tree.getSize() == 3, executionLog);
     });
 
-    ts.addTest("Add 2 childs, check existance", []() {
+    ts.addTest("Binary Tree - Add 2 childs, check existance", []() {
         typedef BinaryTree<Node<>> Tree;
         typedef Tree::_NodeClass _NodeClass;
         Tree tree;
