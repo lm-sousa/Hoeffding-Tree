@@ -5,11 +5,12 @@
 
 #include "NodeData.hpp"
 
-template <class Data = NodeData<>> class Node {
+template <class Data = NodeData<>, typename node_index_T = int8_t> class Node {
 
   public:
     typedef Data _DataClass;
     typedef typename Data::datatype datatype;
+    typedef node_index_T node_index_t;
 
     /**
      * @brief Get the Data object
@@ -24,14 +25,14 @@ template <class Data = NodeData<>> class Node {
      * @return true
      * @return false
      */
-    bool hasParent() { return getParent(); }
+    // bool hasParent() { return getParent(); }
 
     /**
      * @brief Get the parent Node object
      *
      * @return Node* Pointer to the parent Node object
      */
-    Node *getParent() { return _parent; }
+    // Node *getParent() { return _parent; }
 
     /**
      * @brief Check if Node has a left child
@@ -39,23 +40,23 @@ template <class Data = NodeData<>> class Node {
      * @return true
      * @return false
      */
-    bool hasLeftChild() { return getLeftChild(); }
+    bool hasLeftChild() { return getLeftChild() >= 0; }
 
     /**
      * @brief Get the left child Node object
      *
      * @return Node* Pointer to the left child Node object
      */
-    Node *getLeftChild() { return _leftChild; }
+    node_index_t getLeftChild() { return _leftChild; }
 
     /**
      * @brief Set the left child Node object
      *
      * @param child Pointer to the left child Node object
      */
-    void setLeftChild(Node *child) {
+    void setLeftChild(node_index_t child) {
         _leftChild = child;
-        child->_setParent(this);
+        // child->_setParent(this);
     }
 
     /**
@@ -64,23 +65,23 @@ template <class Data = NodeData<>> class Node {
      * @return true
      * @return false
      */
-    bool hasRightChild() { return getRightChild(); }
+    bool hasRightChild() { return getRightChild() >= 0; }
 
     /**
      * @brief Get the right child Node object
      *
      * @return Node* Pointer to the right child Node object
      */
-    Node *getRightChild() { return _rightChild; }
+    node_index_t getRightChild() { return _rightChild; }
 
     /**
      * @brief Set the right child Node object
      *
      * @param child Pointer to the right child Node object
      */
-    void setRightChild(Node *child) {
+    void setRightChild(node_index_t child) {
         _rightChild = child;
-        child->_setParent(this);
+        // child->_setParent(this);
     }
 
     /**
@@ -98,10 +99,10 @@ template <class Data = NodeData<>> class Node {
      *
      * @return Node*
      */
-    Node *sortSample(datatype x[]) {
+    node_index_t sortSample(datatype x[]) {
 
         if (!isSplit()) {
-            return NULL;
+            return -1;
         }
 
         if (_checkSplit(x)) {
@@ -122,11 +123,11 @@ template <class Data = NodeData<>> class Node {
 
   private:
     Data _data;
-    Node *_parent = NULL;
-    Node *_leftChild = NULL;
-    Node *_rightChild = NULL;
+    // node_index _parent = -1;
+    node_index_t _leftChild = -1;
+    node_index_t _rightChild = -1;
 
-    void _setParent(Node *parent) { _parent = parent; }
+    // void _setParent(Node *parent) { _parent = parent; }
 
     /**
      * @brief Index of the Attribute where the split is calculated
