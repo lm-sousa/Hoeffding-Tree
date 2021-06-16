@@ -116,6 +116,21 @@ int main() {
         return std::make_pair(root.hasLeftChild(), executionLog);
     });
 
+    ts.addTest("Add Left Child - Full tree", []() {
+        typedef BinaryTree<Node<>, 1> Tree;
+        typedef Tree::_NodeClass _NodeClass;
+        Tree tree;
+
+        _NodeClass &root = tree.getRootNode();
+        tree.addLeftChild(root);
+
+        std::string executionLog = root.hasLeftChild()
+                                       ? "Left child has been created."
+                                       : "Left child has not been created";
+
+        return std::make_pair(!root.hasLeftChild(), executionLog);
+    });
+
     ts.addTest("Add Right Child", []() {
         typedef BinaryTree<Node<>> Tree;
         typedef Tree::_NodeClass _NodeClass;
@@ -129,6 +144,21 @@ int main() {
                                        : "Right child has not been created";
 
         return std::make_pair(root.hasRightChild(), executionLog);
+    });
+
+    ts.addTest("Add Right Child - Full tree", []() {
+        typedef BinaryTree<Node<>, 1> Tree;
+        typedef Tree::_NodeClass _NodeClass;
+        Tree tree;
+
+        _NodeClass &root = tree.getRootNode();
+        tree.addRightChild(root);
+
+        std::string executionLog = root.hasRightChild()
+                                       ? "Right child has been created."
+                                       : "Right child has not been created";
+
+        return std::make_pair(!root.hasRightChild(), executionLog);
     });
 
     ts.addTest("Root with left child has size 2", []() {
