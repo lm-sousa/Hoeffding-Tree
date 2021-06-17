@@ -34,8 +34,8 @@ class HoeffdingTree : public BinaryTree<Node, capacity> {
 
     datatype getTau() { return tau; }
 
-    std::pair<uint, datatype> train(datatype sample[], uint classif,
-                                    bool doSplitTrial) {
+    std::pair<uint, datatype> train(datatype sample[_DataClass::N_Attributes],
+                                    uint classif, bool doSplitTrial) {
 
         node_index_t nodeIndex = this->sortSample(sample);
         _NodeClass &node = this->getNode(nodeIndex);

@@ -31,7 +31,7 @@ class NodeData {
         return _sampleCountPerClass[classif];
     }
 
-    void update(datatype sample[], uint classif) {
+    void update(datatype sample[N_Attributes], uint classif) {
 
         for (uint i = 0; i < N_Attributes; i++) {
             _updateAttributeRange(i, sample[i]);
