@@ -256,6 +256,23 @@ class JsonExporter {
         }
     }
 
+    template <class T>
+    static void
+    inferDataset(T &tree,
+                 typename T::_NodeClass::_DataClass::datatype
+                     dataset[][T::_NodeClass::_DataClass::N_Attributes],
+                 uint classif[], uint datasetSize) {
+        for (uint i = 0; i < datasetSize; i++) {
+            for (typename T::node_index_t nodeIndex = tree.getRootNodeIndex();
+                 nodeIndex != -1;
+                 nodeIndex = tree.getNode(nodeIndex).sortSample(dataset[i])) {
+
+                tree.getNode(nodeIndex).getData().update(dataset[i],
+                                                         classif[i]);
+            }
+        }
+    }
+
   protected:
     static const char arrayCharBegin = '[';
     static const char arrayCharEnd = ']';
