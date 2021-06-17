@@ -249,8 +249,9 @@ class JsonExporter {
                  nodeIndex != -1;
                  nodeIndex = tree.getNode(nodeIndex).sortSample(dataset[i])) {
 
-                tree.getNode(nodeIndex).getData().update(dataset[i],
-                                                         dataset[i][4]);
+                tree.getNode(nodeIndex).getData().update(
+                    dataset[i],
+                    dataset[i][T::_NodeClass::_DataClass::N_Attributes]);
             }
         }
     }
