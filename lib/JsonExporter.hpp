@@ -76,7 +76,7 @@ class JsonExporter {
         };
 
         DFS(tree, tree.getRootNode(), fn);
-        std::map<uint, std::pair<std::string, std::string>> nodeDataMap =
+        std::map<uint, std::pair<std::string, std::string>> &nodeDataMap =
             nodesToJson(tree, nodeMap, T::_DataClass::N_Classes, scalers);
 
         std::vector<std::string> nodes;
@@ -130,6 +130,8 @@ class JsonExporter {
         json.insert(std::pair<std::string, std::string>(
             "classes_", arrayToJson(classRange, T::_DataClass::N_Classes)));
         json.insert(std::pair<std::string, std::string>("params", params));
+
+        delete &nodeDataMap;
 
         return mapToJson(json);
     }
