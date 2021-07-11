@@ -16,6 +16,7 @@ template <class Node, uint capacity = 100> class BinaryTree {
     typedef typename _DataClass::class_index_t class_index_t;
     typedef typename _DataClass::quantile_index_t quantile_index_t;
     typedef typename _DataClass::point_index_t point_index_t;
+    typedef typename _DataClass::sample_count_t sample_count_t;
 
     constexpr node_index_t getCapacity() { return capacity; }
     node_index_t getSize() { return _size; }

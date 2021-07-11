@@ -15,7 +15,8 @@ template <
     uint N_Attributes_T = 16, typename class_index_T = TypeChooser_Unsigned(2),
     uint N_Classes_T = 2, typename quantile_index_T = TypeChooser_Unsigned(8),
     uint N_Quantiles_T = 8, typename point_index_T = TypeChooser_Unsigned(10),
-    uint N_pt_T = 10>
+    uint N_pt_T = 10,
+    typename sample_count_T = uint> // TypeChooser_Unsigned(10)>
 class NodeData {
   public:
     typedef datatype_T data_t;
@@ -23,6 +24,7 @@ class NodeData {
     typedef class_index_T class_index_t;
     typedef quantile_index_T quantile_index_t;
     typedef point_index_T point_index_t;
+    typedef sample_count_T sample_count_t;
     static const uint N_Attributes = N_Attributes_T;
     static const uint N_Classes = N_Classes_T;
     static const uint N_Quantiles = N_Quantiles_T;
@@ -35,9 +37,9 @@ class NodeData {
 
     NodeData(data_t lambda = 0.01) : _lambda(lambda) {}
 
-    constexpr uint getSampleCountTotal() { return _sampleCountTotal; }
+    constexpr sample_count_t getSampleCountTotal() { return _sampleCountTotal; }
 
-    constexpr uint getSampleCountPerClass(class_index_t classif) {
+    constexpr sample_count_t getSampleCountPerClass(class_index_t classif) {
         return _sampleCountPerClass[classif];
     }
 
@@ -77,7 +79,7 @@ class NodeData {
             for (point_index_t p = 0; p < N_pt; p++) {
                 data_t pt = _getSplitPointValue(i, p);
                 for (class_index_t j = 0; j < N_Classes; j++) {
-                    uint distL, distR;
+                    sample_count_t distL, distR;
                     std::tie(distL, distR) =
                         _getSampleCountDistribuition(i, j, pt);
 
@@ -102,8 +104,8 @@ class NodeData {
 
   protected:
     class_index_t _mostCommonClass = 0;
-    uint _sampleCountTotal = 0;
-    uint _sampleCountPerClass[N_Classes] = {0};
+    sample_count_t _sampleCountTotal = 0;
+    sample_count_t _sampleCountPerClass[N_Classes] = {0};
     data_t _Attributes[N_Attributes][N_Classes][N_Quantiles] = {0};
     data_t _attributeRanges[N_Attributes][2] = {0};
 
@@ -158,17 +160,17 @@ class NodeData {
                _attributeRanges[attributeIndex][AttibuteRange::Min];
     }
 
-    constexpr std::tuple<uint, uint>
+    constexpr std::tuple<sample_count_t, sample_count_t>
     _getSampleCountDistribuition(attribute_index_t attributeIndex,
                                  class_index_t classIndex, data_t pt) {
-        uint distL = 0;
+        sample_count_t distL = 0;
         for (quantile_index_t k = 0; k < N_Quantiles; k++) {
             if (pt > _Attributes[attributeIndex][classIndex][k])
                 distL++;
         }
         distL =
             std::round((data_t)distL / N_pt) * _sampleCountPerClass[classIndex];
-        uint distR = _sampleCountPerClass[classIndex] - distL;
+        sample_count_t distR = _sampleCountPerClass[classIndex] - distL;
 
         return {distL, distR};
     }

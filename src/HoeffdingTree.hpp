@@ -20,6 +20,7 @@ class HoeffdingTree : public BinaryTree<Node, capacity> {
     typedef typename _DataClass::class_index_t class_index_t;
     typedef typename _DataClass::quantile_index_t quantile_index_t;
     typedef typename _DataClass::point_index_t point_index_t;
+    typedef typename _DataClass::sample_count_t sample_count_t;
 
     /**
      * @brief Construct a new Hoeffding Tree< Data> object
@@ -79,7 +80,7 @@ class HoeffdingTree : public BinaryTree<Node, capacity> {
      * @param n Number of samples in the leaf node
      * @return constexpr float Hoeffding bound
      */
-    constexpr data_t hoeffdingBound(uint n) {
+    constexpr data_t hoeffdingBound(sample_count_t n) {
         return _hoeffdingBoundConstant / sqrt(n);
     }
 

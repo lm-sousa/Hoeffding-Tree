@@ -233,18 +233,19 @@ int main() {
 
     ts.addTest("Hoeffding Tree - SampleCountTotal when training", []() {
         typedef HoeffdingTree<> Tree;
+        typedef typename Tree::sample_count_t sample_count_t;
 
         Tree tree(1, 0.001, 0.05);
         bool doSplitTrial = true;
-        const uint N_Samples = 1;
+        const sample_count_t N_Samples = 1;
 
         float x[N_Samples][16] = {
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
         };
 
-        uint y[N_Samples] = {1};
+        sample_count_t y[N_Samples] = {1};
 
-        for (uint i = 0; i < N_Samples; i++)
+        for (sample_count_t i = 0; i < N_Samples; i++)
             tree.train(x[i], y[i], doSplitTrial);
 
         return std::make_pair(
@@ -256,17 +257,19 @@ int main() {
 
     ts.addTest("Hoeffding Tree - sample count distribuitions", []() {
         typedef HoeffdingTree<> Tree;
+        typedef typename Tree::sample_count_t sample_count_t;
+
         Tree tree(1, 0.001, 0.05);
         bool doSplitTrial = true;
-        const uint N_Samples = 100;
+        const sample_count_t N_Samples = 100;
 
         float x[N_Samples][16] = {
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0.185, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
 
-        uint y[N_Samples] = {1, 0};
+        sample_count_t y[N_Samples] = {1, 0};
 
-        for (uint i = 0; i < N_Samples; i++) {
+        for (sample_count_t i = 0; i < N_Samples; i++) {
             // std::cout << i << " : " << i % 2 << std::endl;
             tree.train(x[i % 2], y[i % 2], doSplitTrial);
         }
@@ -277,13 +280,16 @@ int main() {
     });
 
     ts.addTest("Hoeffding Tree - Iris sklearn dataset", []() {
-        HoeffdingTree<Node<NodeData<float, TypeChooser_Unsigned(4), 4,
-                                    TypeChooser_Unsigned(3), 3>>>
-            tree(1, 0.01, 0.05);
-        bool doSplitTrial = true;
-        const uint N_Samples = 150;
+        typedef HoeffdingTree<Node<NodeData<float, TypeChooser_Unsigned(4), 4,
+                                            TypeChooser_Unsigned(3), 3>>>
+            Tree;
+        typedef typename Tree::sample_count_t sample_count_t;
 
-        for (uint i = 0; i < N_Samples; i++) {
+        Tree tree(1, 0.01, 0.05);
+        bool doSplitTrial = true;
+        const sample_count_t N_Samples = 150;
+
+        for (sample_count_t i = 0; i < N_Samples; i++) {
             tree.train(irisDataset[i], irisDataset[i][4], doSplitTrial);
         }
 
@@ -334,11 +340,13 @@ int main() {
         typedef HoeffdingTree<Node<NodeData<float, TypeChooser_Unsigned(4), 4,
                                             TypeChooser_Unsigned(3), 3>>>
             Tree;
+        typedef typename Tree::sample_count_t sample_count_t;
+
         Tree tree(1, 0.01, 0.05);
         bool doSplitTrial = false;
-        const uint N_Samples = 150;
+        const sample_count_t N_Samples = 150;
 
-        for (uint i = 0; i < N_Samples; i++) {
+        for (sample_count_t i = 0; i < N_Samples; i++) {
             tree.train(irisDataset[i], irisDataset[i][4], doSplitTrial);
         }
 
@@ -353,13 +361,16 @@ int main() {
 
     ts.addTest(
         "JsonExporter - nodeDataToJson() without scalers - split node", []() {
-            HoeffdingTree<Node<NodeData<float, TypeChooser_Unsigned(4), 4,
-                                        TypeChooser_Unsigned(3), 3>>>
-                tree(1, 0.01, 0.05);
-            bool doSplitTrial = true;
-            const uint N_Samples = 150;
+            typedef HoeffdingTree<Node<NodeData<float, TypeChooser_Unsigned(4),
+                                                4, TypeChooser_Unsigned(3), 3>>>
+                Tree;
+            typedef typename Tree::sample_count_t sample_count_t;
 
-            for (uint i = 0; i < N_Samples; i++) {
+            Tree tree(1, 0.01, 0.05);
+            bool doSplitTrial = true;
+            const sample_count_t N_Samples = 150;
+
+            for (sample_count_t i = 0; i < N_Samples; i++) {
                 tree.train(irisDataset[i], irisDataset[i][4], doSplitTrial);
             }
 
@@ -377,15 +388,17 @@ int main() {
             typedef HoeffdingTree<Node<NodeData<float, TypeChooser_Unsigned(4),
                                                 4, TypeChooser_Unsigned(3), 3>>>
                 Tree;
+            typedef typename Tree::sample_count_t sample_count_t;
+
             Tree tree(1, 0.01, 0.05);
             bool doSplitTrial = true;
-            const uint N_Samples = 150;
+            const sample_count_t N_Samples = 150;
 
-            for (uint i = 0; i < N_Samples; i++) {
+            for (sample_count_t i = 0; i < N_Samples; i++) {
                 tree.train(irisDataset[i], irisDataset[i][4], doSplitTrial);
             }
 
-            typedef Tree::_NodeClass::_DataClass::data_t data_t;
+            typedef Tree::data_t data_t;
 
             static const Tree::_DataClass::sampleScaler
                 scalers[Tree::_DataClass::N_Attributes] = {
@@ -406,13 +419,16 @@ int main() {
     ts.addTest(
         "JsonExporter - nodeDataToJson() without scalers - non-split node",
         []() {
-            HoeffdingTree<Node<NodeData<float, TypeChooser_Unsigned(4), 4,
-                                        TypeChooser_Unsigned(3), 3>>>
-                tree(1, 0.01, 0.05);
-            bool doSplitTrial = false;
-            const uint N_Samples = 150;
+            typedef HoeffdingTree<Node<NodeData<float, TypeChooser_Unsigned(4),
+                                                4, TypeChooser_Unsigned(3), 3>>>
+                Tree;
+            typedef typename Tree::sample_count_t sample_count_t;
 
-            for (uint i = 0; i < N_Samples; i++) {
+            Tree tree(1, 0.01, 0.05);
+            bool doSplitTrial = false;
+            const sample_count_t N_Samples = 150;
+
+            for (sample_count_t i = 0; i < N_Samples; i++) {
                 tree.train(irisDataset[i], irisDataset[i][4], doSplitTrial);
             }
 
@@ -431,15 +447,17 @@ int main() {
             typedef HoeffdingTree<Node<NodeData<float, TypeChooser_Unsigned(4),
                                                 4, TypeChooser_Unsigned(3), 3>>>
                 Tree;
+            typedef typename Tree::sample_count_t sample_count_t;
+
             Tree tree(1, 0.01, 0.05);
             bool doSplitTrial = false;
-            const uint N_Samples = 150;
+            const sample_count_t N_Samples = 150;
 
-            for (uint i = 0; i < N_Samples; i++) {
+            for (sample_count_t i = 0; i < N_Samples; i++) {
                 tree.train(irisDataset[i], irisDataset[i][4], doSplitTrial);
             }
 
-            typedef Tree::_NodeClass::_DataClass::data_t data_t;
+            typedef Tree::data_t data_t;
 
             static const Tree::_DataClass::sampleScaler
                 scalers[Tree::_DataClass::N_Attributes] = {
@@ -462,16 +480,17 @@ int main() {
         typedef HoeffdingTree<Node<NodeData<float, TypeChooser_Unsigned(4), 4,
                                             TypeChooser_Unsigned(3), 3>>>
             Tree;
+        typedef typename Tree::sample_count_t sample_count_t;
 
         Tree tree(1, 0.001, 0.05);
         bool doSplitTrial = true;
-        const uint N_Samples = 150;
+        const sample_count_t N_Samples = 150;
 
-        for (uint i = 0; i < N_Samples; i++) {
+        for (sample_count_t i = 0; i < N_Samples; i++) {
             tree.train(irisDataset[i], irisDataset[i][4], doSplitTrial);
         }
 
-        typedef Tree::_NodeClass::_DataClass::data_t data_t;
+        typedef Tree::data_t data_t;
 
         static const Tree::_DataClass::sampleScaler
             scalers[Tree::_DataClass::N_Attributes] = {

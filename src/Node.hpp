@@ -18,6 +18,7 @@ class Node {
     typedef typename Data::class_index_t class_index_t;
     typedef typename Data::quantile_index_t quantile_index_t;
     typedef typename Data::point_index_t point_index_t;
+    typedef typename Data::sample_count_t sample_count_t;
 
     /**
      * @brief Get the Data object
