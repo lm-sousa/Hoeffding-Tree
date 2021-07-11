@@ -8,10 +8,10 @@
 #include <string>
 #include <utility>
 
-#include "../lib/BinaryTree.hpp"
-#include "../lib/HoeffdingTree.hpp"
-#include "../lib/JsonExporter.hpp"
-#include "../lib/Node.hpp"
+#include "../src/BinaryTree.hpp"
+#include "../src/HoeffdingTree.hpp"
+#include "../src/JsonExporter.hpp"
+#include "../src/Node.hpp"
 #include "Tester.hpp"
 
 float irisDataset[150][5] = {
