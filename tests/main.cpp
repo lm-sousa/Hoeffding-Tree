@@ -8,7 +8,12 @@
 #include <string>
 #include <utility>
 
-#define USE_XILINX_AP_TYPES
+//#define USE_XILINX_AP_TYPES
+
+#ifndef USE_XILINX_AP_TYPES
+#pragma clang diagnostic warning "-Wall"
+#pragma clang diagnostic warning "-Wextra"
+#endif
 
 #include "../src/BinaryTree.hpp"
 #include "../src/HoeffdingTree.hpp"
