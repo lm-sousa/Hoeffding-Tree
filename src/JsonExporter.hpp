@@ -241,7 +241,7 @@ class JsonExporter {
     template <class T>
     static void
     inferDataset(T &tree,
-                 typename T::_NodeClass::_DataClass::datatype
+                 typename T::_NodeClass::_DataClass::data_t
                      dataset[][T::_NodeClass::_DataClass::N_Attributes + 1],
                  uint datasetSize) {
         for (uint i = 0; i < datasetSize; i++) {
@@ -260,7 +260,7 @@ class JsonExporter {
     template <class T>
     static void
     inferDataset(T &tree,
-                 typename T::_NodeClass::_DataClass::datatype
+                 typename T::_NodeClass::_DataClass::data_t
                      dataset[][T::_NodeClass::_DataClass::N_Attributes],
                  uint classif[], uint datasetSize) {
         for (uint i = 0; i < datasetSize; i++) {

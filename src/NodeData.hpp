@@ -7,23 +7,34 @@
 #include <tuple>
 
 #include "TopSplitBuffer.hpp"
+#include "TypeChooser.hpp"
 
-template <typename T_datatype = float, uint T_N_Attributes = 16,
-          uint T_N_Classes = 2, uint T_N_Quantiles = 8, uint T_N_pt = 10>
+template <
+    typename datatype_T = float,
+    typename attribute_index_T = TypeChooser_Unsigned(16),
+    uint32_t N_Attributes_T = 16,
+    typename class_index_T = TypeChooser_Unsigned(2), uint32_t N_Classes_T = 2,
+    typename quantile_index_T = TypeChooser_Unsigned(8),
+    uint32_t N_Quantiles_T = 8,
+    typename point_index_T = TypeChooser_Unsigned(10), uint32_t N_pt_T = 10>
 class NodeData {
   public:
-    typedef T_datatype datatype;
-    static const uint N_Attributes = T_N_Attributes;
-    static const uint N_Classes = T_N_Classes;
-    static const uint N_Quantiles = T_N_Quantiles;
-    static const uint N_pt = T_N_pt;
+    typedef datatype_T data_t;
+    typedef attribute_index_T attribute_index_t;
+    typedef class_index_T class_index_t;
+    typedef quantile_index_T quantile_index_t;
+    typedef point_index_T point_index_t;
+    static const uint N_Attributes = N_Attributes_T;
+    static const uint N_Classes = N_Classes_T;
+    static const uint N_Quantiles = N_Quantiles_T;
+    static const uint N_pt = N_pt_T;
 
-    typedef datatype (*sampleScaler)(datatype);
+    typedef data_t (*sampleScaler)(data_t);
 
     enum AttibuteRange { Min = 0, Max = 1 };
     enum SplitType { Left = 0, Right = 1, None };
 
-    NodeData(datatype lambda = 0.01) : _lambda(lambda) {}
+    NodeData(data_t lambda = 0.01) : _lambda(lambda) {}
 
     constexpr uint getSampleCountTotal() { return _sampleCountTotal; }
 
@@ -31,7 +42,7 @@ class NodeData {
         return _sampleCountPerClass[classif];
     }
 
-    void update(datatype sample[N_Attributes], uint classif) {
+    void update(data_t sample[N_Attributes], uint classif) {
 
         for (uint i = 0; i < N_Attributes; i++) {
             _updateAttributeRange(i, sample[i]);
@@ -50,22 +61,22 @@ class NodeData {
 
     uint getMostCommonClass() { return _mostCommonClass; }
 
-    datatype getConfidence() {
-        return (datatype)_sampleCountPerClass[_mostCommonClass] /
+    data_t getConfidence() {
+        return (data_t)_sampleCountPerClass[_mostCommonClass] /
                _sampleCountTotal;
     }
 
-    constexpr datatype getImpurity() { return _gini(NULL, NULL, None); }
+    constexpr data_t getImpurity() { return _gini(NULL, NULL, None); }
 
-    std::tuple<uint, datatype, datatype> evaluateSplit() {
-        TopSplitBuffer<2, datatype> topSplitCandidates;
+    std::tuple<uint, data_t, data_t> evaluateSplit() {
+        TopSplitBuffer<2, data_t> topSplitCandidates;
 
         for (uint i = 0; i < N_Attributes; i++) {
 
-            datatype dist[N_Classes][2], distSum[2] = {0};
+            data_t dist[N_Classes][2], distSum[2] = {0};
 
             for (uint p = 0; p < N_pt; p++) {
-                datatype pt = _getSplitPointValue(i, p);
+                data_t pt = _getSplitPointValue(i, p);
                 for (uint j = 0; j < N_Classes; j++) {
                     uint distL, distR;
                     std::tie(distL, distR) =
@@ -78,12 +89,12 @@ class NodeData {
                 }
                 distSum[Right] = getSampleCountTotal() - distSum[Left];
 
-                datatype G_pt = _G(dist, distSum);
+                data_t G_pt = _G(dist, distSum);
                 topSplitCandidates.add(i, pt, G_pt);
             }
         }
 
-        std::tuple<uint, datatype, datatype> top =
+        std::tuple<uint, data_t, data_t> top =
             topSplitCandidates.getCandidate(0);
         std::get<2>(top) -= topSplitCandidates.getG(1);
 
@@ -94,10 +105,10 @@ class NodeData {
     uint _mostCommonClass = 0;
     uint _sampleCountTotal = 0;
     uint _sampleCountPerClass[N_Classes] = {0};
-    datatype _Attributes[N_Attributes][N_Classes][N_Quantiles] = {0};
-    datatype _attributeRanges[N_Attributes][2] = {0};
+    data_t _Attributes[N_Attributes][N_Classes][N_Quantiles] = {0};
+    data_t _attributeRanges[N_Attributes][2] = {0};
 
-    const datatype _lambda;
+    const data_t _lambda;
 
     /**
      * @brief Asymmetric signum function
@@ -105,15 +116,15 @@ class NodeData {
      * @param z
      * @return constexpr datatype
      */
-    constexpr datatype _sgnAlpha(datatype z, datatype alpha) {
+    constexpr data_t _sgnAlpha(data_t z, data_t alpha) {
         return z < 0 ? (-alpha) : (1 - alpha);
     }
 
-    constexpr datatype _getAlphaFromQuantileIndex(uint quantileIndex) {
-        return (datatype)(quantileIndex + 1) / (N_Quantiles + 1);
+    constexpr data_t _getAlphaFromQuantileIndex(uint quantileIndex) {
+        return (data_t)(quantileIndex + 1) / (N_Quantiles + 1);
     }
 
-    void _updateAttributeRange(uint attributeIndex, datatype value) {
+    void _updateAttributeRange(uint attributeIndex, data_t value) {
         if (_sampleCountTotal) {
             if (value < _attributeRanges[attributeIndex][AttibuteRange::Min]) {
                 _attributeRanges[attributeIndex][AttibuteRange::Min] = value;
@@ -129,7 +140,7 @@ class NodeData {
     }
 
     constexpr void _updateQuantiles(uint attributeIndex, uint classif,
-                                    datatype value) {
+                                    data_t value) {
         for (uint k = 0; k < N_Quantiles; k++) {
             _Attributes[attributeIndex][classif][k] -=
                 _lambda *
@@ -138,7 +149,7 @@ class NodeData {
         }
     }
 
-    constexpr datatype _getSplitPointValue(uint attributeIndex, uint p) {
+    constexpr data_t _getSplitPointValue(uint attributeIndex, uint p) {
         return ((_attributeRanges[attributeIndex][AttibuteRange::Max] -
                  _attributeRanges[attributeIndex][AttibuteRange::Min]) /
                 (N_pt + 1)) *
@@ -148,36 +159,35 @@ class NodeData {
 
     constexpr std::tuple<uint, uint>
     _getSampleCountDistribuition(uint attributeIndex, uint classIndex,
-                                 datatype pt) {
+                                 data_t pt) {
         uint distL = 0;
         for (uint k = 0; k < N_Quantiles; k++) {
             if (pt > _Attributes[attributeIndex][classIndex][k])
                 distL++;
         }
-        distL = std::round((datatype)distL / N_pt) *
-                _sampleCountPerClass[classIndex];
+        distL =
+            std::round((data_t)distL / N_pt) * _sampleCountPerClass[classIndex];
         uint distR = _sampleCountPerClass[classIndex] - distL;
 
         return {distL, distR};
     }
 
-    constexpr datatype _classImpurity(uint j) {
+    constexpr data_t _classImpurity(uint j) {
         if (!_sampleCountTotal) {
             return 0;
         }
-        return (datatype)_sampleCountPerClass[j] / _sampleCountTotal;
+        return (data_t)_sampleCountPerClass[j] / _sampleCountTotal;
     }
 
-    constexpr datatype _prob(datatype (*dist)[2], datatype *distSum,
-                             SplitType X, uint j) {
+    constexpr data_t _prob(data_t (*dist)[2], data_t *distSum, SplitType X,
+                           uint j) {
         return dist[j][X] / distSum[X];
     }
 
-    constexpr datatype _gini(datatype (*dist)[2], datatype *distSum,
-                             SplitType X) {
-        datatype ret = 1;
+    constexpr data_t _gini(data_t (*dist)[2], data_t *distSum, SplitType X) {
+        data_t ret = 1;
         for (uint j = 0; j < N_Classes; j++) {
-            datatype p;
+            data_t p;
             if (X == None) {
                 p = _classImpurity(j);
             } else {
@@ -188,12 +198,12 @@ class NodeData {
         return ret;
     }
 
-    constexpr datatype _weightedGini(datatype (*dist)[2], datatype *distSum,
-                                     SplitType X) {
+    constexpr data_t _weightedGini(data_t (*dist)[2], data_t *distSum,
+                                   SplitType X) {
         return (distSum[X] / _sampleCountTotal) * _gini(dist, distSum, X);
     }
 
-    constexpr datatype _G(datatype (*dist)[2], datatype *distSum) {
+    constexpr data_t _G(data_t (*dist)[2], data_t *distSum) {
         return _gini(dist, distSum, None) - _weightedGini(dist, distSum, Left) -
                _weightedGini(dist, distSum, Right);
     }

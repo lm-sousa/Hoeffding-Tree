@@ -10,7 +10,7 @@ template <class Data = NodeData<>, typename node_index_T = uint8_t> class Node {
 
   public:
     typedef Data _DataClass;
-    typedef typename Data::datatype datatype;
+    typedef typename Data::data_t data_t;
     typedef node_index_T node_index_t;
 
     /**
@@ -85,7 +85,7 @@ template <class Data = NodeData<>, typename node_index_T = uint8_t> class Node {
      *
      * @return Node*
      */
-    node_index_t sortSample(datatype x[]) {
+    node_index_t sortSample(data_t x[]) {
 
         if (!isSplit()) {
             return 0;
@@ -98,16 +98,16 @@ template <class Data = NodeData<>, typename node_index_T = uint8_t> class Node {
         }
     }
 
-    void setSplit(uint attributeIndex, datatype splitValue) {
+    void setSplit(uint attributeIndex, data_t splitValue) {
         _splitAttributeIndex = attributeIndex;
         _splitValue = splitValue;
     }
 
     uint getSplitAttributeIndex() { return _splitAttributeIndex; }
 
-    datatype getSplitValue() { return _splitValue; }
+    data_t getSplitValue() { return _splitValue; }
 
-    std::pair<uint, datatype> infer() {
+    std::pair<uint, data_t> infer() {
         return std::make_pair(getData().getMostCommonClass(),
                               getData().getConfidence());
     }
@@ -129,7 +129,7 @@ template <class Data = NodeData<>, typename node_index_T = uint8_t> class Node {
      * @brief Value where the split has occured.
      *
      */
-    datatype _splitValue = 0;
+    data_t _splitValue = 0;
 
     /**
      * @brief Check data point against the defined split point
@@ -138,7 +138,7 @@ template <class Data = NodeData<>, typename node_index_T = uint8_t> class Node {
      * @return true Value is less than or equal to the split point
      * @return false Value is greater than the split point
      */
-    bool _checkSplit(datatype x[]) {
+    bool _checkSplit(data_t x[]) {
         return x[getSplitAttributeIndex()] <= getSplitValue();
     }
 };

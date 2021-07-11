@@ -12,7 +12,7 @@ template <class Node, uint8_t capacity = 100> class BinaryTree {
     typedef Node _NodeClass;
     typedef typename _NodeClass::_DataClass _DataClass;
     typedef typename _NodeClass::node_index_t node_index_t;
-    typedef typename _DataClass::datatype datatype;
+    typedef typename _DataClass::data_t data_t;
 
     constexpr node_index_t getCapacity() { return capacity; }
     node_index_t getSize() { return _size; }
@@ -50,7 +50,7 @@ template <class Node, uint8_t capacity = 100> class BinaryTree {
         return newNodeIndex;
     }
 
-    node_index_t sortSample(datatype x[]) {
+    node_index_t sortSample(data_t x[]) {
         node_index_t newNode = getRootNodeIndex(), node;
 
         do {
@@ -61,7 +61,7 @@ template <class Node, uint8_t capacity = 100> class BinaryTree {
         return node;
     }
 
-    void splitNode(Node &node, uint attributeIndex, datatype splitValue) {
+    void splitNode(Node &node, uint attributeIndex, data_t splitValue) {
         node.setSplit(attributeIndex, splitValue);
         this->addLeftChild(node);
         this->addRightChild(node);

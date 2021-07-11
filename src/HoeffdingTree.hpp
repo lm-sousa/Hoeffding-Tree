@@ -15,7 +15,7 @@ class HoeffdingTree : public BinaryTree<Node, capacity> {
     typedef Node _NodeClass;
     typedef typename _NodeClass::node_index_t node_index_t;
     typedef typename _NodeClass::_DataClass _DataClass;
-    typedef typename _DataClass::datatype datatype;
+    typedef typename _DataClass::data_t data_t;
     typedef _DataClass Data;
 
     /**
@@ -24,18 +24,18 @@ class HoeffdingTree : public BinaryTree<Node, capacity> {
      * @param r Range of variables
      * @param sigma acceptable error margin (0.0 to 1.0)
      */
-    HoeffdingTree(datatype r, datatype sigma, datatype tau)
+    HoeffdingTree(data_t r, data_t sigma, data_t tau)
         : _hoeffdingBoundConstant(r * (sqrt(-log(sigma) / 2))), r(r),
           sigma(sigma), tau(tau) {}
 
-    datatype getR() { return r; }
+    data_t getR() { return r; }
 
-    datatype getSigma() { return sigma; }
+    data_t getSigma() { return sigma; }
 
-    datatype getTau() { return tau; }
+    data_t getTau() { return tau; }
 
-    std::pair<uint, datatype> train(datatype sample[_DataClass::N_Attributes],
-                                    uint classif, bool doSplitTrial) {
+    std::pair<uint, data_t> train(data_t sample[_DataClass::N_Attributes],
+                                  uint classif, bool doSplitTrial) {
 
         node_index_t nodeIndex = this->sortSample(sample);
         _NodeClass &node = this->getNode(nodeIndex);
@@ -45,12 +45,12 @@ class HoeffdingTree : public BinaryTree<Node, capacity> {
 
         if (doSplitTrial) {
             uint attributeIndex;
-            datatype splitValue;
-            datatype G;
+            data_t splitValue;
+            data_t G;
 
             std::tie(attributeIndex, splitValue, G) = nodeData.evaluateSplit();
 
-            datatype hBound = hoeffdingBound(nodeData.getSampleCountTotal());
+            data_t hBound = hoeffdingBound(nodeData.getSampleCountTotal());
 
             if (G > hBound || tau > hBound) {
                 this->splitNode(node, attributeIndex, splitValue);
@@ -62,7 +62,7 @@ class HoeffdingTree : public BinaryTree<Node, capacity> {
         return node.infer();
     }
 
-    std::pair<uint, datatype> infer(datatype sample[]) {
+    std::pair<uint, data_t> infer(data_t sample[]) {
         node_index_t nodeIndex = this->sortSample(sample);
         _NodeClass &node = this->getNode(nodeIndex);
 
@@ -75,17 +75,17 @@ class HoeffdingTree : public BinaryTree<Node, capacity> {
      * @param n Number of samples in the leaf node
      * @return constexpr float Hoeffding bound
      */
-    constexpr datatype hoeffdingBound(uint n) {
+    constexpr data_t hoeffdingBound(uint n) {
         return _hoeffdingBoundConstant / sqrt(n);
     }
 
   protected:
-    const datatype _hoeffdingBoundConstant = 0;
-    const datatype r;
-    const datatype sigma;
-    const datatype tau;
+    const data_t _hoeffdingBoundConstant = 0;
+    const data_t r;
+    const data_t sigma;
+    const data_t tau;
 
-    const datatype _errorMargin = 0;
+    const data_t _errorMargin = 0;
     uint splitAttribute = 0;
     uint splitValue = 0; // <=
 };

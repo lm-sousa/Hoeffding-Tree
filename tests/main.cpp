@@ -8,10 +8,13 @@
 #include <string>
 #include <utility>
 
+#define USE_XILINX_AP_TYPES
+
 #include "../src/BinaryTree.hpp"
 #include "../src/HoeffdingTree.hpp"
 #include "../src/JsonExporter.hpp"
 #include "../src/Node.hpp"
+#include "../src/TypeChooser.hpp"
 #include "Tester.hpp"
 
 float irisDataset[150][5] = {
@@ -269,7 +272,9 @@ int main() {
     });
 
     ts.addTest("Hoeffding Tree - Iris sklearn dataset", []() {
-        HoeffdingTree<Node<NodeData<float, 4, 3>>> tree(1, 0.01, 0.05);
+        HoeffdingTree<Node<NodeData<float, TypeChooser_Unsigned(4), 4,
+                                    TypeChooser_Unsigned(3), 3>>>
+            tree(1, 0.01, 0.05);
         bool doSplitTrial = true;
         const uint N_Samples = 150;
 
@@ -321,7 +326,9 @@ int main() {
     });
 
     ts.addTest("JsonExporter - nodeClassCountsToJson()", []() {
-        HoeffdingTree<Node<NodeData<float, 4, 3>>> tree(1, 0.01, 0.05);
+        HoeffdingTree<Node<NodeData<float, TypeChooser_Unsigned(4), 4,
+                                    TypeChooser_Unsigned(3), 3>>>
+            tree(1, 0.01, 0.05);
         bool doSplitTrial = false;
         const uint N_Samples = 150;
 
@@ -340,7 +347,9 @@ int main() {
 
     ts.addTest(
         "JsonExporter - nodeDataToJson() without scalers - split node", []() {
-            HoeffdingTree<Node<NodeData<float, 4, 3>>> tree(1, 0.01, 0.05);
+            HoeffdingTree<Node<NodeData<float, TypeChooser_Unsigned(4), 4,
+                                        TypeChooser_Unsigned(3), 3>>>
+                tree(1, 0.01, 0.05);
             bool doSplitTrial = true;
             const uint N_Samples = 150;
 
@@ -359,7 +368,9 @@ int main() {
 
     ts.addTest(
         "JsonExporter - nodeDataToJson() with scalers - split node", []() {
-            typedef HoeffdingTree<Node<NodeData<float, 4, 3>>> Tree;
+            typedef HoeffdingTree<Node<NodeData<float, TypeChooser_Unsigned(4),
+                                                4, TypeChooser_Unsigned(3), 3>>>
+                Tree;
             Tree tree(1, 0.01, 0.05);
             bool doSplitTrial = true;
             const uint N_Samples = 150;
@@ -368,14 +379,14 @@ int main() {
                 tree.train(irisDataset[i], irisDataset[i][4], doSplitTrial);
             }
 
-            typedef Tree::_NodeClass::_DataClass::datatype datatype;
+            typedef Tree::_NodeClass::_DataClass::data_t data_t;
 
             static const Tree::_DataClass::sampleScaler
                 scalers[Tree::_DataClass::N_Attributes] = {
-                    [](datatype a) { return a * 8; },
-                    [](datatype a) { return a * 8; },
-                    [](datatype a) { return a * 8; },
-                    [](datatype a) { return a * 8; }};
+                    [](data_t a) { return a * 8; },
+                    [](data_t a) { return a * 8; },
+                    [](data_t a) { return a * 8; },
+                    [](data_t a) { return a * 8; }};
 
             std::string str =
                 JsonExporter::nodeDataToJson(tree.getRootNode(), 1, 2, scalers);
@@ -389,7 +400,9 @@ int main() {
     ts.addTest(
         "JsonExporter - nodeDataToJson() without scalers - non-split node",
         []() {
-            HoeffdingTree<Node<NodeData<float, 4, 3>>> tree(1, 0.01, 0.05);
+            HoeffdingTree<Node<NodeData<float, TypeChooser_Unsigned(4), 4,
+                                        TypeChooser_Unsigned(3), 3>>>
+                tree(1, 0.01, 0.05);
             bool doSplitTrial = false;
             const uint N_Samples = 150;
 
@@ -409,7 +422,9 @@ int main() {
 
     ts.addTest(
         "JsonExporter - nodeDataToJson() with scalers - non-split node", []() {
-            typedef HoeffdingTree<Node<NodeData<float, 4, 3>>> Tree;
+            typedef HoeffdingTree<Node<NodeData<float, TypeChooser_Unsigned(4),
+                                                4, TypeChooser_Unsigned(3), 3>>>
+                Tree;
             Tree tree(1, 0.01, 0.05);
             bool doSplitTrial = false;
             const uint N_Samples = 150;
@@ -418,14 +433,14 @@ int main() {
                 tree.train(irisDataset[i], irisDataset[i][4], doSplitTrial);
             }
 
-            typedef Tree::_NodeClass::_DataClass::datatype datatype;
+            typedef Tree::_NodeClass::_DataClass::data_t data_t;
 
             static const Tree::_DataClass::sampleScaler
                 scalers[Tree::_DataClass::N_Attributes] = {
-                    [](datatype a) { return a * 8; },
-                    [](datatype a) { return a * 8; },
-                    [](datatype a) { return a * 8; },
-                    [](datatype a) { return a * 8; }};
+                    [](data_t a) { return a * 8; },
+                    [](data_t a) { return a * 8; },
+                    [](data_t a) { return a * 8; },
+                    [](data_t a) { return a * 8; }};
 
             std::string str =
                 JsonExporter::nodeDataToJson(tree.getRootNode(), 1, 2, scalers);
@@ -438,7 +453,9 @@ int main() {
         });
 
     ts.addTest("JsonExporter - copyNode() and treeToJson()", []() {
-        typedef HoeffdingTree<Node<NodeData<float, 4, 3>>> Tree;
+        typedef HoeffdingTree<Node<NodeData<float, TypeChooser_Unsigned(4), 4,
+                                            TypeChooser_Unsigned(3), 3>>>
+            Tree;
 
         Tree tree(1, 0.001, 0.05);
         bool doSplitTrial = true;
@@ -448,14 +465,12 @@ int main() {
             tree.train(irisDataset[i], irisDataset[i][4], doSplitTrial);
         }
 
-        typedef Tree::_NodeClass::_DataClass::datatype datatype;
+        typedef Tree::_NodeClass::_DataClass::data_t data_t;
 
         static const Tree::_DataClass::sampleScaler
             scalers[Tree::_DataClass::N_Attributes] = {
-                [](datatype a) { return a * 8; },
-                [](datatype a) { return a * 8; },
-                [](datatype a) { return a * 8; },
-                [](datatype a) { return a * 8; }};
+                [](data_t a) { return a * 8; }, [](data_t a) { return a * 8; },
+                [](data_t a) { return a * 8; }, [](data_t a) { return a * 8; }};
 
         Tree treeCopy(tree.getR(), tree.getSigma(), tree.getTau());
 
