@@ -107,13 +107,13 @@ int main() {
         Tree tree;
 
         _NodeClass &root = tree.getRootNode();
-        tree.addLeftChild(root);
+        bool r = tree.addLeftChild(root);
 
-        std::string executionLog = root.hasLeftChild()
+        std::string executionLog = (root.hasLeftChild() && r)
                                        ? "Left child has been created."
                                        : "Left child has not been created";
 
-        return std::make_pair(root.hasLeftChild(), executionLog);
+        return std::make_pair((root.hasLeftChild() && r), executionLog);
     });
 
     ts.addTest("Binary Tree - Add Left Child - Full tree", []() {
@@ -122,13 +122,13 @@ int main() {
         Tree tree;
 
         _NodeClass &root = tree.getRootNode();
-        tree.addLeftChild(root);
+        bool r = tree.addLeftChild(root);
 
-        std::string executionLog = root.hasLeftChild()
+        std::string executionLog = (root.hasLeftChild() || r)
                                        ? "Left child has been created."
                                        : "Left child has not been created";
 
-        return std::make_pair(!root.hasLeftChild(), executionLog);
+        return std::make_pair(!(root.hasLeftChild() || r), executionLog);
     });
 
     ts.addTest("Binary Tree - Add Right Child", []() {
@@ -137,13 +137,13 @@ int main() {
         Tree tree;
 
         _NodeClass &root = tree.getRootNode();
-        tree.addRightChild(root);
+        bool r = tree.addRightChild(root);
 
-        std::string executionLog = root.hasRightChild()
+        std::string executionLog = (root.hasRightChild() && r)
                                        ? "Right child has been created."
                                        : "Right child has not been created";
 
-        return std::make_pair(root.hasRightChild(), executionLog);
+        return std::make_pair((root.hasRightChild() && r), executionLog);
     });
 
     ts.addTest("Binary Tree - Add Right Child - Full tree", []() {
@@ -152,13 +152,13 @@ int main() {
         Tree tree;
 
         _NodeClass &root = tree.getRootNode();
-        tree.addRightChild(root);
+        bool r = tree.addRightChild(root);
 
-        std::string executionLog = root.hasRightChild()
+        std::string executionLog = (root.hasRightChild() || r)
                                        ? "Right child has been created."
                                        : "Right child has not been created";
 
-        return std::make_pair(!root.hasRightChild(), executionLog);
+        return std::make_pair(!(root.hasRightChild() || r), executionLog);
     });
 
     ts.addTest("Binary Tree - Root with left child has size 2", []() {
