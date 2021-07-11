@@ -28,8 +28,8 @@ template <class Node, uint8_t capacity = 100> class BinaryTree {
     node_index_t addLeftChild(Node &node) {
 
         node_index_t newNodeIndex = _getNextFreeNode();
-        if (newNodeIndex == -1) {
-            return -1;
+        if (newNodeIndex == 0) {
+            return 0;
         }
 
         node.setLeftChild(newNodeIndex);
@@ -40,8 +40,8 @@ template <class Node, uint8_t capacity = 100> class BinaryTree {
 
     node_index_t addRightChild(Node &node) {
         node_index_t newNodeIndex = _getNextFreeNode();
-        if (newNodeIndex == -1) {
-            return -1;
+        if (newNodeIndex == 0) {
+            return 0;
         }
 
         node.setRightChild(newNodeIndex);
@@ -51,11 +51,13 @@ template <class Node, uint8_t capacity = 100> class BinaryTree {
     }
 
     node_index_t sortSample(datatype x[]) {
-        node_index_t node = getRootNodeIndex();
-        for (node_index_t newNode = node; newNode != -1;
-             newNode = getNode(node).sortSample(x)) {
+        node_index_t newNode = getRootNodeIndex(), node;
+
+        do {
             node = newNode;
-        }
+            newNode = getNode(node).sortSample(x);
+        } while (newNode != 0);
+
         return node;
     }
 
@@ -71,7 +73,7 @@ template <class Node, uint8_t capacity = 100> class BinaryTree {
 
     node_index_t _getNextFreeNode() {
         if (getSize() >= getCapacity()) {
-            return -1;
+            return 0;
         } else {
             return getSize();
         }

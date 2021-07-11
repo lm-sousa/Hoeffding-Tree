@@ -245,14 +245,15 @@ class JsonExporter {
                      dataset[][T::_NodeClass::_DataClass::N_Attributes + 1],
                  uint datasetSize) {
         for (uint i = 0; i < datasetSize; i++) {
-            for (typename T::node_index_t nodeIndex = tree.getRootNodeIndex();
-                 nodeIndex != -1;
-                 nodeIndex = tree.getNode(nodeIndex).sortSample(dataset[i])) {
+            typename T::node_index_t nodeIndex = tree.getRootNodeIndex();
 
+            do {
+                nodeIndex = tree.getNode(nodeIndex).sortSample(dataset[i]);
                 tree.getNode(nodeIndex).getData().update(
                     dataset[i],
                     dataset[i][T::_NodeClass::_DataClass::N_Attributes]);
-            }
+
+            } while (nodeIndex != 0);
         }
     }
 
@@ -263,13 +264,13 @@ class JsonExporter {
                      dataset[][T::_NodeClass::_DataClass::N_Attributes],
                  uint classif[], uint datasetSize) {
         for (uint i = 0; i < datasetSize; i++) {
-            for (typename T::node_index_t nodeIndex = tree.getRootNodeIndex();
-                 nodeIndex != -1;
-                 nodeIndex = tree.getNode(nodeIndex).sortSample(dataset[i])) {
+            typename T::node_index_t nodeIndex = tree.getRootNodeIndex();
 
+            do {
+                nodeIndex = tree.getNode(nodeIndex).sortSample(dataset[i]);
                 tree.getNode(nodeIndex).getData().update(dataset[i],
                                                          classif[i]);
-            }
+            } while (nodeIndex != 0);
         }
     }
 

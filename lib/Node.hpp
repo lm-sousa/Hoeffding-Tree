@@ -6,7 +6,7 @@
 
 #include "NodeData.hpp"
 
-template <class Data = NodeData<>, typename node_index_T = int8_t> class Node {
+template <class Data = NodeData<>, typename node_index_T = uint8_t> class Node {
 
   public:
     typedef Data _DataClass;
@@ -21,27 +21,12 @@ template <class Data = NodeData<>, typename node_index_T = int8_t> class Node {
     Data &getData() { return _data; }
 
     /**
-     * @brief Check if Node has a parent
-     *
-     * @return true
-     * @return false
-     */
-    // bool hasParent() { return getParent(); }
-
-    /**
-     * @brief Get the parent Node object
-     *
-     * @return Node* Pointer to the parent Node object
-     */
-    // Node *getParent() { return _parent; }
-
-    /**
      * @brief Check if Node has a left child
      *
      * @return true
      * @return false
      */
-    bool hasLeftChild() { return getLeftChild() >= 0; }
+    bool hasLeftChild() { return getLeftChild() > 0; }
 
     /**
      * @brief Get the left child Node object
@@ -66,7 +51,7 @@ template <class Data = NodeData<>, typename node_index_T = int8_t> class Node {
      * @return true
      * @return false
      */
-    bool hasRightChild() { return getRightChild() >= 0; }
+    bool hasRightChild() { return getRightChild() > 0; }
 
     /**
      * @brief Get the right child Node object
@@ -103,7 +88,7 @@ template <class Data = NodeData<>, typename node_index_T = int8_t> class Node {
     node_index_t sortSample(datatype x[]) {
 
         if (!isSplit()) {
-            return -1;
+            return 0;
         }
 
         if (_checkSplit(x)) {
@@ -129,9 +114,8 @@ template <class Data = NodeData<>, typename node_index_T = int8_t> class Node {
 
   private:
     Data _data;
-    // node_index _parent = -1;
-    node_index_t _leftChild = -1;
-    node_index_t _rightChild = -1;
+    node_index_t _leftChild = 0;
+    node_index_t _rightChild = 0;
 
     // void _setParent(Node *parent) { _parent = parent; }
 
