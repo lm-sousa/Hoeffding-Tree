@@ -4,15 +4,17 @@
 #include <stdlib.h>
 #include <tuple>
 
-template <uint size_T, typename data_T> class TopSplitBuffer {
+template <uint size_T, typename data_T, typename attribute_index_T>
+class TopSplitBuffer {
 
   public:
     typedef data_T data_t;
+    typedef attribute_index_T attribute_index_t;
 
-    bool add(uint attributeIndex, data_t splitValue, data_t G) {
-        for (uint i = 0; i < size_T; i++) {
+    bool add(attribute_index_t attributeIndex, data_t splitValue, data_t G) {
+        for (attribute_index_t i = 0; i < size_T; i++) {
             if (G > this->G[i]) {
-                for (uint j = size_T - 1; j > i; j--) {
+                for (attribute_index_t j = size_T - 1; j > i; j--) {
                     _updateCandidate(j, this->attributeIndex[j - 1],
                                      this->splitValue[j - 1], this->G[j - 1]);
                 }
@@ -23,18 +25,20 @@ template <uint size_T, typename data_T> class TopSplitBuffer {
         return false;
     }
 
-    constexpr std::tuple<uint, data_t, data_t> getCandidate(uint index) {
+    constexpr std::tuple<attribute_index_t, data_t, data_t>
+    getCandidate(attribute_index_t index) {
         return {attributeIndex[index], splitValue[index], G[index]};
     }
 
-    constexpr data_t getG(uint index) { return G[index]; }
+    constexpr data_t getG(attribute_index_t index) { return G[index]; }
 
   private:
-    uint attributeIndex[size_T] = {0};
+    attribute_index_t attributeIndex[size_T] = {0};
     data_t splitValue[size_T] = {0};
     data_t G[size_T] = {0};
 
-    void _updateCandidate(uint index, uint attributeIndex, data_t splitValue,
+    void _updateCandidate(attribute_index_t index,
+                          attribute_index_t attributeIndex, data_t splitValue,
                           data_t giniImpurity) {
         this->attributeIndex[index] = attributeIndex;
         this->splitValue[index] = splitValue;

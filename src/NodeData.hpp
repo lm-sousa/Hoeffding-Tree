@@ -12,11 +12,10 @@
 template <
     typename datatype_T = float,
     typename attribute_index_T = TypeChooser_Unsigned(16),
-    uint32_t N_Attributes_T = 16,
-    typename class_index_T = TypeChooser_Unsigned(2), uint32_t N_Classes_T = 2,
-    typename quantile_index_T = TypeChooser_Unsigned(8),
-    uint32_t N_Quantiles_T = 8,
-    typename point_index_T = TypeChooser_Unsigned(10), uint32_t N_pt_T = 10>
+    uint N_Attributes_T = 16, typename class_index_T = TypeChooser_Unsigned(2),
+    uint N_Classes_T = 2, typename quantile_index_T = TypeChooser_Unsigned(8),
+    uint N_Quantiles_T = 8, typename point_index_T = TypeChooser_Unsigned(10),
+    uint N_pt_T = 10>
 class NodeData {
   public:
     typedef datatype_T data_t;
@@ -38,13 +37,13 @@ class NodeData {
 
     constexpr uint getSampleCountTotal() { return _sampleCountTotal; }
 
-    constexpr uint getSampleCountPerClass(uint classif) {
+    constexpr uint getSampleCountPerClass(class_index_t classif) {
         return _sampleCountPerClass[classif];
     }
 
-    void update(data_t sample[N_Attributes], uint classif) {
+    void update(data_t sample[N_Attributes], class_index_t classif) {
 
-        for (uint i = 0; i < N_Attributes; i++) {
+        for (attribute_index_t i = 0; i < N_Attributes; i++) {
             _updateAttributeRange(i, sample[i]);
 
             _updateQuantiles(i, classif, sample[i]);
@@ -59,7 +58,7 @@ class NodeData {
         }
     }
 
-    uint getMostCommonClass() { return _mostCommonClass; }
+    class_index_t getMostCommonClass() { return _mostCommonClass; }
 
     data_t getConfidence() {
         return (data_t)_sampleCountPerClass[_mostCommonClass] /
@@ -68,16 +67,16 @@ class NodeData {
 
     constexpr data_t getImpurity() { return _gini(NULL, NULL, None); }
 
-    std::tuple<uint, data_t, data_t> evaluateSplit() {
-        TopSplitBuffer<2, data_t> topSplitCandidates;
+    std::tuple<attribute_index_t, data_t, data_t> evaluateSplit() {
+        TopSplitBuffer<2, data_t, attribute_index_t> topSplitCandidates;
 
-        for (uint i = 0; i < N_Attributes; i++) {
+        for (attribute_index_t i = 0; i < N_Attributes; i++) {
 
             data_t dist[N_Classes][2], distSum[2] = {0};
 
-            for (uint p = 0; p < N_pt; p++) {
+            for (point_index_t p = 0; p < N_pt; p++) {
                 data_t pt = _getSplitPointValue(i, p);
-                for (uint j = 0; j < N_Classes; j++) {
+                for (class_index_t j = 0; j < N_Classes; j++) {
                     uint distL, distR;
                     std::tie(distL, distR) =
                         _getSampleCountDistribuition(i, j, pt);
@@ -94,7 +93,7 @@ class NodeData {
             }
         }
 
-        std::tuple<uint, data_t, data_t> top =
+        std::tuple<attribute_index_t, data_t, data_t> top =
             topSplitCandidates.getCandidate(0);
         std::get<2>(top) -= topSplitCandidates.getG(1);
 
@@ -102,7 +101,7 @@ class NodeData {
     }
 
   protected:
-    uint _mostCommonClass = 0;
+    class_index_t _mostCommonClass = 0;
     uint _sampleCountTotal = 0;
     uint _sampleCountPerClass[N_Classes] = {0};
     data_t _Attributes[N_Attributes][N_Classes][N_Quantiles] = {0};
@@ -120,11 +119,12 @@ class NodeData {
         return z < 0 ? (-alpha) : (1 - alpha);
     }
 
-    constexpr data_t _getAlphaFromQuantileIndex(uint quantileIndex) {
+    constexpr data_t
+    _getAlphaFromQuantileIndex(quantile_index_t quantileIndex) {
         return (data_t)(quantileIndex + 1) / (N_Quantiles + 1);
     }
 
-    void _updateAttributeRange(uint attributeIndex, data_t value) {
+    void _updateAttributeRange(attribute_index_t attributeIndex, data_t value) {
         if (_sampleCountTotal) {
             if (value < _attributeRanges[attributeIndex][AttibuteRange::Min]) {
                 _attributeRanges[attributeIndex][AttibuteRange::Min] = value;
@@ -139,9 +139,9 @@ class NodeData {
         }
     }
 
-    constexpr void _updateQuantiles(uint attributeIndex, uint classif,
-                                    data_t value) {
-        for (uint k = 0; k < N_Quantiles; k++) {
+    constexpr void _updateQuantiles(attribute_index_t attributeIndex,
+                                    class_index_t classif, data_t value) {
+        for (quantile_index_t k = 0; k < N_Quantiles; k++) {
             _Attributes[attributeIndex][classif][k] -=
                 _lambda *
                 _sgnAlpha(_Attributes[attributeIndex][classif][k] - value,
@@ -149,7 +149,8 @@ class NodeData {
         }
     }
 
-    constexpr data_t _getSplitPointValue(uint attributeIndex, uint p) {
+    constexpr data_t _getSplitPointValue(attribute_index_t attributeIndex,
+                                         point_index_t p) {
         return ((_attributeRanges[attributeIndex][AttibuteRange::Max] -
                  _attributeRanges[attributeIndex][AttibuteRange::Min]) /
                 (N_pt + 1)) *
@@ -158,10 +159,10 @@ class NodeData {
     }
 
     constexpr std::tuple<uint, uint>
-    _getSampleCountDistribuition(uint attributeIndex, uint classIndex,
-                                 data_t pt) {
+    _getSampleCountDistribuition(attribute_index_t attributeIndex,
+                                 class_index_t classIndex, data_t pt) {
         uint distL = 0;
-        for (uint k = 0; k < N_Quantiles; k++) {
+        for (quantile_index_t k = 0; k < N_Quantiles; k++) {
             if (pt > _Attributes[attributeIndex][classIndex][k])
                 distL++;
         }
@@ -172,7 +173,7 @@ class NodeData {
         return {distL, distR};
     }
 
-    constexpr data_t _classImpurity(uint j) {
+    constexpr data_t _classImpurity(class_index_t j) {
         if (!_sampleCountTotal) {
             return 0;
         }
@@ -180,13 +181,13 @@ class NodeData {
     }
 
     constexpr data_t _prob(data_t (*dist)[2], data_t *distSum, SplitType X,
-                           uint j) {
+                           class_index_t j) {
         return dist[j][X] / distSum[X];
     }
 
     constexpr data_t _gini(data_t (*dist)[2], data_t *distSum, SplitType X) {
         data_t ret = 1;
-        for (uint j = 0; j < N_Classes; j++) {
+        for (class_index_t j = 0; j < N_Classes; j++) {
             data_t p;
             if (X == None) {
                 p = _classImpurity(j);

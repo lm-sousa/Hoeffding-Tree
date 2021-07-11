@@ -125,7 +125,7 @@ int main() {
     });
 
     ts.addTest("Binary Tree - Add Left Child - Full tree", []() {
-        typedef BinaryTree<Node<>, 1> Tree;
+        typedef BinaryTree<Node<NodeData<>, TypeChooser_Unsigned(1)>, 1> Tree;
         typedef Tree::_NodeClass _NodeClass;
         Tree tree;
 
@@ -155,7 +155,7 @@ int main() {
     });
 
     ts.addTest("Binary Tree - Add Right Child - Full tree", []() {
-        typedef BinaryTree<Node<>, 1> Tree;
+        typedef BinaryTree<Node<NodeData<>, TypeChooser_Unsigned(1)>, 1> Tree;
         typedef Tree::_NodeClass _NodeClass;
         Tree tree;
 
@@ -331,9 +331,10 @@ int main() {
     });
 
     ts.addTest("JsonExporter - nodeClassCountsToJson()", []() {
-        HoeffdingTree<Node<NodeData<float, TypeChooser_Unsigned(4), 4,
-                                    TypeChooser_Unsigned(3), 3>>>
-            tree(1, 0.01, 0.05);
+        typedef HoeffdingTree<Node<NodeData<float, TypeChooser_Unsigned(4), 4,
+                                            TypeChooser_Unsigned(3), 3>>>
+            Tree;
+        Tree tree(1, 0.01, 0.05);
         bool doSplitTrial = false;
         const uint N_Samples = 150;
 
@@ -507,7 +508,7 @@ int main() {
             "[0.0,50.0,50.0]],[[0.0,7.0,0.0]],[[0.0,43.0,50.0]]]}}";
 
         /*
-        std::ofstream file("trial.json");
+        std::ofstream file("out.json");
         file << result;
         file.close();
         */

@@ -1,18 +1,21 @@
 #ifndef __BINARY_TREE_HPP__
 #define __BINARY_TREE_HPP__
 
-#include <bits/stdint-uintn.h>
 #include <cstddef>
 #include <functional>
 #include <stdlib.h>
 
-template <class Node, uint8_t capacity = 100> class BinaryTree {
+template <class Node, uint capacity = 100> class BinaryTree {
 
   public:
     typedef Node _NodeClass;
     typedef typename _NodeClass::_DataClass _DataClass;
     typedef typename _NodeClass::node_index_t node_index_t;
     typedef typename _DataClass::data_t data_t;
+    typedef typename _DataClass::attribute_index_t attribute_index_t;
+    typedef typename _DataClass::class_index_t class_index_t;
+    typedef typename _DataClass::quantile_index_t quantile_index_t;
+    typedef typename _DataClass::point_index_t point_index_t;
 
     constexpr node_index_t getCapacity() { return capacity; }
     node_index_t getSize() { return _size; }
@@ -61,14 +64,15 @@ template <class Node, uint8_t capacity = 100> class BinaryTree {
         return node;
     }
 
-    void splitNode(Node &node, uint attributeIndex, data_t splitValue) {
+    void splitNode(Node &node, attribute_index_t attributeIndex,
+                   data_t splitValue) {
         node.setSplit(attributeIndex, splitValue);
         this->addLeftChild(node);
         this->addRightChild(node);
     }
 
   private:
-    uint8_t _size = 1;
+    node_index_t _size = 1;
     Node _nodes[capacity];
 
     node_index_t _getNextFreeNode() {

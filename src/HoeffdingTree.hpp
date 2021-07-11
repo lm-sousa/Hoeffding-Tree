@@ -1,7 +1,6 @@
 #ifndef __HOEFFDING_TREE_HPP__
 #define __HOEFFDING_TREE_HPP__
 
-#include <bits/stdint-uintn.h>
 #include <iostream>
 #include <math.h>
 #include <tuple>
@@ -9,14 +8,18 @@
 #include "BinaryTree.hpp"
 #include "Node.hpp"
 
-template <class Node = Node<>, uint8_t capacity = 100>
+template <class Node = Node<>, uint capacity = 100>
 class HoeffdingTree : public BinaryTree<Node, capacity> {
   public:
     typedef Node _NodeClass;
-    typedef typename _NodeClass::node_index_t node_index_t;
     typedef typename _NodeClass::_DataClass _DataClass;
-    typedef typename _DataClass::data_t data_t;
     typedef _DataClass Data;
+    typedef typename _NodeClass::node_index_t node_index_t;
+    typedef typename _DataClass::data_t data_t;
+    typedef typename _DataClass::attribute_index_t attribute_index_t;
+    typedef typename _DataClass::class_index_t class_index_t;
+    typedef typename _DataClass::quantile_index_t quantile_index_t;
+    typedef typename _DataClass::point_index_t point_index_t;
 
     /**
      * @brief Construct a new Hoeffding Tree< Data> object
@@ -34,8 +37,9 @@ class HoeffdingTree : public BinaryTree<Node, capacity> {
 
     data_t getTau() { return tau; }
 
-    std::pair<uint, data_t> train(data_t sample[_DataClass::N_Attributes],
-                                  uint classif, bool doSplitTrial) {
+    std::pair<class_index_t, data_t>
+    train(data_t sample[_DataClass::N_Attributes], class_index_t classif,
+          bool doSplitTrial) {
 
         node_index_t nodeIndex = this->sortSample(sample);
         _NodeClass &node = this->getNode(nodeIndex);
@@ -44,7 +48,7 @@ class HoeffdingTree : public BinaryTree<Node, capacity> {
         nodeData.update(sample, classif);
 
         if (doSplitTrial) {
-            uint attributeIndex;
+            attribute_index_t attributeIndex;
             data_t splitValue;
             data_t G;
 
@@ -62,7 +66,7 @@ class HoeffdingTree : public BinaryTree<Node, capacity> {
         return node.infer();
     }
 
-    std::pair<uint, data_t> infer(data_t sample[]) {
+    std::pair<class_index_t, data_t> infer(data_t sample[]) {
         node_index_t nodeIndex = this->sortSample(sample);
         _NodeClass &node = this->getNode(nodeIndex);
 
@@ -86,8 +90,6 @@ class HoeffdingTree : public BinaryTree<Node, capacity> {
     const data_t tau;
 
     const data_t _errorMargin = 0;
-    uint splitAttribute = 0;
-    uint splitValue = 0; // <=
 };
 
 #endif

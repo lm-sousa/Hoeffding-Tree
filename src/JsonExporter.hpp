@@ -15,13 +15,20 @@ class JsonExporter {
   public:
     JsonExporter() {}
 
+    static std::string arrayToJson(uint8_t array[], uint size) {
+        uint u_array[size];
+        for (uint i = 0; i < size; i++) {
+            u_array[i] = array[i];
+        }
+        return arrayToJson(u_array, size);
+    }
+
     template <typename T> static std::string arrayToJson(T array[], uint size) {
         std::ostringstream ss;
 
         ss << arrayCharBegin << array[0];
-        uint i = 1;
 
-        while (i < size) {
+        for (uint i = 1; i < size;) {
             ss << arrayCharDelimiter << array[i++];
         }
 
@@ -68,16 +75,19 @@ class JsonExporter {
                             scalers[T::_DataClass::N_Attributes] = NULL) {
 
         typedef typename T::_NodeClass NodeClass;
+        typedef typename T::_NodeClass::node_index_t node_index_t;
+        typedef typename T::_NodeClass::class_index_t class_index_t;
 
-        std::map<uint, NodeClass &> nodeMap;
+        std::map<node_index_t, NodeClass &> nodeMap;
 
-        auto fn = [&nodeMap](NodeClass &node, uint nodeID) {
-            nodeMap.insert(std::pair<uint, NodeClass &>(nodeID, node));
+        auto fn = [&nodeMap](NodeClass &node, node_index_t nodeID) {
+            nodeMap.insert(std::pair<node_index_t, NodeClass &>(nodeID, node));
         };
 
         DFS(tree, tree.getRootNode(), fn);
-        std::map<uint, std::pair<std::string, std::string>> &nodeDataMap =
-            nodesToJson(tree, nodeMap, T::_DataClass::N_Classes, scalers);
+        std::map<node_index_t, std::pair<std::string, std::string>>
+            &nodeDataMap =
+                nodesToJson(tree, nodeMap, T::_DataClass::N_Classes, scalers);
 
         std::vector<std::string> nodes;
         std::vector<std::string> values;
@@ -104,8 +114,8 @@ class JsonExporter {
 
         std::map<std::string, std::string> json;
 
-        uint classRange[T::_DataClass::N_Classes];
-        for (uint i = 0; i < T::_DataClass::N_Classes; i++) {
+        class_index_t classRange[T::_DataClass::N_Classes];
+        for (class_index_t i = 0; i < T::_DataClass::N_Classes; i++) {
             classRange[i] = i;
         }
 
@@ -137,25 +147,31 @@ class JsonExporter {
     }
 
     template <class T>
-    static std::map<uint, std::pair<std::string, std::string>> &
-    nodesToJson(T &tree, std::map<uint, typename T::_NodeClass &> nodeMap,
-                uint nClasses,
-                const typename T::_DataClass::sampleScaler
-                    scalers[T::_DataClass::N_Attributes] = NULL) {
+    static std::map<typename T::_NodeClass::node_index_t,
+                    std::pair<std::string, std::string>> &
+    nodesToJson(
+        T &tree,
+        std::map<typename T::_NodeClass::node_index_t, typename T::_NodeClass &>
+            nodeMap,
+        typename T::_NodeClass::class_index_t nClasses,
+        const typename T::_DataClass::sampleScaler
+            scalers[T::_DataClass::N_Attributes] = NULL) {
 
         typedef typename T::_NodeClass _NodeClass;
+        typedef typename T::_NodeClass::node_index_t node_index_t;
 
-        std::map<uint, std::pair<std::string, std::string>> *nodeDataMap =
-            new std::map<uint, std::pair<std::string, std::string>>;
+        std::map<node_index_t, std::pair<std::string, std::string>>
+            *nodeDataMap =
+                new std::map<node_index_t, std::pair<std::string, std::string>>;
 
         for (auto &pair : nodeMap) {
-            uint nodeID = pair.first;
+            node_index_t nodeID = pair.first;
             _NodeClass &node = pair.second;
 
-            uint leftChildID = 0, rightChildID = 0;
+            node_index_t leftChildID = 0, rightChildID = 0;
 
             for (auto it = nodeMap.begin(); it != nodeMap.end(); ++it) {
-                uint innerNodeID = it->first;
+                node_index_t innerNodeID = it->first;
                 _NodeClass &innerNode = it->second;
 
                 if (&tree.getNode(node.getLeftChild()) == &innerNode) {
@@ -166,7 +182,7 @@ class JsonExporter {
             }
 
             nodeDataMap->insert(
-                std::pair<uint, std::pair<std::string, std::string>>(
+                std::pair<node_index_t, std::pair<std::string, std::string>>(
                     nodeID, std::pair<std::string, std::string>(
                                 nodeDataToJson(node, leftChildID, rightChildID,
                                                scalers),
@@ -178,9 +194,11 @@ class JsonExporter {
 
     template <class T>
     static std::string nodeClassCountsToJson(T &node, uint nClasses) {
+        typedef typename T::class_index_t class_index_t;
+
         std::string array[nClasses];
 
-        for (uint i = 0; i < nClasses; i++) {
+        for (class_index_t i = 0; i < nClasses; i++) {
             array[i] =
                 std::to_string(node.getData().getSampleCountPerClass(i)) + ".0";
         }
@@ -191,7 +209,8 @@ class JsonExporter {
 
     template <class T>
     static std::string
-    nodeDataToJson(T &node, uint leftChildID, uint rightChildID,
+    nodeDataToJson(T &node, typename T::node_index_t leftChildID,
+                   typename T::node_index_t rightChildID,
                    const typename T::_DataClass::sampleScaler
                        scalers[T::_DataClass::N_Attributes] = NULL) {
 
@@ -215,7 +234,7 @@ class JsonExporter {
 
     template <class T, class fn_T>
     static void DFS(T &tree, typename T::_NodeClass &node, fn_T function) {
-        uint c = 0;
+        typename T::_NodeClass::node_index_t c = 0;
         _DFS_handle(tree, node, function, c);
     }
 
@@ -262,7 +281,8 @@ class JsonExporter {
     inferDataset(T &tree,
                  typename T::_NodeClass::_DataClass::data_t
                      dataset[][T::_NodeClass::_DataClass::N_Attributes],
-                 uint classif[], uint datasetSize) {
+                 typename T::_NodeClass::class_index_t classif[],
+                 uint datasetSize) {
         for (uint i = 0; i < datasetSize; i++) {
             typename T::node_index_t nodeIndex = tree.getRootNodeIndex();
 
@@ -288,7 +308,8 @@ class JsonExporter {
 
     template <class T, class fn_T>
     static void _DFS_handle(T &tree, typename T::_NodeClass &node,
-                            fn_T function, uint &nodeCounter) {
+                            fn_T function,
+                            typename T::_NodeClass::node_index_t &nodeCounter) {
 
         function(node, nodeCounter++);
 

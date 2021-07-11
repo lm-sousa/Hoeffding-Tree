@@ -6,12 +6,18 @@
 
 #include "NodeData.hpp"
 
-template <class Data = NodeData<>, typename node_index_T = uint8_t> class Node {
+template <class Data = NodeData<>,
+          typename node_index_T = TypeChooser_Unsigned(100)>
+class Node {
 
   public:
+    typedef node_index_T node_index_t;
     typedef Data _DataClass;
     typedef typename Data::data_t data_t;
-    typedef node_index_T node_index_t;
+    typedef typename Data::attribute_index_t attribute_index_t;
+    typedef typename Data::class_index_t class_index_t;
+    typedef typename Data::quantile_index_t quantile_index_t;
+    typedef typename Data::point_index_t point_index_t;
 
     /**
      * @brief Get the Data object
@@ -98,16 +104,16 @@ template <class Data = NodeData<>, typename node_index_T = uint8_t> class Node {
         }
     }
 
-    void setSplit(uint attributeIndex, data_t splitValue) {
+    void setSplit(attribute_index_t attributeIndex, data_t splitValue) {
         _splitAttributeIndex = attributeIndex;
         _splitValue = splitValue;
     }
 
-    uint getSplitAttributeIndex() { return _splitAttributeIndex; }
+    attribute_index_t getSplitAttributeIndex() { return _splitAttributeIndex; }
 
     data_t getSplitValue() { return _splitValue; }
 
-    std::pair<uint, data_t> infer() {
+    std::pair<class_index_t, data_t> infer() {
         return std::make_pair(getData().getMostCommonClass(),
                               getData().getConfidence());
     }
@@ -123,7 +129,7 @@ template <class Data = NodeData<>, typename node_index_T = uint8_t> class Node {
      * @brief Index of the Attribute where the split is calculated
      *
      */
-    uint _splitAttributeIndex = 0;
+    attribute_index_t _splitAttributeIndex = 0;
 
     /**
      * @brief Value where the split has occured.
