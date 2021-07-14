@@ -8,7 +8,8 @@
 #include <string>
 #include <utility>
 
-//#define USE_XILINX_AP_TYPES
+#define USE_XILINX_AP_TYPES
+#include "ap_fixed.h"
 
 #ifndef USE_XILINX_AP_TYPES
 #pragma clang diagnostic warning "-Wall"
@@ -74,12 +75,28 @@ float irisDataset[150][5] = {
     {5.1, 3.8, 1.6, 0.2, 0}, {4.6, 3.2, 1.4, 0.2, 0}, {5.1, 2.5, 3.0, 1.1, 1},
     {5.7, 2.8, 4.1, 1.3, 1}, {6.2, 3.4, 5.4, 2.3, 2}, {5.9, 3.0, 5.1, 1.8, 2}};
 
+// ap_fixed<32, 8>
+
+typedef HoeffdingTree<Node<
+    NodeData<float, TypeChooser_Unsigned(4), 4, TypeChooser_Unsigned(3), 3>>>
+    FixedTree;
+
+FixedTree::data_t fixedDataset[150][5];
+
+FixedTree::data_t scale(FixedTree::data_t a) { return a * 8; }
+
 int main() {
 
     // Normalize Iris dataset values
     for (uint i = 0; i < 150; i++) {
         for (int j = 0; j < 4; j++)
             irisDataset[i][j] /= 8;
+    }
+
+    for (uint i = 0; i < 150; i++) {
+        for (uint j = 0; j <= 4; j++) {
+            fixedDataset[i][j] = irisDataset[i][j];
+        }
     }
 
     // Run tests
@@ -477,9 +494,14 @@ int main() {
         });
 
     ts.addTest("JsonExporter - copyNode() and treeToJson()", []() {
+        /*
         typedef HoeffdingTree<Node<NodeData<float, TypeChooser_Unsigned(4), 4,
                                             TypeChooser_Unsigned(3), 3>>>
             Tree;
+        */
+
+        typedef FixedTree Tree;
+
         typedef typename Tree::sample_count_t sample_count_t;
 
         Tree tree(1, 0.001, 0.05);
@@ -487,22 +509,19 @@ int main() {
         const sample_count_t N_Samples = 150;
 
         for (sample_count_t i = 0; i < N_Samples; i++) {
-            tree.train(irisDataset[i], irisDataset[i][4], doSplitTrial);
+            tree.train(fixedDataset[i], fixedDataset[i][4], doSplitTrial);
         }
 
-        typedef Tree::data_t data_t;
-
         static const Tree::_DataClass::sampleScaler
-            scalers[Tree::_DataClass::N_Attributes] = {
-                [](data_t a) { return a * 8; }, [](data_t a) { return a * 8; },
-                [](data_t a) { return a * 8; }, [](data_t a) { return a * 8; }};
+            scalers[Tree::_DataClass::N_Attributes] = {scale, scale, scale,
+                                                       scale};
 
         Tree treeCopy(tree.getR(), tree.getSigma(), tree.getTau());
 
         JsonExporter::copyNode(tree, treeCopy, tree.getRootNode(),
                                treeCopy.getRootNode());
 
-        JsonExporter::inferDataset(treeCopy, irisDataset, N_Samples);
+        JsonExporter::inferDataset(treeCopy, fixedDataset, N_Samples);
 
         std::string result = JsonExporter::treeToJson(treeCopy, scalers);
 
@@ -526,11 +545,9 @@ int main() {
             "0,50.0,50.0]],[[48.0,0.0,0.0]],[[2.0,50.0,50.0]],[[2.0,0.0,0.0]],["
             "[0.0,50.0,50.0]],[[0.0,7.0,0.0]],[[0.0,43.0,50.0]]]}}";
 
-        /*
         std::ofstream file("out.json");
         file << result;
         file.close();
-        */
 
         return std::make_pair(ret, ret ? "Sucessfull json string export"
                                        : "Resulting json string did not match");

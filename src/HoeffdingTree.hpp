@@ -1,8 +1,8 @@
 #ifndef __HOEFFDING_TREE_HPP__
 #define __HOEFFDING_TREE_HPP__
 
+#include <cmath>
 #include <iostream>
-#include <math.h>
 #include <tuple>
 
 #include "BinaryTree.hpp"
@@ -29,7 +29,7 @@ class HoeffdingTree : public BinaryTree<Node, capacity> {
      * @param sigma acceptable error margin (0.0 to 1.0)
      */
     HoeffdingTree(data_t r, data_t sigma, data_t tau)
-        : _hoeffdingBoundConstant(r * (sqrt(-log(sigma) / 2))), r(r),
+        : _hoeffdingBoundConstant(r * (tcm::sqrt(-tcm::log(sigma) / 2))), r(r),
           sigma(sigma), tau(tau) {}
 
     data_t getR() { return r; }
@@ -81,7 +81,7 @@ class HoeffdingTree : public BinaryTree<Node, capacity> {
      * @return constexpr float Hoeffding bound
      */
     constexpr data_t hoeffdingBound(sample_count_t n) {
-        return _hoeffdingBoundConstant / sqrt(n);
+        return _hoeffdingBoundConstant / tcm::sqrt((data_t)n);
     }
 
   protected:

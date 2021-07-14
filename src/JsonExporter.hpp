@@ -219,12 +219,12 @@ class JsonExporter {
             node.isSplit() ? std::to_string(node.getSplitAttributeIndex())
                            : "-2",
             node.isSplit()
-                ? std::to_string(scalers != NULL
-                                     ? scalers[node.getSplitAttributeIndex()](
-                                           node.getSplitValue())
-                                     : node.getSplitValue())
+                ? std::to_string(tcm::makePrimitive(
+                      scalers != NULL ? scalers[node.getSplitAttributeIndex()](
+                                            node.getSplitValue())
+                                      : node.getSplitValue()))
                 : "-2.0",
-            std::to_string(node.getData().getImpurity()),
+            std::to_string(tcm::makePrimitive(node.getData().getImpurity())),
             std::to_string(node.getData().getSampleCountTotal()),
             std::to_string(node.getData().getSampleCountTotal()) + ".0"};
 

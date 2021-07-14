@@ -8,6 +8,7 @@
 
 #include "TopSplitBuffer.hpp"
 #include "TypeChooser.hpp"
+#include "TypeChooserMath.hpp"
 
 template <
     typename datatype_T = float,
@@ -118,7 +119,7 @@ class NodeData {
      * @return constexpr datatype
      */
     constexpr data_t _sgnAlpha(data_t z, data_t alpha) {
-        return z < 0 ? (-alpha) : (1 - alpha);
+        return z < 0 ? (-alpha) : ((data_t)1 - alpha);
     }
 
     constexpr data_t
@@ -169,7 +170,7 @@ class NodeData {
                 distL++;
         }
         distL =
-            std::round((data_t)distL / N_pt) * _sampleCountPerClass[classIndex];
+            tcm::round((data_t)distL / N_pt) * _sampleCountPerClass[classIndex];
         sample_count_t distR = _sampleCountPerClass[classIndex] - distL;
 
         return {distL, distR};
@@ -196,7 +197,7 @@ class NodeData {
             } else {
                 p = _prob(dist, distSum, X, j);
             }
-            ret -= std::pow(p, 2);
+            ret -= tcm::pow(p, 2);
         }
         return ret;
     }
