@@ -75,7 +75,7 @@ class NodeData {
 
         for (attribute_index_t i = 0; i < N_Attributes; i++) {
 
-            data_t dist[N_Classes][2], distSum[2] = {0};
+            sample_count_t dist[N_Classes][2], distSum[2] = {0};
 
             for (point_index_t p = 0; p < N_pt; p++) {
                 data_t pt = _getSplitPointValue(i, p);
@@ -183,12 +183,18 @@ class NodeData {
         return (data_t)_sampleCountPerClass[j] / _sampleCountTotal;
     }
 
-    constexpr data_t _prob(data_t (*dist)[2], data_t *distSum, SplitType X,
-                           class_index_t j) {
-        return dist[j][X] / distSum[X];
+    constexpr data_t _prob(sample_count_t (*dist)[2], sample_count_t *distSum,
+                           SplitType X, class_index_t j) {
+        if (!distSum[X]) {
+            return 0;
+        }
+
+        // std::cout << dist[j][X] << "/" << distSum[X] << std::endl;
+        return data_t(dist[j][X]) / data_t(distSum[X]);
     }
 
-    constexpr data_t _gini(data_t (*dist)[2], data_t *distSum, SplitType X) {
+    constexpr data_t _gini(sample_count_t (*dist)[2], sample_count_t *distSum,
+                           SplitType X) {
         data_t ret = 1;
         for (class_index_t j = 0; j < N_Classes; j++) {
             data_t p;
@@ -202,12 +208,13 @@ class NodeData {
         return ret;
     }
 
-    constexpr data_t _weightedGini(data_t (*dist)[2], data_t *distSum,
-                                   SplitType X) {
-        return (distSum[X] / _sampleCountTotal) * _gini(dist, distSum, X);
+    constexpr data_t _weightedGini(sample_count_t (*dist)[2],
+                                   sample_count_t *distSum, SplitType X) {
+        return (data_t(distSum[X]) / data_t(_sampleCountTotal)) *
+               _gini(dist, distSum, X);
     }
 
-    constexpr data_t _G(data_t (*dist)[2], data_t *distSum) {
+    constexpr data_t _G(sample_count_t (*dist)[2], sample_count_t *distSum) {
         return _gini(dist, distSum, None) - _weightedGini(dist, distSum, Left) -
                _weightedGini(dist, distSum, Right);
     }
