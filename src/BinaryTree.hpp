@@ -57,6 +57,7 @@ template <class Node, uint capacity = 100> class BinaryTree {
     node_index_t sortSample(data_t x[]) {
         node_index_t newNode = getRootNodeIndex(), node;
 
+    BinaryTree_sortSample__nodes:
         do {
             node = newNode;
             newNode = getNode(node).sortSample(x);

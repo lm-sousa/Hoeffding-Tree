@@ -33,6 +33,7 @@ template <int W, int I> ap_fixed<W, I> pow(ap_fixed<W, I> x, ap_fixed<W, I> y) {
     const T z = tcm::round(y);
     T w = 1;
 
+TypeChooserMath_pow:
     for (uint i = 0; i < z; i++) {
         w *= x;
     }
@@ -54,6 +55,7 @@ template <int W, int I> ap_fixed<W, I> log(ap_fixed<W, I> x) {
 
     T y = 1 - x, z = -y;
 
+TypeChooserMath_log:
     for (uint i = 2; i <= 6; i++) {
         z -= tcm::pow(y, i) / i;
     }

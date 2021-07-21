@@ -46,6 +46,7 @@ class NodeData {
 
     void update(data_t sample[N_Attributes], class_index_t classif) {
 
+    NodeData_update__attributes:
         for (attribute_index_t i = 0; i < N_Attributes; i++) {
             _updateAttributeRange(i, sample[i]);
 
@@ -73,11 +74,14 @@ class NodeData {
     std::tuple<attribute_index_t, data_t, data_t> evaluateSplit() {
         TopSplitBuffer<2, data_t, attribute_index_t> topSplitCandidates;
 
+    NodeData_evaluateSplit__attributes:
         for (attribute_index_t i = 0; i < N_Attributes; i++) {
+        NodeData_evaluateSplit__attributes__pt:
             for (point_index_t p = 0; p < N_pt; p++) {
             sample_count_t dist[N_Classes][2], distSum[2] = {0};
 
                 data_t pt = _getSplitPointValue(i, p);
+            NodeData_evaluateSplit__attributes__pt__classes:
                 for (class_index_t j = 0; j < N_Classes; j++) {
                     sample_count_t distL, distR;
                     std::tie(distL, distR) =
@@ -142,6 +146,7 @@ class NodeData {
 
     void _updateQuantiles(attribute_index_t attributeIndex,
                                     class_index_t classif, data_t value) {
+    NodeData_updateQuantiles__quantiles:
         for (quantile_index_t k = 0; k < N_Quantiles; k++) {
             _Attributes[attributeIndex][classif][k] -=
                 _lambda *
@@ -163,6 +168,7 @@ class NodeData {
     _getSampleCountDistribuition(attribute_index_t attributeIndex,
                                  class_index_t classIndex, data_t splitPoint) {
         sample_count_t distL = 0;
+    NodeData_getSampleCountDistribuition__quantiles:
         for (quantile_index_t k = 0; k < N_Quantiles; k++) {
             if (splitPoint > _Attributes[attributeIndex][classIndex][k])
                 distL++;
@@ -194,6 +200,7 @@ class NodeData {
     data_t _gini(sample_count_t (*dist)[2], sample_count_t *distSum,
                            SplitType X) {
         data_t ret = 1;
+    NodeData_gini__classes:
         for (class_index_t j = 0; j < N_Classes; j++) {
             data_t p;
             if (X == None) {

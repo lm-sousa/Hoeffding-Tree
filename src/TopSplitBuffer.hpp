@@ -12,8 +12,10 @@ class TopSplitBuffer {
     typedef attribute_index_T attribute_index_t;
 
     bool add(attribute_index_t attributeIndex, data_t splitValue, data_t G) {
+    TopSplitBuffer_add__size:
         for (attribute_index_t i = 0; i < size_T; i++) {
             if (G > this->G[i]) {
+            TopSplitBuffer_add__size__size:
                 for (attribute_index_t j = size_T - 1; j > i; j--) {
                     _updateCandidate(j, this->attributeIndex[j - 1],
                                      this->splitValue[j - 1], this->G[j - 1]);
