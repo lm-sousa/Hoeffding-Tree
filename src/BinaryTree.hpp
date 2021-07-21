@@ -59,6 +59,7 @@ template <class Node, uint capacity = 100> class BinaryTree {
 
     BinaryTree_sortSample__nodes:
         do {
+#pragma HLS LOOP_TRIPCOUNT min = 1 max = capacity
             node = newNode;
             newNode = getNode(node).sortSample(x);
         } while (newNode != 0);

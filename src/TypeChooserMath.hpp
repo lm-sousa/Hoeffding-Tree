@@ -35,6 +35,7 @@ template <int W, int I> ap_fixed<W, I> pow(ap_fixed<W, I> x, ap_fixed<W, I> y) {
 
 TypeChooserMath_pow:
     for (uint i = 0; i < z; i++) {
+#pragma HLS LOOP_TRIPCOUNT min = 0 max = z
         w *= x;
     }
 

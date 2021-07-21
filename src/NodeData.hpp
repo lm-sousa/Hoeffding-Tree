@@ -83,6 +83,7 @@ class NodeData {
                 data_t pt = _getSplitPointValue(i, p);
             NodeData_evaluateSplit__attributes__pt__classes:
                 for (class_index_t j = 0; j < N_Classes; j++) {
+#pragma HLS unroll
                     sample_count_t distL, distR;
                     std::tie(distL, distR) =
                         _getSampleCountDistribuition(i, j, pt);
