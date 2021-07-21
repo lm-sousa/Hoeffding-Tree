@@ -78,7 +78,7 @@ class NodeData {
         for (attribute_index_t i = 0; i < N_Attributes; i++) {
         NodeData_evaluateSplit__attributes__pt:
             for (point_index_t p = 0; p < N_pt; p++) {
-            sample_count_t dist[N_Classes][2], distSum[2] = {0};
+                sample_count_t dist[N_Classes][2], distSum[2] = {0};
 
                 data_t pt = _getSplitPointValue(i, p);
             NodeData_evaluateSplit__attributes__pt__classes:
@@ -146,7 +146,7 @@ class NodeData {
     }
 
     void _updateQuantiles(attribute_index_t attributeIndex,
-                                    class_index_t classif, data_t value) {
+                          class_index_t classif, data_t value) {
     NodeData_updateQuantiles__quantiles:
         for (quantile_index_t k = 0; k < N_Quantiles; k++) {
             _Attributes[attributeIndex][classif][k] -=
@@ -157,7 +157,7 @@ class NodeData {
     }
 
     data_t _getSplitPointValue(attribute_index_t attributeIndex,
-                                         point_index_t p) {
+                               point_index_t p) {
         return ((_attributeRanges[attributeIndex][AttibuteRange::Max] -
                  _attributeRanges[attributeIndex][AttibuteRange::Min]) /
                 (N_pt + 1)) *
@@ -189,21 +189,21 @@ class NodeData {
     }
 
     data_t _prob(sample_count_t (*dist)[2], sample_count_t *distSum,
-                           SplitType X, class_index_t j) {
+                 SplitType X, class_index_t j) {
         if (!distSum[X]) {
             return 0;
         }
 
         // std::cout << dist[j][X] << "/" << distSum[X] << std::endl;
-        return data_t(dist[j][X]) / data_t(distSum[X]);
+        return (data_t)dist[j][X] / distSum[X];
     }
 
     data_t _gini(sample_count_t (*dist)[2], sample_count_t *distSum,
-                           SplitType X) {
+                 SplitType X) {
         data_t ret = 1;
     NodeData_gini__classes:
         for (class_index_t j = 0; j < N_Classes; j++) {
-            data_t p;
+            data_t p = 0;
             if (X == None) {
                 p = _classImpurity(j);
             } else {
