@@ -74,10 +74,9 @@ class NodeData {
         TopSplitBuffer<2, data_t, attribute_index_t> topSplitCandidates;
 
         for (attribute_index_t i = 0; i < N_Attributes; i++) {
-
+            for (point_index_t p = 0; p < N_pt; p++) {
             sample_count_t dist[N_Classes][2], distSum[2] = {0};
 
-            for (point_index_t p = 0; p < N_pt; p++) {
                 data_t pt = _getSplitPointValue(i, p);
                 for (class_index_t j = 0; j < N_Classes; j++) {
                     sample_count_t distL, distR;
