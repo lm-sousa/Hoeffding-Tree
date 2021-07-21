@@ -25,12 +25,12 @@ class TopSplitBuffer {
         return false;
     }
 
-    constexpr std::tuple<attribute_index_t, data_t, data_t>
+    std::tuple<attribute_index_t, data_t, data_t>
     getCandidate(attribute_index_t index) {
         return {attributeIndex[index], splitValue[index], G[index]};
     }
 
-    constexpr data_t getG(attribute_index_t index) { return G[index]; }
+    data_t getG(attribute_index_t index) { return G[index]; }
 
   private:
     attribute_index_t attributeIndex[size_T] = {0};

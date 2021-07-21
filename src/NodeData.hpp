@@ -38,9 +38,9 @@ class NodeData {
 
     NodeData(data_t lambda = 0.01) : _lambda(lambda) {}
 
-    constexpr sample_count_t getSampleCountTotal() { return _sampleCountTotal; }
+    sample_count_t getSampleCountTotal() { return _sampleCountTotal; }
 
-    constexpr sample_count_t getSampleCountPerClass(class_index_t classif) {
+    sample_count_t getSampleCountPerClass(class_index_t classif) {
         return _sampleCountPerClass[classif];
     }
 
@@ -68,7 +68,7 @@ class NodeData {
                _sampleCountTotal;
     }
 
-    constexpr data_t getImpurity() { return _gini(NULL, NULL, None); }
+    data_t getImpurity() { return _gini(NULL, NULL, None); }
 
     std::tuple<attribute_index_t, data_t, data_t> evaluateSplit() {
         TopSplitBuffer<2, data_t, attribute_index_t> topSplitCandidates;
@@ -115,14 +115,13 @@ class NodeData {
      * @brief Asymmetric signum function
      *
      * @param z
-     * @return constexpr datatype
+     * @return datatype
      */
-    constexpr data_t _sgnAlpha(data_t z, data_t alpha) {
+    data_t _sgnAlpha(data_t z, data_t alpha) {
         return z < 0 ? (-alpha) : ((data_t)1 - alpha);
     }
 
-    constexpr data_t
-    _getAlphaFromQuantileIndex(quantile_index_t quantileIndex) {
+    data_t _getAlphaFromQuantileIndex(quantile_index_t quantileIndex) {
         return (data_t)(quantileIndex + 1) / (N_Quantiles + 1);
     }
 
@@ -141,7 +140,7 @@ class NodeData {
         }
     }
 
-    constexpr void _updateQuantiles(attribute_index_t attributeIndex,
+    void _updateQuantiles(attribute_index_t attributeIndex,
                                     class_index_t classif, data_t value) {
         for (quantile_index_t k = 0; k < N_Quantiles; k++) {
             _Attributes[attributeIndex][classif][k] -=
@@ -151,7 +150,7 @@ class NodeData {
         }
     }
 
-    constexpr data_t _getSplitPointValue(attribute_index_t attributeIndex,
+    data_t _getSplitPointValue(attribute_index_t attributeIndex,
                                          point_index_t p) {
         return ((_attributeRanges[attributeIndex][AttibuteRange::Max] -
                  _attributeRanges[attributeIndex][AttibuteRange::Min]) /
@@ -160,12 +159,12 @@ class NodeData {
                _attributeRanges[attributeIndex][AttibuteRange::Min];
     }
 
-    constexpr std::tuple<sample_count_t, sample_count_t>
+    std::tuple<sample_count_t, sample_count_t>
     _getSampleCountDistribuition(attribute_index_t attributeIndex,
-                                 class_index_t classIndex, data_t pt) {
+                                 class_index_t classIndex, data_t splitPoint) {
         sample_count_t distL = 0;
         for (quantile_index_t k = 0; k < N_Quantiles; k++) {
-            if (pt > _Attributes[attributeIndex][classIndex][k])
+            if (splitPoint > _Attributes[attributeIndex][classIndex][k])
                 distL++;
         }
         distL =
@@ -175,14 +174,14 @@ class NodeData {
         return {distL, distR};
     }
 
-    constexpr data_t _classImpurity(class_index_t j) {
+    data_t _classImpurity(class_index_t j) {
         if (!_sampleCountTotal) {
             return 0;
         }
         return (data_t)_sampleCountPerClass[j] / _sampleCountTotal;
     }
 
-    constexpr data_t _prob(sample_count_t (*dist)[2], sample_count_t *distSum,
+    data_t _prob(sample_count_t (*dist)[2], sample_count_t *distSum,
                            SplitType X, class_index_t j) {
         if (!distSum[X]) {
             return 0;
@@ -192,7 +191,7 @@ class NodeData {
         return data_t(dist[j][X]) / data_t(distSum[X]);
     }
 
-    constexpr data_t _gini(sample_count_t (*dist)[2], sample_count_t *distSum,
+    data_t _gini(sample_count_t (*dist)[2], sample_count_t *distSum,
                            SplitType X) {
         data_t ret = 1;
         for (class_index_t j = 0; j < N_Classes; j++) {
@@ -217,7 +216,7 @@ class NodeData {
                _gini(dist, distSum, X);
     }
 
-    constexpr data_t _G(sample_count_t (*dist)[2], sample_count_t *distSum) {
+    data_t _G(sample_count_t (*dist)[2], sample_count_t *distSum) {
         return _gini(dist, distSum, None) - _weightedGini(dist, distSum, Left) -
                _weightedGini(dist, distSum, Right);
     }
