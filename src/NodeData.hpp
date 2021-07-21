@@ -207,9 +207,13 @@ class NodeData {
         return ret;
     }
 
-    constexpr data_t _weightedGini(sample_count_t (*dist)[2],
-                                   sample_count_t *distSum, SplitType X) {
-        return (data_t(distSum[X]) / data_t(_sampleCountTotal)) *
+    data_t _weightedGini(sample_count_t (*dist)[2], sample_count_t *distSum,
+                         SplitType X) {
+        if (!_sampleCountTotal) {
+            return 0;
+        }
+
+        return ((data_t)distSum[X] / _sampleCountTotal) *
                _gini(dist, distSum, X);
     }
 
