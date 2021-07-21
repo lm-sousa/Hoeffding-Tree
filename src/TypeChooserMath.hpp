@@ -54,7 +54,7 @@ template <int W, int I> ap_fixed<W, I> log(ap_fixed<W, I> x) {
 
     T y = 1 - x, z = -y;
 
-    for (uint i = 2; i <= 4; i++) {
+    for (uint i = 2; i <= 6; i++) {
         z -= tcm::pow(y, i) / i;
     }
 
