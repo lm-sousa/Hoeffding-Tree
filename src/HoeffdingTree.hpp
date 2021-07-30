@@ -48,6 +48,8 @@ class HoeffdingTree : public BinaryTree<Node, capacity> {
 
         nodeData.update(sample, classif);
 
+        doSplitTrial = doSplitTrial && !(nodeData.getSampleCountTotal() % 100);
+
         if (doSplitTrial) {
             attribute_index_t attributeIndex;
             data_t splitValue;
