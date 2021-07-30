@@ -174,8 +174,8 @@ class NodeData {
             if (splitPoint > _Attributes[attributeIndex][classIndex][k])
                 distL++;
         }
-        distL =
-            tcm::round((data_t)distL / N_pt) * _sampleCountPerClass[classIndex];
+        distL = tcm::round(((data_t)distL / N_pt) *
+                           _sampleCountPerClass[classIndex]);
         sample_count_t distR = _sampleCountPerClass[classIndex] - distL;
 
         return {distL, distR};
