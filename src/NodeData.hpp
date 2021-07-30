@@ -33,7 +33,7 @@ class NodeData {
 
     typedef data_t (*sampleScaler)(data_t);
 
-    enum AttibuteRange { Min = 0, Max = 1 };
+    enum AttributeRange { Min = 0, Max = 1 };
     enum SplitType { Left = 0, Right = 1, None };
 
     NodeData(data_t lambda = 0.01) : _lambda(lambda) {}
@@ -132,16 +132,16 @@ class NodeData {
 
     void _updateAttributeRange(attribute_index_t attributeIndex, data_t value) {
         if (_sampleCountTotal) {
-            if (value < _attributeRanges[attributeIndex][AttibuteRange::Min]) {
-                _attributeRanges[attributeIndex][AttibuteRange::Min] = value;
+            if (value < _attributeRanges[attributeIndex][AttributeRange::Min]) {
+                _attributeRanges[attributeIndex][AttributeRange::Min] = value;
             }
 
-            if (value > _attributeRanges[attributeIndex][AttibuteRange::Max]) {
-                _attributeRanges[attributeIndex][AttibuteRange::Max] = value;
+            if (value > _attributeRanges[attributeIndex][AttributeRange::Max]) {
+                _attributeRanges[attributeIndex][AttributeRange::Max] = value;
             }
         } else {
-            _attributeRanges[attributeIndex][AttibuteRange::Min] = value;
-            _attributeRanges[attributeIndex][AttibuteRange::Max] = value;
+            _attributeRanges[attributeIndex][AttributeRange::Min] = value;
+            _attributeRanges[attributeIndex][AttributeRange::Max] = value;
         }
     }
 
@@ -158,11 +158,11 @@ class NodeData {
 
     data_t _getSplitPointValue(attribute_index_t attributeIndex,
                                point_index_t p) {
-        return ((_attributeRanges[attributeIndex][AttibuteRange::Max] -
-                 _attributeRanges[attributeIndex][AttibuteRange::Min]) /
+        return ((_attributeRanges[attributeIndex][AttributeRange::Max] -
+                 _attributeRanges[attributeIndex][AttributeRange::Min]) /
                 (N_pt + 1)) *
                    p +
-               _attributeRanges[attributeIndex][AttibuteRange::Min];
+               _attributeRanges[attributeIndex][AttributeRange::Min];
     }
 
     std::tuple<sample_count_t, sample_count_t>
