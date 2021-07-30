@@ -52,12 +52,14 @@ class HoeffdingTree : public BinaryTree<Node, capacity> {
             attribute_index_t attributeIndex;
             data_t splitValue;
             data_t G;
+            bool gotSplit;
 
-            std::tie(attributeIndex, splitValue, G) = nodeData.evaluateSplit();
+            std::tie(gotSplit, attributeIndex, splitValue, G) =
+                nodeData.evaluateSplit();
 
             data_t hBound = hoeffdingBound(nodeData.getSampleCountTotal());
 
-            if (G > hBound || tau > hBound) {
+            if (gotSplit && (G > hBound || tau > hBound)) {
                 this->splitNode(node, attributeIndex, splitValue);
                 /*std::cout << "split! --> " << attributeIndex << " : "
                           << splitValue << std::endl;*/

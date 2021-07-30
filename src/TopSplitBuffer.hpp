@@ -27,9 +27,10 @@ class TopSplitBuffer {
         return false;
     }
 
-    std::tuple<attribute_index_t, data_t, data_t>
+    std::tuple<bool, attribute_index_t, data_t, data_t>
     getCandidate(attribute_index_t index) {
-        return {attributeIndex[index], splitValue[index], G[index]};
+        return {isValid[index], attributeIndex[index], splitValue[index],
+                G[index]};
     }
 
     data_t getG(attribute_index_t index) { return G[index]; }
@@ -38,6 +39,7 @@ class TopSplitBuffer {
     attribute_index_t attributeIndex[size_T] = {0};
     data_t splitValue[size_T] = {0};
     data_t G[size_T] = {0};
+    bool isValid[size_T] = {false};
 
     void _updateCandidate(attribute_index_t index,
                           attribute_index_t attributeIndex, data_t splitValue,
@@ -45,6 +47,7 @@ class TopSplitBuffer {
         this->attributeIndex[index] = attributeIndex;
         this->splitValue[index] = splitValue;
         this->G[index] = giniImpurity;
+        isValid[index] = true;
     }
 };
 

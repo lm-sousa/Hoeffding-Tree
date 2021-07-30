@@ -71,7 +71,7 @@ class NodeData {
 
     data_t getImpurity() { return _gini(NULL, NULL, None); }
 
-    std::tuple<attribute_index_t, data_t, data_t> evaluateSplit() {
+    std::tuple<bool, attribute_index_t, data_t, data_t> evaluateSplit() {
         TopSplitBuffer<2, data_t, attribute_index_t> topSplitCandidates;
 
     NodeData_evaluateSplit__attributes:
@@ -100,9 +100,9 @@ class NodeData {
             }
         }
 
-        std::tuple<attribute_index_t, data_t, data_t> top =
+        std::tuple<bool, attribute_index_t, data_t, data_t> top =
             topSplitCandidates.getCandidate(0);
-        std::get<2>(top) -= topSplitCandidates.getG(1);
+        std::get<3>(top) -= topSplitCandidates.getG(1);
 
         return top;
     }
