@@ -171,8 +171,11 @@ class NodeData {
         sample_count_t distL = 0;
     NodeData_getSampleCountDistribuition__quantiles:
         for (quantile_index_t k = 0; k < N_Quantiles; k++) {
-            if (splitPoint > _Attributes[attributeIndex][classIndex][k])
+            if (splitPoint > _Attributes[attributeIndex][classIndex][k]) {
                 distL++;
+            } else {
+                break;
+            }
         }
         distL = tcm::round(((data_t)distL / N_pt) *
                            _sampleCountPerClass[classIndex]);
