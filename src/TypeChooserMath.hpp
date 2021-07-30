@@ -1,10 +1,12 @@
 #ifndef __TYPE_CHOOSER_MATH_HPP__
 #define __TYPE_CHOOSER_MATH_HPP__
 
-#include "hls_math.h"
-#include <cmath>
-
+#ifdef USE_XILINX_AP_TYPES
 #include "ap_fixed.h"
+#include "hls_math.h"
+#endif
+
+#include <cmath>
 
 namespace tcm {
 
@@ -20,6 +22,7 @@ double pow(double x, double y);
 double sqrt(double x);
 double log(double x);
 
+#ifdef USE_XILINX_AP_TYPES
 template <int W, int I> double makePrimitive(ap_fixed<W, I> x) {
     return x.to_double();
 }
@@ -63,6 +66,7 @@ TypeChooserMath_log:
 
     return z;
 }
+#endif // USE_XILINX_AP_TYPES
 
 } // namespace tcm
 
