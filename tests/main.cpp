@@ -9,7 +9,7 @@
 #include <utility>
 
 #define USE_XILINX_AP_TYPES
-#include "ap_fixed.h"
+//#include "ap_fixed.h"
 
 #ifndef USE_XILINX_AP_TYPES
 #pragma clang diagnostic warning "-Wall"
@@ -77,9 +77,7 @@ float irisDataset[150][5] = {
 
 // ap_fixed<32, 8>
 
-typedef HoeffdingTree<Node<
-    NodeData<float, TypeChooser_Unsigned(4), 4, TypeChooser_Unsigned(3), 3>>>
-    FixedTree;
+typedef HoeffdingTree<Node<NodeData<float, 4, 3>>> FixedTree;
 
 FixedTree::data_t fixedDataset[150][5];
 
@@ -297,9 +295,7 @@ int main() {
     });
 
     ts.addTest("Hoeffding Tree - Iris sklearn dataset", []() {
-        typedef HoeffdingTree<Node<NodeData<float, TypeChooser_Unsigned(4), 4,
-                                            TypeChooser_Unsigned(3), 3>>>
-            Tree;
+        typedef HoeffdingTree<Node<NodeData<float, 4, 3>>> Tree;
         typedef typename Tree::sample_count_t sample_count_t;
 
         Tree tree(1, 0.01, 0.05);
@@ -354,9 +350,7 @@ int main() {
     });
 
     ts.addTest("JsonExporter - nodeClassCountsToJson()", []() {
-        typedef HoeffdingTree<Node<NodeData<float, TypeChooser_Unsigned(4), 4,
-                                            TypeChooser_Unsigned(3), 3>>>
-            Tree;
+        typedef HoeffdingTree<Node<NodeData<float, 4, 3>>> Tree;
         typedef typename Tree::sample_count_t sample_count_t;
 
         Tree tree(1, 0.01, 0.05);
@@ -378,9 +372,7 @@ int main() {
 
     ts.addTest(
         "JsonExporter - nodeDataToJson() without scalers - split node", []() {
-            typedef HoeffdingTree<Node<NodeData<float, TypeChooser_Unsigned(4),
-                                                4, TypeChooser_Unsigned(3), 3>>>
-                Tree;
+            typedef HoeffdingTree<Node<NodeData<float, 4, 3>>> Tree;
             typedef typename Tree::sample_count_t sample_count_t;
 
             Tree tree(1, 0.01, 0.05);
@@ -402,9 +394,7 @@ int main() {
 
     ts.addTest(
         "JsonExporter - nodeDataToJson() with scalers - split node", []() {
-            typedef HoeffdingTree<Node<NodeData<float, TypeChooser_Unsigned(4),
-                                                4, TypeChooser_Unsigned(3), 3>>>
-                Tree;
+            typedef HoeffdingTree<Node<NodeData<float, 4, 3>>> Tree;
             typedef typename Tree::sample_count_t sample_count_t;
 
             Tree tree(1, 0.01, 0.05);
@@ -436,9 +426,7 @@ int main() {
     ts.addTest(
         "JsonExporter - nodeDataToJson() without scalers - non-split node",
         []() {
-            typedef HoeffdingTree<Node<NodeData<float, TypeChooser_Unsigned(4),
-                                                4, TypeChooser_Unsigned(3), 3>>>
-                Tree;
+            typedef HoeffdingTree<Node<NodeData<float, 4, 3>>> Tree;
             typedef typename Tree::sample_count_t sample_count_t;
 
             Tree tree(1, 0.01, 0.05);
@@ -461,9 +449,7 @@ int main() {
 
     ts.addTest(
         "JsonExporter - nodeDataToJson() with scalers - non-split node", []() {
-            typedef HoeffdingTree<Node<NodeData<float, TypeChooser_Unsigned(4),
-                                                4, TypeChooser_Unsigned(3), 3>>>
-                Tree;
+            typedef HoeffdingTree<Node<NodeData<float, 4, 3>>> Tree;
             typedef typename Tree::sample_count_t sample_count_t;
 
             Tree tree(1, 0.01, 0.05);

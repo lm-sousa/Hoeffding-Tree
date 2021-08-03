@@ -10,21 +10,16 @@
 #include "TypeChooser.hpp"
 #include "TypeChooserMath.hpp"
 
-template <
-    typename datatype_T = float,
-    typename attribute_index_T = TypeChooser_Unsigned(16),
-    uint N_Attributes_T = 16, typename class_index_T = TypeChooser_Unsigned(2),
-    uint N_Classes_T = 2, typename quantile_index_T = TypeChooser_Unsigned(8),
-    uint N_Quantiles_T = 8, typename point_index_T = TypeChooser_Unsigned(10),
-    uint N_pt_T = 10,
-    typename sample_count_T = uint> // TypeChooser_Unsigned(10)>
+template <typename datatype_T = float, uint N_Attributes_T = 16,
+          uint N_Classes_T = 2, uint N_Quantiles_T = 8, uint N_pt_T = 10,
+          typename sample_count_T = uint>
 class NodeData {
   public:
     typedef datatype_T data_t;
-    typedef attribute_index_T attribute_index_t;
-    typedef class_index_T class_index_t;
-    typedef quantile_index_T quantile_index_t;
-    typedef point_index_T point_index_t;
+    typedef TypeChooser_Unsigned(N_Attributes_T) attribute_index_t;
+    typedef TypeChooser_Unsigned(N_Classes_T) class_index_t;
+    typedef TypeChooser_Unsigned(N_Quantiles_T) quantile_index_t;
+    typedef TypeChooser_Unsigned(N_pt_T) point_index_t;
     typedef sample_count_T sample_count_t;
     static const uint N_Attributes = N_Attributes_T;
     static const uint N_Classes = N_Classes_T;
@@ -111,8 +106,8 @@ class NodeData {
     class_index_t _mostCommonClass = 0;
     sample_count_t _sampleCountTotal = 0;
     sample_count_t _sampleCountPerClass[N_Classes] = {0};
-    data_t _Attributes[N_Attributes][N_Classes][N_Quantiles] = {0};
-    data_t _attributeRanges[N_Attributes][2] = {0};
+    data_t _Attributes[N_Attributes][N_Classes][N_Quantiles] = {{{0}}};
+    data_t _attributeRanges[N_Attributes][2] = {{0}};
 
     const data_t _lambda;
 

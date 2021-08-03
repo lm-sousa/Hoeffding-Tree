@@ -1,7 +1,7 @@
 TARGET_EXEC_NAME ?= exec
 
-CC = g++
-CXX = g++
+CC = clang++
+CXX = clang++
 
 BUILD_DIR ?= .build
 SRC_DIRS ?= src tests
@@ -15,7 +15,7 @@ DEPS := $(OBJS:.o=.d)
 INC_DIRS := $(shell find $(SRC_DIRS) -type d)
 INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
-CPPFLAGS ?= $(INC_FLAGS) -MMD -MP -g -fPIE -I/tools/Xilinx/Vitis_HLS/2020.2/include
+CPPFLAGS ?= $(INC_FLAGS) -MMD -MP -g -fPIE -Wno-unused-label -I/tools/Xilinx/Vitis_HLS/2020.2/include 
 
 LDFLAGS := 
 
