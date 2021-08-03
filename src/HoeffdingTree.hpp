@@ -8,12 +8,11 @@
 #include "BinaryTree.hpp"
 #include "Node.hpp"
 
-template <class Node = Node<>, uint capacity = 100>
-class HoeffdingTree : public BinaryTree<Node, capacity> {
+template <class Node_T = Node<>>
+class HoeffdingTree : public BinaryTree<Node_T> {
   public:
-    typedef Node _NodeClass;
+    typedef Node_T _NodeClass;
     typedef typename _NodeClass::_DataClass _DataClass;
-    typedef _DataClass Data;
     typedef typename _NodeClass::node_index_t node_index_t;
     typedef typename _DataClass::data_t data_t;
     typedef typename _DataClass::attribute_index_t attribute_index_t;
@@ -44,7 +43,7 @@ class HoeffdingTree : public BinaryTree<Node, capacity> {
 
         node_index_t nodeIndex = this->sortSample(sample);
         _NodeClass &node = this->getNode(nodeIndex);
-        Data &nodeData = node.getData();
+        _DataClass &nodeData = node.getData();
 
         nodeData.update(sample, classif);
 

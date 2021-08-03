@@ -140,7 +140,7 @@ int main() {
     });
 
     ts.addTest("Binary Tree - Add Left Child - Full tree", []() {
-        typedef BinaryTree<Node<NodeData<>, TypeChooser_Unsigned(1)>, 1> Tree;
+        typedef BinaryTree<Node<NodeData<>, 1>> Tree;
         typedef Tree::_NodeClass _NodeClass;
         Tree tree;
 
@@ -170,7 +170,7 @@ int main() {
     });
 
     ts.addTest("Binary Tree - Add Right Child - Full tree", []() {
-        typedef BinaryTree<Node<NodeData<>, TypeChooser_Unsigned(1)>, 1> Tree;
+        typedef BinaryTree<Node<NodeData<>, 1>> Tree;
         typedef Tree::_NodeClass _NodeClass;
         Tree tree;
 

@@ -6,26 +6,26 @@
 
 #include "NodeData.hpp"
 
-template <class Data = NodeData<>,
-          typename node_index_T = TypeChooser_Unsigned(100)>
-class Node {
+template <class Data_T = NodeData<>, uint capacity_T = 100> class Node {
 
   public:
-    typedef node_index_T node_index_t;
-    typedef Data _DataClass;
-    typedef typename Data::data_t data_t;
-    typedef typename Data::attribute_index_t attribute_index_t;
-    typedef typename Data::class_index_t class_index_t;
-    typedef typename Data::quantile_index_t quantile_index_t;
-    typedef typename Data::point_index_t point_index_t;
-    typedef typename Data::sample_count_t sample_count_t;
+    typedef Data_T _DataClass;
+    typedef typename _DataClass::data_t data_t;
+    typedef typename _DataClass::attribute_index_t attribute_index_t;
+    typedef typename _DataClass::class_index_t class_index_t;
+    typedef typename _DataClass::quantile_index_t quantile_index_t;
+    typedef typename _DataClass::point_index_t point_index_t;
+    typedef typename _DataClass::sample_count_t sample_count_t;
+
+    typedef TypeChooser_Unsigned(capacity_T) node_index_t;
+    static const uint capacity = capacity_T;
 
     /**
      * @brief Get the Data object
      *
      * @return void* Pointer to the Data object
      */
-    Data &getData() { return _data; }
+    _DataClass &getData() { return _data; }
 
     /**
      * @brief Check if Node has a left child
@@ -120,7 +120,7 @@ class Node {
     }
 
   private:
-    Data _data;
+    _DataClass _data;
     node_index_t _leftChild = 0;
     node_index_t _rightChild = 0;
 
