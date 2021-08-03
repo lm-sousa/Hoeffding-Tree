@@ -1,4 +1,5 @@
 -Wall
 -Wextra
+-Wno-unused-label
 -I
 /tools/Xilinx/Vitis_HLS/2020.2/include/
