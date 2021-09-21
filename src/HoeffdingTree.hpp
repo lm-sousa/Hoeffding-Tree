@@ -45,9 +45,11 @@ class HoeffdingTree : public BinaryTree<Node_T> {
         _NodeClass &node = this->getNode(nodeIndex);
         _DataClass &nodeData = node.getData();
 
+        std::pair<class_index_t, data_t> inference = node.infer();
+
         nodeData.update(sample, classif);
 
-        doSplitTrial = doSplitTrial && !(nodeData.getSampleCountTotal() % 100);
+        doSplitTrial = doSplitTrial && !(nodeData.getSampleCountTotal() % 200);
 
         if (doSplitTrial) {
             attribute_index_t attributeIndex;
@@ -60,14 +62,14 @@ class HoeffdingTree : public BinaryTree<Node_T> {
 
             data_t hBound = hoeffdingBound(nodeData.getSampleCountTotal());
 
-            if (gotSplit && (G > hBound || tau > hBound)) {
+            if (gotSplit && (G > hBound || ((tau > hBound) && G))) {
                 this->splitNode(node, attributeIndex, splitValue);
                 /*std::cout << "split! --> " << attributeIndex << " : "
                           << splitValue << std::endl;*/
             }
         }
 
-        return node.infer();
+        return inference;
     }
 
     std::pair<class_index_t, data_t> infer(data_t sample[]) {
