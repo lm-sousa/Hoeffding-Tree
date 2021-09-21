@@ -40,9 +40,10 @@ class JsonExporter {
         std::ostringstream ss;
         ss << arrayCharBegin;
 
-        for (auto &elem : v) {
-            ss << elem;
-            if (v.back() != elem) {
+        for (uint i = 0; i < v.size(); i++) {
+
+            ss << v.at(i);
+            if (i != v.size() - 1) {
                 ss << arrayCharDelimiter;
             }
         }
