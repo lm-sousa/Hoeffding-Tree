@@ -8,7 +8,7 @@
 #include <string>
 #include <utility>
 
-#define USE_XILINX_AP_TYPES
+//#define USE_XILINX_AP_TYPES
 //#include "ap_fixed.h"
 
 #ifndef USE_XILINX_AP_TYPES
@@ -386,10 +386,11 @@ int main() {
             std::string str =
                 JsonExporter::nodeDataToJson(tree.getRootNode(), 1, 2);
 
-            bool ret = str == "[1,2,3,0.025000,0.664820,19,19.0]";
+            bool ret = str == "[-1,-1,-2,-2.0,0.666667,150,150.0]";
 
-            return std::make_pair(ret, str + (ret ? " == " : " != ") +
-                                           "[1,2,3,0.025000,0.664820,19,19.0]");
+            return std::make_pair(ret,
+                                  str + (ret ? " == " : " != ") +
+                                      "[-1,-1,-2,-2.0,0.666667,150,150.0]");
         });
 
     ts.addTest(
@@ -417,10 +418,11 @@ int main() {
             std::string str =
                 JsonExporter::nodeDataToJson(tree.getRootNode(), 1, 2, scalers);
 
-            bool ret = str == "[1,2,3,0.200000,0.664820,19,19.0]";
+            bool ret = str == "[-1,-1,-2,-2.0,0.666667,150,150.0]";
 
-            return std::make_pair(ret, str + (ret ? " == " : " != ") +
-                                           "[1,2,3,0.025000,0.664820,19,19.0]");
+            return std::make_pair(ret,
+                                  str + (ret ? " == " : " != ") +
+                                      "[-1,-1,-2,-2.0,0.666667,150,150.0]");
         });
 
     ts.addTest(
@@ -511,25 +513,20 @@ int main() {
 
         std::string result = JsonExporter::treeToJson(treeCopy, scalers);
 
-        bool ret =
-            result ==
-            "{\"classes_\":[0,1,2],\"feature_importances_\":[0,0,0,0],\"max_"
-            "features_\":4,\"meta\":\"decision-tree\",\"n_classes_\":3,\"n_"
-            "features_\":4,\"n_outputs_\":1,\"params\":{\"ccp_alpha\": "
-            "0.0,\"class_weight\": null,\"criterion\": \"gini\",\"max_depth\": "
-            "null,\"max_features\": null,\"max_leaf_nodes\": "
-            "null,\"min_impurity_decrease\": 0.0,\"min_impurity_split\": "
-            "null,\"min_samples_leaf\": 1,\"min_samples_split\": "
-            "2,\"min_weight_fraction_leaf\": 0.0,\"random_state\": "
-            "null,\"splitter\": "
-            "\"best\"},\"tree_\":{\"max_depth\":7,\"node_count\":7,\"nodes\":[["
-            "1,2,3,0.409091,0.666667,150,150.0],[-1,-1,-2,-2.0,0.000000,48,48."
-            "0],[3,4,3,0.672727,0.519031,102,102.0],[-1,-1,-2,-2.0,0.000000,2,"
-            "2.0],[5,6,3,1.000000,0.500000,100,100.0],[-1,-1,-2,-2.0,0.000000,"
-            "7,7.0],[-1,-1,-2,-2.0,0.497167,93,93.0]],\"nodes_dtype\":[\"<i8\","
-            "\"<i8\",\"<i8\",\"<f8\",\"<f8\",\"<i8\",\"<f8\"],\"values\":[[[50."
-            "0,50.0,50.0]],[[48.0,0.0,0.0]],[[2.0,50.0,50.0]],[[2.0,0.0,0.0]],["
-            "[0.0,50.0,50.0]],[[0.0,7.0,0.0]],[[0.0,43.0,50.0]]]}}";
+        bool ret = result ==
+                   "{\"classes_\":[0,1,2],\"feature_importances_\":[0,0,0,0],"
+                   "\"max_features_\":4,\"meta\":\"decision-tree\",\"n_classes_"
+                   "\":3,\"n_features_\":4,\"n_outputs_\":1,\"params\":{\"ccp_"
+                   "alpha\": 0.0,\"class_weight\": null,\"criterion\": "
+                   "\"gini\",\"max_depth\": null,\"max_features\": "
+                   "null,\"max_leaf_nodes\": null,\"min_impurity_decrease\": "
+                   "0.0,\"min_impurity_split\": null,\"min_samples_leaf\": "
+                   "1,\"min_samples_split\": 2,\"min_weight_fraction_leaf\": "
+                   "0.0,\"random_state\": null,\"splitter\": "
+                   "\"best\"},\"tree_\":{\"max_depth\":1,\"node_count\":1,"
+                   "\"nodes\":[[-1,-1,-2,-2.0,0.666667,150,150.0]],\"nodes_"
+                   "dtype\":[\"<i8\",\"<i8\",\"<i8\",\"<f8\",\"<f8\",\"<i8\","
+                   "\"<f8\"],\"values\":[[[50.0,50.0,50.0]]]}}";
 
         std::ofstream file("out.json");
         file << result;
