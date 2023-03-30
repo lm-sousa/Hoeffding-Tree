@@ -1,6 +1,6 @@
 #include "config.h"
 
-//extern "C" {
+// extern "C" {
 
 void krnl_Tree(Tree *tree, Sample<Tree> sample[SAMPLE_ARRAY_SIZE],
                Prediction<Tree> prediction[SAMPLE_ARRAY_SIZE],
