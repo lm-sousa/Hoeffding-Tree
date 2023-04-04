@@ -17,7 +17,8 @@ class NodeData {
   public:
     typedef datatype_T data_t;
     typedef TypeChooser_Unsigned(N_Attributes_T) attribute_index_t;
-    typedef TypeChooser_Unsigned(N_Classes_T) class_index_t;
+    // typedef TypeChooser_Unsigned(N_Classes_T) class_index_t;
+    typedef uint32_t class_index_t;
     typedef TypeChooser_Unsigned(N_Quantiles_T) quantile_index_t;
     typedef TypeChooser_Unsigned(N_pt_T) point_index_t;
     typedef sample_count_T sample_count_t;
