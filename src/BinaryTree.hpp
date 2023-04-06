@@ -5,56 +5,38 @@
 #include <functional>
 #include <stdlib.h>
 
-template <class Node_T> class BinaryTree {
+#include "TypeChooser.hpp"
+
+template <class Node_T, uint capacity_T = 100> class BinaryTree {
 
   public:
     typedef Node_T _NodeClass;
     typedef typename _NodeClass::_DataClass _DataClass;
-    typedef typename _NodeClass::node_index_t node_index_t;
     typedef typename _DataClass::data_t data_t;
     typedef typename _DataClass::attribute_index_t attribute_index_t;
     typedef typename _DataClass::class_index_t class_index_t;
     typedef typename _DataClass::quantile_index_t quantile_index_t;
     typedef typename _DataClass::point_index_t point_index_t;
     typedef typename _DataClass::sample_count_t sample_count_t;
-    static const uint capacity = _NodeClass::capacity;
+    typedef TypeChooser_Unsigned(capacity_T) node_index_t;
+
+    static const node_index_t capacity = capacity_T;
 
     constexpr node_index_t getCapacity() { return capacity; }
     node_index_t getSize() { return _size; }
-    void increaseSize() { _size++; }
-    bool canAddNode() { return _size < capacity; }
 
     _NodeClass &getNode(node_index_t index) { return _nodes[index]; }
 
     _NodeClass &getRootNode() { return getNode(getRootNodeIndex()); }
 
-    node_index_t getRootNodeIndex() { return 0; }
+    constexpr node_index_t getRootNodeIndex() { return 0; }
 
-    node_index_t addLeftChild(_NodeClass &node) {
-
-        node_index_t newNodeIndex = _getNextFreeNode();
-        if (newNodeIndex == 0) {
-            return 0;
-        }
-
-        node.setLeftChild(newNodeIndex);
-        this->increaseSize();
-
-        return newNodeIndex;
-    }
-
-    node_index_t addRightChild(_NodeClass &node) {
-        node_index_t newNodeIndex = _getNextFreeNode();
-        if (newNodeIndex == 0) {
-            return 0;
-        }
-
-        node.setRightChild(newNodeIndex);
-        this->increaseSize();
-
-        return newNodeIndex;
-    }
-
+    /**
+     * @brief Sort the sample through the tree
+     *
+     * @param x Data point - Array of attributes
+     * @return leaf node index where the sample is sorted
+     */
     node_index_t sortSample(data_t x[]) {
         node_index_t newNode = getRootNodeIndex(), node;
 
@@ -62,29 +44,103 @@ template <class Node_T> class BinaryTree {
         do {
 #pragma HLS LOOP_TRIPCOUNT min = 1 max = capacity
             node = newNode;
-            newNode = getNode(node).sortSample(x);
+            newNode = evaluateNodeSplit(node, x);
         } while (newNode != 0);
 
         return node;
     }
 
-    void splitNode(_NodeClass &node, attribute_index_t attributeIndex,
+    void splitNode(node_index_t nodeIndex, attribute_index_t attributeIndex,
                    data_t splitValue) {
-        node.setSplit(attributeIndex, splitValue);
-        this->addLeftChild(node);
-        this->addRightChild(node);
+
+        _treeInformation[nodeIndex].splitAttributeIndex = attributeIndex;
+        _treeInformation[nodeIndex].splitValue = splitValue;
+        _treeInformation[nodeIndex].leftChild = _reserveNextFreeNode();
+        _treeInformation[nodeIndex].rightChild = _reserveNextFreeNode();
+    }
+
+    node_index_t evaluateNodeSplit(node_index_t nodeIndex, data_t x[]) {
+        return x[_treeInformation[nodeIndex].splitAttributeIndex] <=
+                       _treeInformation[nodeIndex].splitValue
+                   ? _treeInformation[nodeIndex].leftChild
+                   : _treeInformation[nodeIndex].rightChild;
+    }
+
+    /**
+     * @brief Check if Node has a left child
+     *
+     * @return true
+     * @return false
+     */
+    bool hasLeftChild(node_index_t nodeIndex) {
+        return getLeftChildOfNode(nodeIndex) > 0;
+    }
+
+    /**
+     * @brief Get the left child Node object
+     *
+     * @return Node* Pointer to the left child Node object
+     */
+    node_index_t getLeftChildOfNode(node_index_t nodeIndex) {
+        return _treeInformation[nodeIndex].leftChild;
+    }
+
+    /**
+     * @brief Check if Node has a right child
+     *
+     * @return true
+     * @return false
+     */
+    bool hasRightChild(node_index_t nodeIndex) {
+        return getRightChildOfNode(nodeIndex) > 0;
+    }
+
+    /**
+     * @brief Get the right child Node object
+     *
+     * @return Node* Pointer to the right child Node object
+     */
+    node_index_t getRightChildOfNode(node_index_t nodeIndex) {
+        return _treeInformation[nodeIndex].rightChild;
+    }
+
+    bool isNodeSplit(node_index_t nodeIndex) {
+        return _treeInformation[nodeIndex].leftChild ||
+               _treeInformation[nodeIndex].rightChild;
+    }
+
+    attribute_index_t getNodeSplitAttributeIndex(node_index_t nodeIndex) {
+        return _treeInformation[nodeIndex].splitAttributeIndex;
+    }
+
+    data_t getNodeSplitValue(node_index_t nodeIndex) {
+        return _treeInformation[nodeIndex].splitValue;
     }
 
   private:
     node_index_t _size = 1;
+    struct _NodeInfo {
+        node_index_t leftChild = 0;
+        node_index_t rightChild = 0;
+
+        /**
+         * @brief Index of the Attribute where the split is calculated
+         *
+         */
+        attribute_index_t splitAttributeIndex = 0;
+
+        /**
+         * @brief Value where the split has occured.
+         *
+         */
+        data_t splitValue = 0;
+    };
+
+    _NodeInfo _treeInformation[capacity];
     _NodeClass _nodes[capacity];
 
-    node_index_t _getNextFreeNode() {
-        if (getSize() >= getCapacity()) {
-            return 0;
-        } else {
-            return getSize();
-        }
+    node_index_t _reserveNextFreeNode() {
+        return (_size >= capacity) ? 0 : _size++;
     }
 };
 

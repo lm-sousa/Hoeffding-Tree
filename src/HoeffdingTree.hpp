@@ -8,12 +8,12 @@
 #include "BinaryTree.hpp"
 #include "Node.hpp"
 
-template <class Node_T = Node<>>
-class HoeffdingTree : public BinaryTree<Node_T> {
+template <class Node_T = Node<>, uint capacity_T = 100>
+class HoeffdingTree : public BinaryTree<Node_T, capacity_T> {
   public:
-    typedef Node_T _NodeClass;
+    typedef typename BinaryTree<Node_T, capacity_T>::_NodeClass _NodeClass;
+    typedef typename BinaryTree<Node_T, capacity_T>::node_index_t node_index_t;
     typedef typename _NodeClass::_DataClass _DataClass;
-    typedef typename _NodeClass::node_index_t node_index_t;
     typedef typename _DataClass::data_t data_t;
     typedef typename _DataClass::attribute_index_t attribute_index_t;
     typedef typename _DataClass::class_index_t class_index_t;
@@ -63,7 +63,7 @@ class HoeffdingTree : public BinaryTree<Node_T> {
             data_t hBound = hoeffdingBound(nodeData.getSampleCountTotal());
 
             if (gotSplit && (G > hBound || ((tau > hBound) && G))) {
-                this->splitNode(node, attributeIndex, splitValue);
+                this->splitNode(nodeIndex, attributeIndex, splitValue);
                 /*std::cout << "split! --> " << attributeIndex << " : "
                           << splitValue << std::endl;*/
             }

@@ -75,17 +75,17 @@ class JsonExporter {
     treeToJson(T &tree, const typename T::_DataClass::sampleScaler
                             scalers[T::_DataClass::N_Attributes] = NULL) {
 
-        typedef typename T::_NodeClass NodeClass;
         typedef typename T::node_index_t node_index_t;
         typedef typename T::class_index_t class_index_t;
 
-        std::map<node_index_t, NodeClass &> nodeMap;
+        std::map<node_index_t, node_index_t> nodeMap;
 
-        auto fn = [&nodeMap](NodeClass &node, node_index_t nodeID) {
-            nodeMap.insert(std::pair<node_index_t, NodeClass &>(nodeID, node));
+        auto fn = [&nodeMap](node_index_t nodeIndex, node_index_t nodeID) {
+            nodeMap.insert(
+                std::pair<node_index_t, node_index_t>(nodeID, nodeIndex));
         };
 
-        DFS(tree, tree.getRootNode(), fn);
+        DFS(tree, tree.getRootNodeIndex(), fn);
         std::map<node_index_t, std::pair<std::string, std::string>>
             &nodeDataMap =
                 nodesToJson(tree, nodeMap, T::_DataClass::N_Classes, scalers);
@@ -152,12 +152,11 @@ class JsonExporter {
                     std::pair<std::string, std::string>> &
     nodesToJson(
         T &tree,
-        std::map<typename T::node_index_t, typename T::_NodeClass &> nodeMap,
+        std::map<typename T::node_index_t, typename T::node_index_t> nodeMap,
         typename T::class_index_t nClasses,
         const typename T::_DataClass::sampleScaler
             scalers[T::_DataClass::N_Attributes] = NULL) {
 
-        typedef typename T::_NodeClass _NodeClass;
         typedef typename T::node_index_t node_index_t;
 
         std::map<node_index_t, std::pair<std::string, std::string>>
@@ -166,41 +165,47 @@ class JsonExporter {
 
         for (auto &pair : nodeMap) {
             node_index_t nodeID = pair.first;
-            _NodeClass &node = pair.second;
+            node_index_t nodeIndex = pair.second;
 
             node_index_t leftChildID = 0, rightChildID = 0;
 
             for (auto it = nodeMap.begin(); it != nodeMap.end(); ++it) {
                 node_index_t innerNodeID = it->first;
-                _NodeClass &innerNode = it->second;
+                node_index_t innerNode = it->second;
 
-                if (&tree.getNode(node.getLeftChild()) == &innerNode) {
+                if (tree.getLeftChildOfNode(nodeIndex) == innerNode) {
                     leftChildID = innerNodeID;
-                } else if (&tree.getNode(node.getRightChild()) == &innerNode) {
+                } else if (tree.getRightChildOfNode(nodeIndex) == innerNode) {
                     rightChildID = innerNodeID;
                 }
             }
 
             nodeDataMap->insert(
                 std::pair<node_index_t, std::pair<std::string, std::string>>(
-                    nodeID, std::pair<std::string, std::string>(
-                                nodeDataToJson(node, leftChildID, rightChildID,
-                                               scalers),
-                                nodeClassCountsToJson(node, nClasses))));
+                    nodeID,
+                    std::pair<std::string, std::string>(
+                        nodeDataToJson(tree, nodeIndex, leftChildID,
+                                       rightChildID, scalers),
+                        nodeClassCountsToJson(tree, nodeIndex, nClasses))));
         }
 
         return *nodeDataMap;
     }
 
     template <class T>
-    static std::string nodeClassCountsToJson(T &node, uint nClasses) {
+    static std::string nodeClassCountsToJson(T &tree,
+                                             typename T::node_index_t nodeIndex,
+                                             uint nClasses) {
         typedef typename T::class_index_t class_index_t;
 
         std::string array[nClasses];
 
         for (class_index_t i = 0; i < nClasses; i++) {
             array[i] =
-                std::to_string(node.getData().getSampleCountPerClass(i)) + ".0";
+                std::to_string(
+                    tree.getNode(nodeIndex).getData().getSampleCountPerClass(
+                        i)) +
+                ".0";
         }
 
         const std::string intermediateArray[1] = {arrayToJson(array, nClasses)};
@@ -209,51 +214,62 @@ class JsonExporter {
 
     template <class T>
     static std::string
-    nodeDataToJson(T &node, typename T::node_index_t leftChildID,
+    nodeDataToJson(T tree, typename T::node_index_t nodeIndex,
+                   typename T::node_index_t leftChildID,
                    typename T::node_index_t rightChildID,
                    const typename T::_DataClass::sampleScaler
                        scalers[T::_DataClass::N_Attributes] = NULL) {
 
         const std::string array[7] = {
-            node.hasLeftChild() ? std::to_string(leftChildID) : "-1",
-            node.hasRightChild() ? std::to_string(rightChildID) : "-1",
-            node.isSplit() ? std::to_string(node.getSplitAttributeIndex())
-                           : "-2",
-            node.isSplit()
+            tree.hasLeftChild(nodeIndex) ? std::to_string(leftChildID) : "-1",
+            tree.hasRightChild(nodeIndex) ? std::to_string(rightChildID) : "-1",
+            tree.isNodeSplit(nodeIndex)
+                ? std::to_string(tree.getNodeSplitAttributeIndex(nodeIndex))
+                : "-2",
+            tree.isNodeSplit(nodeIndex)
                 ? std::to_string(tcm::makePrimitive(
-                      scalers != NULL ? scalers[node.getSplitAttributeIndex()](
-                                            node.getSplitValue())
-                                      : node.getSplitValue()))
+                      scalers != NULL
+                          ? scalers[tree.getNodeSplitAttributeIndex(nodeIndex)](
+                                tree.getNodeSplitValue(nodeIndex))
+                          : tree.getNodeSplitValue(nodeIndex)))
                 : "-2.0",
-            std::to_string(tcm::makePrimitive(node.getData().getImpurity())),
-            std::to_string(node.getData().getSampleCountTotal()),
-            std::to_string(node.getData().getSampleCountTotal()) + ".0"};
+            std::to_string(tcm::makePrimitive(
+                tree.getNode(nodeIndex).getData().getImpurity())),
+            std::to_string(
+                tree.getNode(nodeIndex).getData().getSampleCountTotal()),
+            std::to_string(
+                tree.getNode(nodeIndex).getData().getSampleCountTotal()) +
+                ".0"};
 
         return arrayToJson(array, 7);
     }
 
     template <class T, class fn_T>
-    static void DFS(T &tree, typename T::_NodeClass &node, fn_T function) {
+    static void DFS(T &tree, typename T::node_index_t nodeIndex,
+                    fn_T function) {
         typename T::node_index_t c = 0;
-        _DFS_handle(tree, node, function, c);
+        _DFS_handle(tree, nodeIndex, function, c);
     }
 
     template <class T>
-    static void copyNode(T &oldTree, T &newTree, typename T::_NodeClass &node,
-                         typename T::_NodeClass &newNode) {
+    static void copyNode(T &oldTree, T &newTree,
+                         typename T::node_index_t oldNodeIndex,
+                         typename T::node_index_t newNodeIndex) {
 
-        if (node.isSplit()) {
-            newTree.splitNode(newNode, node.getSplitAttributeIndex(),
-                              node.getSplitValue());
+        if (oldTree.isNodeSplit(oldNodeIndex)) {
+            newTree.splitNode(newNodeIndex,
+                              oldTree.getNodeSplitAttributeIndex(oldNodeIndex),
+                              oldTree.getNodeSplitValue(oldNodeIndex));
         }
 
-        if (node.hasLeftChild()) {
-            copyNode(oldTree, newTree, oldTree.getNode(node.getLeftChild()),
-                     newTree.getNode(newNode.getLeftChild()));
+        if (oldTree.hasLeftChild(oldNodeIndex)) {
+            copyNode(oldTree, newTree, oldTree.getLeftChildOfNode(oldNodeIndex),
+                     newTree.getLeftChildOfNode(newNodeIndex));
         }
-        if (node.hasRightChild()) {
-            copyNode(oldTree, newTree, oldTree.getNode(node.getRightChild()),
-                     newTree.getNode(newNode.getRightChild()));
+        if (oldTree.hasRightChild(oldNodeIndex)) {
+            copyNode(oldTree, newTree,
+                     oldTree.getRightChildOfNode(oldNodeIndex),
+                     newTree.getRightChildOfNode(newNodeIndex));
         }
     }
 
@@ -267,7 +283,7 @@ class JsonExporter {
             typename T::node_index_t nodeIndex = tree.getRootNodeIndex();
 
             do {
-                nodeIndex = tree.getNode(nodeIndex).sortSample(dataset[i]);
+                nodeIndex = tree.evaluateNodeSplit(nodeIndex, dataset[i]);
                 tree.getNode(nodeIndex).getData().update(
                     dataset[i],
                     dataset[i][T::_NodeClass::_DataClass::N_Attributes]);
@@ -286,7 +302,7 @@ class JsonExporter {
             typename T::node_index_t nodeIndex = tree.getRootNodeIndex();
 
             do {
-                nodeIndex = tree.getNode(nodeIndex).sortSample(dataset[i]);
+                nodeIndex = tree.evaluateNodeSplit(nodeIndex, dataset[i]);
                 tree.getNode(nodeIndex).getData().update(dataset[i],
                                                          classif[i]);
             } while (nodeIndex != 0);
@@ -306,18 +322,18 @@ class JsonExporter {
     static const std::string params;
 
     template <class T, class fn_T>
-    static void _DFS_handle(T &tree, typename T::_NodeClass &node,
+    static void _DFS_handle(T &tree, typename T::node_index_t nodeIndex,
                             fn_T function,
                             typename T::node_index_t &nodeCounter) {
 
-        function(node, nodeCounter++);
+        function(nodeIndex, nodeCounter++);
 
-        if (node.hasLeftChild()) {
-            _DFS_handle(tree, tree.getNode(node.getLeftChild()), function,
+        if (tree.hasLeftChild(nodeIndex)) {
+            _DFS_handle(tree, tree.getLeftChildOfNode(nodeIndex), function,
                         nodeCounter);
         }
-        if (node.hasRightChild()) {
-            _DFS_handle(tree, tree.getNode(node.getRightChild()), function,
+        if (tree.hasRightChild(nodeIndex)) {
+            _DFS_handle(tree, tree.getRightChildOfNode(nodeIndex), function,
                         nodeCounter);
         }
     }

@@ -115,12 +115,12 @@ int main() {
     });
 
     ts.addTest("Binary Tree - Add node", []() {
-        typedef BinaryTree<Node<>> Tree;
-        typedef Tree::_NodeClass _NodeClass;
+        typedef BinaryTree<Node<>, 2> Tree;
+        typedef Tree::node_index_t node_index_t;
         Tree tree;
 
-        _NodeClass &root = tree.getRootNode();
-        tree.addLeftChild(root);
+        node_index_t root = tree.getRootNodeIndex();
+        tree.splitNode(root, 0, 0);
 
         std::string executionLog =
             "Tree has size " + std::to_string(tree.getSize());
@@ -129,117 +129,119 @@ int main() {
 
     ts.addTest("Binary Tree - Add Left Child", []() {
         typedef BinaryTree<Node<>> Tree;
-        typedef Tree::_NodeClass _NodeClass;
+        typedef Tree::node_index_t node_index_t;
         Tree tree;
 
-        _NodeClass &root = tree.getRootNode();
-        bool r = tree.addLeftChild(root);
+        node_index_t root = tree.getRootNodeIndex();
+        tree.splitNode(root, 0, 0);
 
-        std::string executionLog = (root.hasLeftChild() && r)
+        std::string executionLog = (tree.hasLeftChild(root))
                                        ? "Left child has been created."
                                        : "Left child has not been created";
 
-        return std::make_pair((root.hasLeftChild() && r), executionLog);
+        return std::make_pair((tree.hasLeftChild(root)), executionLog);
     });
 
     ts.addTest("Binary Tree - Add Left Child - Full tree", []() {
-        typedef BinaryTree<Node<NodeData<>, 1>> Tree;
-        typedef Tree::_NodeClass _NodeClass;
+        typedef BinaryTree<Node<NodeData<>>, 1> Tree;
+        typedef Tree::node_index_t node_index_t;
         Tree tree;
 
-        _NodeClass &root = tree.getRootNode();
-        bool r = tree.addLeftChild(root);
+        node_index_t root = tree.getRootNodeIndex();
+        tree.splitNode(root, 0, 0);
 
-        std::string executionLog = (root.hasLeftChild() || r)
+        std::string executionLog = (tree.hasLeftChild(root))
                                        ? "Left child has been created."
                                        : "Left child has not been created";
 
-        return std::make_pair(!(root.hasLeftChild() || r), executionLog);
+        return std::make_pair(!(tree.hasLeftChild(root)), executionLog);
     });
 
     ts.addTest("Binary Tree - Add Right Child", []() {
         typedef BinaryTree<Node<>> Tree;
-        typedef Tree::_NodeClass _NodeClass;
+        typedef Tree::node_index_t node_index_t;
         Tree tree;
 
-        _NodeClass &root = tree.getRootNode();
-        bool r = tree.addRightChild(root);
+        node_index_t root = tree.getRootNodeIndex();
+        tree.splitNode(root, 0, 0);
 
-        std::string executionLog = (root.hasRightChild() && r)
+        std::string executionLog = (tree.hasRightChild(root))
                                        ? "Right child has been created."
                                        : "Right child has not been created";
 
-        return std::make_pair((root.hasRightChild() && r), executionLog);
+        return std::make_pair(tree.hasRightChild(root), executionLog);
     });
 
     ts.addTest("Binary Tree - Add Right Child - Full tree", []() {
-        typedef BinaryTree<Node<NodeData<>, 1>> Tree;
-        typedef Tree::_NodeClass _NodeClass;
+        typedef BinaryTree<Node<NodeData<>>, 1> Tree;
+        typedef Tree::node_index_t node_index_t;
         Tree tree;
 
-        _NodeClass &root = tree.getRootNode();
-        bool r = tree.addRightChild(root);
+        node_index_t root = tree.getRootNodeIndex();
+        tree.splitNode(root, 0, 0);
 
-        std::string executionLog = (root.hasRightChild() || r)
+        std::string executionLog = (tree.hasRightChild(root))
                                        ? "Right child has been created."
                                        : "Right child has not been created";
 
-        return std::make_pair(!(root.hasRightChild() || r), executionLog);
+        return std::make_pair(!(tree.hasRightChild(root)), executionLog);
     });
 
     ts.addTest("Binary Tree - Root with left child has size 2", []() {
-        typedef BinaryTree<Node<>> Tree;
-        typedef Tree::_NodeClass _NodeClass;
+        typedef BinaryTree<Node<>, 2> Tree;
+        typedef Tree::node_index_t node_index_t;
         Tree tree;
 
-        _NodeClass &root = tree.getRootNode();
-        tree.addLeftChild(root);
+        node_index_t root = tree.getRootNodeIndex();
+        tree.splitNode(root, 0, 0);
 
         std::string executionLog =
             "Tree has size " + std::to_string(tree.getSize());
         return std::make_pair(tree.getSize() == 2, executionLog);
     });
 
-    ts.addTest("Binary Tree - Root with right child has size 2", []() {
-        typedef BinaryTree<Node<>> Tree;
-        typedef Tree::_NodeClass _NodeClass;
+    ts.addTest("Binary Tree - Root with right child has size 3", []() {
+        typedef BinaryTree<Node<>, 3> Tree;
+        typedef Tree::node_index_t node_index_t;
         Tree tree;
 
-        _NodeClass &root = tree.getRootNode();
-        tree.addRightChild(root);
-
-        std::string executionLog =
-            "Tree has size " + std::to_string(tree.getSize());
-        return std::make_pair(tree.getSize() == 2, executionLog);
-    });
-
-    ts.addTest("Binary Tree - Add 2 childs, check counter", []() {
-        typedef BinaryTree<Node<>> Tree;
-        typedef Tree::_NodeClass _NodeClass;
-        Tree tree;
-
-        _NodeClass &root = tree.getRootNode();
-        tree.addLeftChild(tree.getNode(tree.addLeftChild(root)));
+        node_index_t root = tree.getRootNodeIndex();
+        tree.splitNode(root, 0, 0);
 
         std::string executionLog =
             "Tree has size " + std::to_string(tree.getSize());
         return std::make_pair(tree.getSize() == 3, executionLog);
     });
 
-    ts.addTest("Binary Tree - Add 2 childs, check existance", []() {
+    ts.addTest("Binary Tree - Split twice, check counter", []() {
         typedef BinaryTree<Node<>> Tree;
-        typedef Tree::_NodeClass _NodeClass;
+        typedef Tree::node_index_t node_index_t;
         Tree tree;
 
-        _NodeClass &root = tree.getRootNode();
-        tree.addLeftChild(tree.getNode(tree.addLeftChild(root)));
+        node_index_t root = tree.getRootNodeIndex();
+        tree.splitNode(root, 0, 0);
+        tree.splitNode(tree.getLeftChildOfNode(root), 0, 0);
+
+        std::string executionLog =
+            "Tree has size " + std::to_string(tree.getSize());
+        return std::make_pair(tree.getSize() == 5, executionLog);
+    });
+
+    ts.addTest("Binary Tree - Split twice, check existance", []() {
+        typedef BinaryTree<Node<>> Tree;
+        typedef Tree::node_index_t node_index_t;
+        Tree tree;
+
+        node_index_t root = tree.getRootNodeIndex();
+        tree.splitNode(root, 0, 0);
+        tree.splitNode(tree.getLeftChildOfNode(root), 0, 0);
 
         bool ret = false;
         std::string executionLog;
 
-        if (root.hasLeftChild()) {
+        if (tree.hasLeftChild(root)) {
             executionLog = "Tree root has a left child.\n";
-            ret = tree.getNode(root.getLeftChild()).hasLeftChild();
+            ret = tree.hasLeftChild(tree.getLeftChildOfNode(root));
             executionLog += ret ? "\tRoot's left child has left child"
                                 : "\tRoot's left child has no left child";
         }
@@ -364,8 +366,8 @@ int main() {
             tree.train(irisDataset[i], irisDataset[i][4], doSplitTrial);
         }
 
-        std::string str =
-            JsonExporter::nodeClassCountsToJson(tree.getRootNode(), 3);
+        std::string str = JsonExporter::nodeClassCountsToJson(
+            tree, tree.getRootNodeIndex(), 3);
 
         bool ret = str == "[[50.0,50.0,50.0]]";
 
@@ -386,8 +388,8 @@ int main() {
                 tree.train(irisDataset[i], irisDataset[i][4], doSplitTrial);
             }
 
-            std::string str =
-                JsonExporter::nodeDataToJson(tree.getRootNode(), 1, 2);
+            std::string str = JsonExporter::nodeDataToJson(
+                tree, tree.getRootNodeIndex(), 1, 2);
 
             bool ret = str == "[-1,-1,-2,-2.0,0.666667,150,150.0]";
 
@@ -418,8 +420,8 @@ int main() {
                     [](data_t a) { return a * 8; },
                     [](data_t a) { return a * 8; }};
 
-            std::string str =
-                JsonExporter::nodeDataToJson(tree.getRootNode(), 1, 2, scalers);
+            std::string str = JsonExporter::nodeDataToJson(
+                tree, tree.getRootNodeIndex(), 1, 2, scalers);
 
             bool ret = str == "[-1,-1,-2,-2.0,0.666667,150,150.0]";
 
@@ -442,8 +444,8 @@ int main() {
                 tree.train(irisDataset[i], irisDataset[i][4], doSplitTrial);
             }
 
-            std::string str =
-                JsonExporter::nodeDataToJson(tree.getRootNode(), 1, 2);
+            std::string str = JsonExporter::nodeDataToJson(
+                tree, tree.getRootNodeIndex(), 1, 2);
 
             bool ret = str == "[-1,-1,-2,-2.0,0.666667,150,150.0]";
 
@@ -474,8 +476,8 @@ int main() {
                     [](data_t a) { return a * 8; },
                     [](data_t a) { return a * 8; }};
 
-            std::string str =
-                JsonExporter::nodeDataToJson(tree.getRootNode(), 1, 2, scalers);
+            std::string str = JsonExporter::nodeDataToJson(
+                tree, tree.getRootNodeIndex(), 1, 2, scalers);
 
             bool ret = str == "[-1,-1,-2,-2.0,0.666667,150,150.0]";
 
@@ -509,8 +511,8 @@ int main() {
 
         Tree treeCopy(tree.getR(), tree.getSigma(), tree.getTau());
 
-        JsonExporter::copyNode(tree, treeCopy, tree.getRootNode(),
-                               treeCopy.getRootNode());
+        JsonExporter::copyNode(tree, treeCopy, tree.getRootNodeIndex(),
+                               treeCopy.getRootNodeIndex());
 
         JsonExporter::inferDataset(treeCopy, fixedDataset, N_Samples);
 

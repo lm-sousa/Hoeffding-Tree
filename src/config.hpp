@@ -14,9 +14,8 @@
 typedef HoeffdingTree<Node<NodeData<DATATYPE,   // datatype
                                     ATTRIBUTES, // Attributes
                                     CLASSES     // Classes
-                                    >,
-                           NODES // Node upperbound
-                           >>
+                                    >>,
+                      NODES /*Node upperbound*/>
     Tree;
 
 typedef Tree::data_t data_t;
