@@ -9,15 +9,6 @@
 #include <utility>
 
 // #define USE_XILINX_AP_TYPES
-// #include "ap_fixed.h"
-
-#ifndef USE_XILINX_AP_TYPES
-#pragma clang diagnostic warning "-Wall"
-#pragma clang diagnostic warning "-Wextra"
-#pragma clang diagnostic warning "-Wpedantic"
-#pragma clang diagnostic ignored "-Wunused-label"
-#pragma clang diagnostic ignored "-Wunknown-pragmas"
-#endif
 
 #include "../src/BinaryTree.hpp"
 #include "../src/HoeffdingTree.hpp"
