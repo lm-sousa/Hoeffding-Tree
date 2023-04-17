@@ -16,11 +16,11 @@ template <typename datatype_T = float, uintmax_t N_Attributes_T = 16,
 class NodeData {
   public:
     typedef datatype_T data_t;
-    typedef TypeChooser_Unsigned(N_Attributes_T) attribute_index_t;
-    // typedef TypeChooser_Unsigned(N_Classes_T) class_index_t;
-    typedef uint32_t class_index_t;
-    typedef TypeChooser_Unsigned(N_Quantiles_T) quantile_index_t;
-    typedef TypeChooser_Unsigned(N_pt_T) point_index_t;
+    typedef TCU<N_Attributes_T> attribute_index_t;
+    typedef TCU<N_Classes_T> class_index_t;
+    // typedef uint32_t class_index_t;
+    typedef TCU<N_Quantiles_T> quantile_index_t;
+    typedef TCU<N_pt_T> point_index_t;
     typedef sample_count_T sample_count_t;
     static const attribute_index_t N_Attributes = N_Attributes_T;
     static const class_index_t N_Classes = N_Classes_T;
@@ -44,6 +44,7 @@ class NodeData {
 
     NodeData_update__attributes:
         for (attribute_index_t i = 0; i < N_Attributes; i++) {
+#pragma HLS unroll
             _updateAttributeRange(i, sample[i]);
 
             _updateQuantiles(i, classif, sample[i]);
@@ -72,8 +73,10 @@ class NodeData {
 
     NodeData_evaluateSplit__attributes:
         for (attribute_index_t i = 0; i < N_Attributes; i++) {
+#pragma HLS unroll
         NodeData_evaluateSplit__attributes__pt:
             for (point_index_t p = 0; p < N_pt; p++) {
+#pragma HLS unroll
                 sample_count_t dist[N_Classes][2], distSum[2] = {0};
 
                 data_t pt = _getSplitPointValue(i, p);
@@ -145,6 +148,7 @@ class NodeData {
                           class_index_t classif, data_t value) {
     NodeData_updateQuantiles__quantiles:
         for (quantile_index_t k = 0; k < N_Quantiles; k++) {
+#pragma HLS unroll
             _Attributes[attributeIndex][classif][k] -=
                 _lambda *
                 _sgnAlpha(_Attributes[attributeIndex][classif][k] - value,
@@ -167,6 +171,7 @@ class NodeData {
         sample_count_t distL = 0;
     NodeData_getSampleCountDistribuition__quantiles:
         for (quantile_index_t k = 0; k < N_Quantiles; k++) {
+#pragma HLS unroll
             if (splitPoint > _Attributes[attributeIndex][classIndex][k]) {
                 distL++;
             } else {
@@ -202,6 +207,7 @@ class NodeData {
         data_t ret = 1;
     NodeData_gini__classes:
         for (class_index_t j = 0; j < N_Classes; j++) {
+#pragma HLS unroll
             data_t p = 0;
             if (X == None) {
                 p = _classImpurity(j);

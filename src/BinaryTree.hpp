@@ -7,7 +7,7 @@
 
 #include "TypeChooser.hpp"
 
-template <class Node_T, uint capacity_T = 100> class BinaryTree {
+template <class Node_T, uintmax_t capacity_T = 100> class BinaryTree {
 
   public:
     typedef Node_T _NodeClass;
@@ -18,18 +18,16 @@ template <class Node_T, uint capacity_T = 100> class BinaryTree {
     typedef typename _DataClass::quantile_index_t quantile_index_t;
     typedef typename _DataClass::point_index_t point_index_t;
     typedef typename _DataClass::sample_count_t sample_count_t;
-    typedef TypeChooser_Unsigned(capacity_T) node_index_t;
+    typedef TCU<capacity_T> node_index_t;
 
-    static const node_index_t capacity = capacity_T;
-
-    constexpr node_index_t getCapacity() { return capacity; }
+    static node_index_t getCapacity() { return capacity_T; }
     node_index_t getSize() { return _size; }
 
     _NodeClass &getNode(node_index_t index) { return _nodes[index]; }
 
     _NodeClass &getRootNode() { return getNode(getRootNodeIndex()); }
 
-    constexpr node_index_t getRootNodeIndex() { return 0; }
+    node_index_t getRootNodeIndex() { return 0; }
 
     /**
      * @brief Sort the sample through the tree
@@ -136,11 +134,11 @@ template <class Node_T, uint capacity_T = 100> class BinaryTree {
         data_t splitValue = 0;
     };
 
-    _NodeInfo _treeInformation[capacity];
-    _NodeClass _nodes[capacity];
+    _NodeInfo _treeInformation[capacity_T];
+    _NodeClass _nodes[capacity_T];
 
     node_index_t _reserveNextFreeNode() {
-        return (_size >= capacity) ? 0 : _size++;
+        return (_size >= capacity_T) ? static_cast<node_index_t>(0) : _size++;
     }
 };
 

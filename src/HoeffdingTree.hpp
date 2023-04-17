@@ -83,9 +83,9 @@ class HoeffdingTree : public BinaryTree<Node_T, capacity_T> {
      * @brief Calculates the Hoeffding Bound
      *
      * @param n Number of samples in the leaf node
-     * @return constexpr float Hoeffding bound
+     * @return float Hoeffding bound
      */
-    constexpr data_t hoeffdingBound(sample_count_t n) {
+    data_t hoeffdingBound(sample_count_t n) {
         return _hoeffdingBoundConstant / tcm::sqrt((data_t)n);
     }
 
