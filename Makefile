@@ -15,7 +15,7 @@ DEPS := $(OBJS:.o=.d)
 INC_DIRS := $(shell find $(SRC_DIRS) -type d)
 INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
-CPPFLAGS ?= $(INC_FLAGS) -MMD -MP -g -fPIE -Wno-unused-label -I/tools/Xilinx/Vitis_HLS/2022.2/include -Wall -Wextra -Wpedantic -Wno-unused-label -Wno-unknown-pragmas 
+CPPFLAGS ?= $(INC_FLAGS) -MMD -MP -g -fPIE -Wno-unused-label -isystem/tools/Xilinx/Vitis_HLS/2022.2/include -Wall -Wextra -Wpedantic -Wno-unused-label -Wno-unknown-pragmas 
 
 LDFLAGS := 
 

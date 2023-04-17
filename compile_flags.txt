@@ -2,5 +2,5 @@
 -Wextra
 -Wpedantic
 -Wno-unused-label
--I
+-isystem
 /tools/Xilinx/Vitis_HLS/2022.2/include/
