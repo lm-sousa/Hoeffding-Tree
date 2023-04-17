@@ -8,7 +8,7 @@
 #include "BinaryTree.hpp"
 #include "Node.hpp"
 
-template <class Node_T = Node<>, uint capacity_T = 100>
+template <class Node_T = Node<>, uintmax_t capacity_T = 100>
 class HoeffdingTree : public BinaryTree<Node_T, capacity_T> {
   public:
     typedef typename BinaryTree<Node_T, capacity_T>::_NodeClass _NodeClass;

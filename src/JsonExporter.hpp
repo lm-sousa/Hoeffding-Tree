@@ -40,7 +40,7 @@ class JsonExporter {
         std::ostringstream ss;
         ss << arrayCharBegin;
 
-        for (uint i = 0; i < v.size(); i++) {
+        for (std::size_t i = 0; i < v.size(); i++) {
 
             ss << v.at(i);
             if (i != v.size() - 1) {
@@ -193,9 +193,9 @@ class JsonExporter {
     }
 
     template <class T>
-    static std::string nodeClassCountsToJson(T &tree,
-                                             typename T::node_index_t nodeIndex,
-                                             uint nClasses) {
+    static std::string
+    nodeClassCountsToJson(T &tree, typename T::node_index_t nodeIndex,
+                          typename T::class_index_t nClasses) {
         typedef typename T::class_index_t class_index_t;
 
         std::string array[nClasses];

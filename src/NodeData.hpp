@@ -10,9 +10,9 @@
 #include "TypeChooser.hpp"
 #include "TypeChooserMath.hpp"
 
-template <typename datatype_T = float, uint N_Attributes_T = 16,
-          uint N_Classes_T = 2, uint N_Quantiles_T = 8, uint N_pt_T = 10,
-          typename sample_count_T = uint>
+template <typename datatype_T = float, uintmax_t N_Attributes_T = 16,
+          uintmax_t N_Classes_T = 2, uintmax_t N_Quantiles_T = 8,
+          uintmax_t N_pt_T = 10, typename sample_count_T = uint>
 class NodeData {
   public:
     typedef datatype_T data_t;
@@ -22,10 +22,10 @@ class NodeData {
     typedef TypeChooser_Unsigned(N_Quantiles_T) quantile_index_t;
     typedef TypeChooser_Unsigned(N_pt_T) point_index_t;
     typedef sample_count_T sample_count_t;
-    static const uint N_Attributes = N_Attributes_T;
-    static const uint N_Classes = N_Classes_T;
-    static const uint N_Quantiles = N_Quantiles_T;
-    static const uint N_pt = N_pt_T;
+    static const attribute_index_t N_Attributes = N_Attributes_T;
+    static const class_index_t N_Classes = N_Classes_T;
+    static const quantile_index_t N_Quantiles = N_Quantiles_T;
+    static const point_index_t N_pt = N_pt_T;
 
     typedef data_t (*sampleScaler)(data_t);
 

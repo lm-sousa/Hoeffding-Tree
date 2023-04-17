@@ -1,10 +1,11 @@
 #ifndef __TOP_BUFFER_HPP__
 #define __TOP_BUFFER_HPP__
 
-#include <stdlib.h>
+#include <cstdint>
+#include <cstdlib>
 #include <tuple>
 
-template <uint size_T, typename data_T, typename attribute_index_T>
+template <uintmax_t size_T, typename data_T, typename attribute_index_T>
 class TopSplitBuffer {
 
   public:

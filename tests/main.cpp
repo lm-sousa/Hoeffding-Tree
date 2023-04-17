@@ -81,7 +81,7 @@ int main() {
 
     // Normalize Iris dataset values
     for (uint i = 0; i < 150; i++) {
-        for (int j = 0; j < 4; j++)
+        for (uint j = 0; j < 4; j++)
             irisDataset[i][j] /= 8;
     }
 

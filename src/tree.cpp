@@ -4,10 +4,10 @@
 
 void krnl_Tree(Tree *tree, Sample<Tree> sample[SAMPLE_ARRAY_SIZE],
                Prediction<Tree> prediction[SAMPLE_ARRAY_SIZE],
-               unsigned int bundleSize) {
+               uint32_t bundleSize) {
 
 sample_loop:
-    for (unsigned int i = 0; i < bundleSize; i++) {
+    for (uint32_t i = 0; i < bundleSize; i++) {
         if (sample[i].doSplitTrial) {
             std::tie(prediction[i].classification, prediction[i].confidence) =
                 tree->train(sample[i].data, sample[i].classification, true);

@@ -2,6 +2,7 @@
 #define __TYPE_CHOOSER_HPP__
 
 #include <cstdint>
+#include <cstdlib>
 #include <type_traits>
 
 #ifdef USE_XILINX_AP_TYPES
